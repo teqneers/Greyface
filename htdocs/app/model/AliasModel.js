@@ -1,0 +1,9 @@
+Ext.define("Greyface.model.AliasModel",{
+    extend:"Ext.data.Model",
+    fields:[
+        "alias_id",
+        "user_id",
+        "username",
+        "email"
+    ]
+});
