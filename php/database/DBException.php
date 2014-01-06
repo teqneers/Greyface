@@ -68,7 +68,10 @@ class DBException extends Exception {
      * @return string - gets the Error Description for 1062:Duplicate Key Entry
      */
     public function getDuplicateKeyMessage() {
-        return "Duplicate Key Entry- Data is already in the table";
+        return "Duplicate Key Entry- Data is already in the table!";
     }
 
+    public function getDBExceptionOccuredMessage()  {
+        return "An unhandled DB Exception occured.";
+    }
 } 

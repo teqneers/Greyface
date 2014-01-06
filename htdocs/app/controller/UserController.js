@@ -52,7 +52,9 @@ Ext.define("Greyface.controller.UserController", {
 
             // Add Alias
             "button[actionId=userAliasToolbarAddAlias]": {
-                click: function(){console.log("userAliasToolbarAddAlias")}
+                click: function(){
+                    this.openAddAliasWindow();
+                }
             },
             // Alias Filter
             "textfield[actionId=userAliasToolbarSearchForAlias]": {
@@ -147,7 +149,7 @@ Ext.define("Greyface.controller.UserController", {
     // Add user
     openAddUserWindow: function() {
         Ext.create("Greyface.view.user.admin.AddUserWindow", {
-            callbackDeleteEntries:this.addUser
+            callbackAddUser:this.addUser
         }).show();
     },
     addUser: function(username, email, password, isAdmin, randomizePassword, sendEmail) {
@@ -173,6 +175,34 @@ Ext.define("Greyface.controller.UserController", {
         });
 
         var store = Ext.getStore("Greyface.store.UserAdminStore");
+        store.reload();
+    },
+
+    // Add alias
+    openAddAliasWindow: function() {
+        Ext.create("Greyface.view.user.alias.AddAliasWindow", {
+            callbackAddAlias:this.addAlias
+        }).show();
+    },
+    addAlias: function(username, alias) {
+        Ext.Ajax.request({
+            url: "api/CRUDRouter.php?action=addAlias",
+            success: function(response, opts) {
+                var decResponse = Ext.decode(response.responseText);
+                console.log(decResponse.data[0])
+            },
+            failure: function(response, opts) {
+                // nothing
+            },
+            method: "GET",
+            params: {
+                store:"userAliasStore",
+                username:username,
+                alias:alias
+            }
+        });
+
+        var store = Ext.getStore("Greyface.store.UserAliasStore");
         store.reload();
     }
 });

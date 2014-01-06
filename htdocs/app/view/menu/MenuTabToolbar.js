@@ -57,7 +57,6 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
                 items: [
                     {text: 'User', actionId: "userAdminMenuButton"},
                     {text: 'Aliases', actionId: "userAliasMenuButton"},
-                    {text: 'Change Password', actionId: "userChangePasswordMenuButton"}
                 ]
             })
         },

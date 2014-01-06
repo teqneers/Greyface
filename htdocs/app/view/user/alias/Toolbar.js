@@ -11,12 +11,6 @@ Ext.define("Greyface.view.user.alias.Toolbar", {
             icon: "resources/images/user_add.png"
         },
         {
-            xtype:"button",
-            actionId:"userAliasToolbarImportData",
-            text:"Add alias",
-            icon: "resources/images/user_add.png"
-        },
-        {
             xtype:"combo",
             actionId:"userAliasToolbarFilterBy",
             multiselect:false,

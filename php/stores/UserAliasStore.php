@@ -71,4 +71,28 @@ class UserAliasStore extends AbstractStore {
         }
         return $mappedFilters;
     }
+
+    public function addAlias($username, $alias) {
+        // first we have to find the userId to the given username!
+        $user = User::getUserByName($username);
+        if($user->isUserExisting()) {
+            $userId = $user->getUserId();
+            $insertQuery =  "INSERT INTO tq_alias".
+                " (user_id, alias_name)".
+                " VALUES ('$userId','$alias')";
+            self::$db->query($insertQuery);
+
+            return new AjaxResult(true, "Alias has been added to database!");
+        } else {
+            return new AjaxResult(false, "Given username does not exist!");
+        }
+    }
+
+    public function deleteAlias($aliasId) {
+        $deleteQuery =  "DELETE FROM tq_alias"
+            ." WHERE alias_id='$aliasId'";
+        self::$db->query($deleteQuery);
+        return new AjaxResult(true, "Alias has been removed from database!");
+    }
+
 }

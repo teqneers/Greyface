@@ -66,11 +66,24 @@ class DataBase {
 		$result	= self::$mysqli->query($query);
 		if( self::$mysqli->error ) {
 			$exception = new DBException(self::$mysqli->error, self::$mysqli->errno, $query);
+
             if($exception->isDuplicateKeyError()) {
                 echo new AjaxResult(false, $exception->getDuplicateKeyMessage());
                 exit;
             }
+
+            // if unhandled
+            //@TODO: set if/how exceptions have to be displayed in config...
+            echo new AjaxResult(
+                false,
+                $exception->getDBExceptionOccuredMessage()."\n"
+                .$exception->getErrorNr()."\n"
+                .$exception->getErrorMsg()."\n"
+                .$exception->getQuery()
+            );
             throw $exception;
+
+
 		}
 
 		return $result;
