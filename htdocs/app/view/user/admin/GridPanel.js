@@ -31,7 +31,6 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
                     tooltip: 'Set password',
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
-                        console.log(rec.get("username"));
                         Ext.create("Greyface.view.user.admin.SetUserPasswordWindow", {userRecord:rec}).show();
                     }
                 }

@@ -1,4 +1,9 @@
 <?php
+// Activate error output...
+//@TODO: Move to dedicated Error Reporting or Logging class. Make configurable in greyface.ini!
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+
 
 // Config
 // require_once "../../php/Config.php"; // allready in Config Class
@@ -34,6 +39,8 @@ require "../../php/requestFilters/EmailFilter.php";
 require "../../php/requestFilters/DomainFilter.php";
 require "../../php/requestFilters/UsernameFilter.php";
 require "../../php/requestFilters/CreateUserFilter.php";
+require "../../php/requestFilters/CreateAliasFilter.php";
+require "../../php/requestFilters/DeleteAliasFilter.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -273,6 +280,25 @@ function dispatch($store, $action) {
             switch ($action) {
                 case "read":
                     return  UserAliasStore::getInstance()->getAliases($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
+                case "addAlias":
+                    $addAliasRequest = CreateAliasFilter::getInstance();
+                    if ( $addAliasRequest->isComplete() ) {
+                        return UserAliasStore::getInstance()->addAlias(
+                            $addAliasRequest->getUsername(),
+                            $addAliasRequest->getAlias()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
+                case "delete":
+                    $deleteAliasRequest = DeleteAliasFilter::getInstance();
+                    if ( $deleteAliasRequest->isComplete() ) {
+                        return UserAliasStore::getInstance()->deleteAlias(
+                            $deleteAliasRequest->getAliasId()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }

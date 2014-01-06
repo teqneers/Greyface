@@ -14,26 +14,14 @@ Ext.define("Greyface.view.user.alias.GridPanel",{
                     icon: 'resources/images/delete.png',  // Use a URL in the icon config
                     tooltip: 'Delete',
                     handler: function(grid, rowIndex, colIndex) {
-                        console.log("delete" + grid + ", " + rowIndex + ", " + colIndex);
+                        var rec = grid.getStore().getAt(rowIndex);
+                        rec.deleteItem();
+                        grid.getStore().reload();
                     }
                 }
             ]
         },
-        {
-            xtype: "actioncolumn",
-            width:32,
-            resizable:false,
-            items:[
-                {
-                    icon: 'resources/images/user_edit.png',  // Use a URL in the icon config
-                    tooltip: 'User edit',
-                    handler: function(grid, rowIndex, colIndex) {
-                        console.log("user edit" + grid + ", " + rowIndex + ", " + colIndex);
-                    }
-                }
-            ]
-        },
-        {text: "Email",dataIndex:"email", autoSizeColumn:true},
+        {text: "Email alias",dataIndex:"email", autoSizeColumn:true},
         {text: "Username", dataIndex:"username", autoSizeColumn:true}
     ],
     viewConfig: {

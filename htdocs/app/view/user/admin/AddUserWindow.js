@@ -6,7 +6,7 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
     resizable:false,
     layout:"fit",
     config: {
-        callbackDeleteEntries:""
+        callbackAddUser:""
     },
     constructor: function(cfg) {
         this.callParent(arguments);
@@ -102,7 +102,7 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
                         var isAdmin = form.findField("isAdmin").getValue();
                         var randomizePassword = form.findField("randomizePassword").getValue();
                         var sendEmail = form.findField("sendEmail").getValue();
-                        this.up("window").callbackDeleteEntries(username, email, password, isAdmin, randomizePassword, sendEmail);
+                        this.up("window").callbackAddUser(username, email, password, isAdmin, randomizePassword, sendEmail);
                         this.up('window').destroy();
                     }
                 }
