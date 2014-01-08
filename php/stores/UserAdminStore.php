@@ -57,4 +57,13 @@ class UserAdminStore extends AbstractStore {
         return new AjaxResult(true, "User has been removed from database!");
 	}
 
-} 
+    public function getGreylistUserFilterOptions() {
+        $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
+        $result = self::$db->queryArray($selectQuery);
+
+        $result = new AjaxRowsResult($result, count($result));
+        $result->prependRow(array("username"=>"show unassigned","user_id"=>"show_unassigned"));
+        $result->prependRow(array("username"=>"show all","user_id"=>"show_all"));
+        return $result;
+    }
+}

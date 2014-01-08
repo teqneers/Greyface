@@ -18,15 +18,9 @@ Ext.define("Greyface.view.user.alias.Toolbar", {
             typeAhead:false,
             fieldLabel:"Filter by:",
             labelAlign:"right",
-            enableKeyEvents:true
-        },
-        {
-            xtype:"textfield",
-            actionId:"userAliasToolbarSearchForAlias",
-            emptyText:"search value...",
-            fieldLabel:"Search for alias:",
-            labelAlign:"right",
-            enableKeyEvents:true
+            displayField: "username",
+            valueField: "user_id",
+            forceSelection: true
         },
         {
             xtype:"button",

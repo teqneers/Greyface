@@ -23,6 +23,7 @@ class GreylistStore extends AbstractStore {
             "first_seen" => "connect.first_seen",
             "alias_name" => "tq_alias.alias_name",
             "username" => "tq_user.username",
+            "user_id" => "tq_user.user_id"
         );
     }
 
@@ -63,19 +64,35 @@ class GreylistStore extends AbstractStore {
 
         // Builds WHERE clause, based on the $filters[] array.
         if(count($filters) > 0) {
-            $whereStatement .= " WHERE ";
+            $count = 0;
             foreach($filters as $column => $value) {
-                $whereStatement .= self::$db->quote($column)." LIKE '".self::$db->quote($value)."' ";
-                $whereStatement .= "OR ";
+                if ($column == "tq_user.user_id") {
+                    continue;
+                } else {
+                    if($count > 0) {
+                        $whereStatement .= "OR ";
+                    } elseif ($count == 0) {
+                        $whereStatement .= " WHERE ";
+                    }
+                    $whereStatement .= self::$db->quote($column)." LIKE '".self::$db->quote($value)."' ";
+                }
+                $count++;
+
             }
-            $whereStatement = substr($whereStatement, 0,-3); // Cuts off the last three "OR " characters (they are too much).
+            foreach($filters as $column => $value) {
+                if ( $column == "tq_user.user_id" && $value == "show_unassigned" ) {
+                    empty($whereStatement) ? $whereStatement .= " WHERE tq_user.user_id = NULL" : $whereStatement .= " AND tq_user.user_id = NULL";
+                } elseif ($column == "tq_user.user_id") {
+                    empty($whereStatement) ? $whereStatement .= " WHERE tq_user.user_id = '".self::$db->quote($value)."'" : $whereStatement .= " AND tq_user.user_id = '".self::$db->quote($value)."'";
+                }
+            }
         }
-        // For not admin users - their user id will be pushed in the WHERE clause
+        // For non admin users - their user id will be pushed in the WHERE clause
         if(!$this->user->isAdmin()) {
             if(empty($whereStatement)) {
                 $whereStatement .= " WHERE tq_user.user_id = ".$this->user->getUserId();
             } else {
-                $whereStatement .= " OR tq_user.user_id = ".$this->user->getUserId();
+                $whereStatement .= " AND tq_user.user_id = ".$this->user->getUserId();
             }
         }
 

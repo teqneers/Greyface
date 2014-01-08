@@ -8,6 +8,7 @@ class UserAliasStore extends AbstractStore {
         $this->filterMapping = array(
             "email" => "tq_alias.alias_name ",
             "username" => "tq_user.username",
+            "user_id" => "tq_user.user_id"
         );
     }
 
@@ -33,13 +34,26 @@ class UserAliasStore extends AbstractStore {
             "ON tq_alias.user_id = tq_user.user_id";
 
         // Builds WHERE clause, based on the $filters[] array.
+        $count=0;
         if(count($filters) > 0) {
-            $whereStatement .= " WHERE ";
             foreach($filters as $column => $value) {
-                $whereStatement .= self::$db->quote($column)." LIKE '".self::$db->quote($value)."' ";
-                $whereStatement .= "OR ";
+                if($column == "tq_user.user_id") {
+                    continue;
+                } else {
+                    if($count > 0) {
+                        $whereStatement .= "OR ";
+                    } elseif ($count == 0) {
+                        $whereStatement .= " WHERE ";
+                    }
+                    $whereStatement .= self::$db->quote($column)." LIKE '".self::$db->quote($value)."' ";
+                }
             }
-            $whereStatement = substr($whereStatement, 0,-3); // Cuts off the last three "OR " characters (they are too much).
+
+            foreach($filters as $column => $value) {
+                if($column == "tq_user.user_id") {
+                    (empty($whereStatement)) ? $whereStatement .= " WHERE tq_user.user_id = '".self::$db->quote($value)."'" : " AND tq_user.user_id = '".self::$db->quote($value)."'";
+                }
+            }
         }
 
         // Builds ORDER BY clause, based on the sort options $sortProperty and $sortDirection.
@@ -57,7 +71,7 @@ class UserAliasStore extends AbstractStore {
         // Determine the total rows number (respect WHERE-statement).
         $rowNumber = DataBase::getInstance()->queryArray("SELECT COUNT(*) as nr" . $fromStatement . $whereStatement)[0]["nr"];
 
-        return new AjaxRowsResult($result, $rowNumber);
+        return $query.new AjaxRowsResult($result, $rowNumber);
     }
 
     private function mapFilters($filters) {
@@ -93,6 +107,15 @@ class UserAliasStore extends AbstractStore {
             ." WHERE alias_id='$aliasId'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Alias has been removed from database!");
+    }
+
+    public function getUserAliasFilterOptions() {
+        $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
+        $result = self::$db->queryArray($selectQuery);
+
+        $result = new AjaxRowsResult($result, count($result));
+        $result->prependRow(array("username"=>"show all","user_id"=>"show_all"));
+        return $result;
     }
 
 }

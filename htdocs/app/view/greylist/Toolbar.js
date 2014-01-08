@@ -17,7 +17,10 @@ Ext.define("Greyface.view.greylist.Toolbar", {
             editable: false,
             typeAhead:false,
             fieldLabel:"Filter by:",
-            labelAlign:"right"
+            labelAlign:"right",
+            displayField: "username",
+            valueField: "user_id",
+            forceSelection: true
         },
         {
             xtype:"textfield",

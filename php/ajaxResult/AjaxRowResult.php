@@ -40,6 +40,11 @@ class AjaxRowsResult extends AjaxResult {
             array_push($this->rows, $oneRow);
     }
 
+    public function prependRow($oneRow) {
+        if(is_array($oneRow))
+            array_unshift($this->rows, $oneRow);
+    }
+
     public function __toString() {
         $string = "";
         $string .= '{ "' . $this->root . '":[{"success": ' . $this->getSuccessString() . ', "msg": "' . $this->message . '"}],';

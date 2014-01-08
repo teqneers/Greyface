@@ -302,6 +302,15 @@ function dispatch($store, $action) {
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
+        case "userFilterStore":
+            switch ($action) {
+                case "getGreylistFilter":
+                    return UserAdminStore::getInstance()->getGreylistUserFilterOptions();
+                case "getUserAliasFilter":
+                    return UserAliasStore::getInstance()->getUserAliasFilterOptions();
+                default:
+                    return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
+            }
         default:
             return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
     }

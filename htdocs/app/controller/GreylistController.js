@@ -4,13 +4,17 @@ Ext.define("Greyface.controller.GreylistController", {
         { ref: "grid", selector: "panel[actionId=greylistPanel]" },
         { ref: "gridPagingToolbar", selector: "pagingtoolbar[actionId=greylistPanelPagingToolbar]" },
         { ref: "greylistFilterTextfield", selector: "textfield[actionId=greylistToolbarFulltext]" },
-        { ref: "greylistFilterCancelButton", selector: "button[actionId=greylistToolbarCancelFilter]" }
+        { ref: "greylistFilterCancelButton", selector: "button[actionId=greylistToolbarCancelFilter]" },
+        { ref: "greylistUserFilterByCombobox", selector: "combo[actionId=greylistToolbarFilterBy]" }
     ],
     views: [
         "Greyface.view.greylist.GridPanel",
         "Greyface.view.greylist.Toolbar"
     ],
-    stores:["Greyface.store.GreylistStore"],
+    stores:[
+        "Greyface.store.GreylistStore",
+        "Greyface.store.UserFilterStore"
+    ],
     init: function () {
         this.control({
             // wire up the stores to the datagrid in view
@@ -23,7 +27,17 @@ Ext.define("Greyface.controller.GreylistController", {
                 click: this.openDatePickerWindow
             },
             "combobox[actionId=greylistToolbarFilterBy]": {
-                select: function(){console.log("greylistToolbarFilterBy")}
+                change: function(box, newValue, oldValue, eOpts){
+                    var store = Ext.getStore("Greyface.store.GreylistStore");
+                    if(newValue != "show_all" && newValue != "show_unassigned") {
+                        store.addFilter([{id:"user_id", property:"user_id", value:newValue}],false);
+                    } else if(newValue == "show_all") {
+                        store.filters.removeAtKey("user_id"); // !Workaround because a bug in ExtJS! //
+                    } else if(newValue == "show_unassigned") {
+                        store.addFilter([{id:"user_id", property:"user_id", value:"show_unassigned"}], false);
+                    }
+                    this.getGreylistFilterTextfield().fireEvent("change");
+                }
             },
 
 
@@ -47,11 +61,17 @@ Ext.define("Greyface.controller.GreylistController", {
         store.load();
         this.getGrid().reconfigure(store)
         this.getGridPagingToolbar().bindStore(store);
+
+        // wires up the store for the combobox which shows all users, after which the grid can be filtered.
+        var userFilterStore = Ext.getStore("Greyface.store.UserFilterStore");
+        userFilterStore.load();
+        this.getGreylistUserFilterByCombobox().bindStore(userFilterStore);
     },
 
 
     // Filtering Greylist
     initGreylistFilter: function() {
+        console.log("change event fired..")
         var task = this.createGreylistFilterTask();
         task.delay(300)
     },
@@ -59,20 +79,24 @@ Ext.define("Greyface.controller.GreylistController", {
         var store = Ext.getStore("Greyface.store.GreylistStore");
         var filterValue= this.getGreylistFilterTextfield().getValue();
         if(filterValue == ""){
-            store.clearFilter();
-            this.getGreylistFilterCancelButton().hide();
+            store.filters.removeAtKey("sender_name");
+            store.filters.removeAtKey("sender_domain");
+            store.filters.removeAtKey("src");
+            store.filters.removeAtKey("recipient");
+            store.filters.removeAtKey("first_seen");
+            store.filters.removeAtKey("username");
         } else {
             this.getGreylistFilterCancelButton().show();
-            store.clearFilter(true);
-            store.filter([
-                {property:"sender_name", value:"%"+filterValue+"%"},
-                {property:"sender_domain", value:"%"+filterValue+"%"},
-                {property:"src", value:"%"+filterValue+"%"},
-                {property:"recipient", value:"%"+filterValue+"%"},
-                {property:"first_seen", value:"%"+filterValue+"%"},
-                {property:"username", value:"%"+filterValue+"%"}
-            ]);
+            store.addFilter([
+                {id:"sender_name", property:"sender_name", value:"%"+filterValue+"%"},
+                {id:"sender_domain", property:"sender_domain", value:"%"+filterValue+"%"},
+                {id:"src", property:"src", value:"%"+filterValue+"%"},
+                {id:"recipient", property:"recipient", value:"%"+filterValue+"%"},
+                {id:"first_seen", property:"first_seen", value:"%"+filterValue+"%"},
+                {id:"username", property:"username", value:"%"+filterValue+"%"}
+            ], false);
         }
+        store.load();
     },
     createGreylistFilterTask: function() {
         if(!Greyface.tools.Registry.exists(("greylistFilterTextfield"))) {

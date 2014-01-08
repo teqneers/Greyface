@@ -8,7 +8,8 @@ Ext.define("Greyface.controller.UserController", {
         { ref: "userFilterTextfield", selector: "textfield[actionId=userAdminToolbarSearchForUser]" },
         { ref: "userFilterCancelButton", selector: "button[actionId=userAdminToolbarCancelFilter]" },
         { ref: "aliasFilterTextfield", selector: "textfield[actionId=userAliasToolbarSearchForAlias]" },
-        { ref: "aliasFilterCancelButton", selector: "button[actionId=userAliasToolbarCancelFilter]" }
+        { ref: "aliasFilterCancelButton", selector: "button[actionId=userAliasToolbarCancelFilter]" },
+        { ref: "aliasFilterCombo", selector: "combo[actionId=userAliasToolbarFilterBy]" }
     ],
     views: [
         "Greyface.view.user.admin.GridPanel",
@@ -18,7 +19,8 @@ Ext.define("Greyface.controller.UserController", {
     ],
     stores:[
         "Greyface.store.UserAdminStore",
-        "Greyface.store.UserAliasStore"
+        "Greyface.store.UserAliasStore",
+        "Greyface.store.UserAliasFilterStore"
     ],
     init: function () {
         this.control({
@@ -67,6 +69,19 @@ Ext.define("Greyface.controller.UserController", {
             },
             "button[actionId=userAliasToolbarCancelFilter]": {
                 click: function() {this.getAliasFilterTextfield().setValue("")}
+            },
+
+            // Filter aliases after user
+            "combobox[actionId=userAliasToolbarFilterBy]": {
+                change: function(box, newValue, oldValue, eOpts){
+                    var store = Ext.getStore("Greyface.store.UserAliasStore");
+                    if(box.getValue() == "show_all") {
+                        store.filters.removeAtKey("user_id"); //@WORKAROUND because a bug in ExtJS! (store.removeFilter("ID") //
+                    } else {
+                        store.addFilter([{id:"user_id", property:"user_id", value:box.getValue()}], false);
+                    }
+                    store.load();
+                }
             }
         });
     },
@@ -82,6 +97,11 @@ Ext.define("Greyface.controller.UserController", {
         store.load();
         this.getUserAliasGrid().reconfigure(store)
         this.getUserAliasGridPagingToolbar().bindStore(store);
+
+        // wires up the store for the combobox which shows all users, after which the grid can be filtered.
+        var userAliasFilterStore = Ext.getStore("Greyface.store.UserAliasFilterStore");
+        userAliasFilterStore.load();
+        this.getAliasFilterCombo().bindStore(userAliasFilterStore);
     },
 
 

@@ -39,5 +39,5 @@ Ext.define("Greyface.model.UserModel",{
                 password:newPassword
             }
         });
-    },
+    }
 });
