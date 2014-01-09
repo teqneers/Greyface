@@ -7,14 +7,14 @@ Ext.define("Greyface.view.autowhitelist.email.Toolbar", {
         {
             xtype:"button",
             actionId:"autoWhitelistToolbarAddEmail",
-            text:"Add Email",
+            text: Greyface.tools.Dictionary.translate("addEmail"),
             icon: "resources/images/email_add.png"
         },
         {
             xtype:"textfield",
             actionId:"autoWhitelistToolbarSearchForEmail",
-            emptyText:"search value...",
-            fieldLabel:"Search for email:",
+            emptyText:Greyface.tools.Dictionary.translate("searchValue"),
+            fieldLabel: Greyface.tools.Dictionary.translate("searchMail"),
             labelAlign:"right",
             enableKeyEvents:true
         },

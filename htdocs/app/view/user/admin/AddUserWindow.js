@@ -2,7 +2,7 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_AddUserWindow",
     modal:true,
-    title: "Create new user",
+    title: Greyface.tools.Dictionary.translate("createUser"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,24 +19,24 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Username',
+                    fieldLabel: Greyface.tools.Dictionary.translate("username"),
                     name: 'username',
                     allowBlank: false
                 },
                 {
-                    fieldLabel: 'Email',
+                    fieldLabel: Greyface.tools.Dictionary.translate("email"),
                     name: 'email',
                     allowBlank: false,
                     vtype:'email'
                 },
                 {
-                    fieldLabel: 'Password',
+                    fieldLabel: Greyface.tools.Dictionary.translate("password"),
                     name: 'password',
                     allowBlank: false,
                     inputType: 'password'
                 },
                 {
-                    fieldLabel: 'Retype password',
+                    fieldLabel: Greyface.tools.Dictionary.translate("retypePassword"),
                     name: 'retypePassword',
                     allowBlank: false,
                     inputType: 'password',
@@ -46,19 +46,19 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
                         if (retypedPassword === password) {
                             return true;
                         } else {
-                            return "The retyped password differs to the password"
+                            return Greyface.tools.Dictionary.translate("retypePasswordError");
                         }
                     }
                 },
                 {
                     xtype:'checkboxfield',
-                    fieldLabel: 'Admin',
+                    fieldLabel: Greyface.tools.Dictionary.translate("statusAdmin"),
                     name: 'isAdmin',
                     checked   : false
                 },
                 {
                     xtype:'checkboxfield',
-                    fieldLabel: 'Create random password',
+                    fieldLabel: Greyface.tools.Dictionary.translate("createRandomPasswort"),
                     name: 'randomizePassword',
                     checked   : false,
                     listeners: {
@@ -84,14 +84,14 @@ Ext.define("Greyface.view.user.admin.AddUserWindow",{
                 },
                 {
                     xtype:'checkboxfield',
-                    fieldLabel: 'Send email',
+                    fieldLabel: Greyface.tools.Dictionary.translate("sendEmail"),
                     name: 'sendEmail',
                     checked   : false
                 }
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

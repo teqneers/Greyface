@@ -7,62 +7,62 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
     items: [
         {
             xtype: 'button',
-            text: 'Greylist',
+            text: Greyface.tools.Dictionary.translate("greylist"),
             actionId:"greyListButton",
             icon: "resources/images/page_grey.png"
         },
         {
             xtype: 'splitbutton',
-            text : 'Auto whitelist',
+            text : Greyface.tools.Dictionary.translate("autoWhitelist"),
             actionId: "autoWhiteListSplitButton",
             icon: "resources/images/page_autowhite.png",
             menu: new Ext.menu.Menu({
                 items: [
-                    {text: 'Email list', actionId: "autoWhiteListEmailMenuButton"},
-                    {text: 'Domain  list', actionId: "autoWhiteListDomainMenuButton"}
+                    {text:  Greyface.tools.Dictionary.translate("emailList"), actionId: "autoWhiteListEmailMenuButton"},
+                    {text:  Greyface.tools.Dictionary.translate("domainList"), actionId: "autoWhiteListDomainMenuButton"}
                 ]
             })
         },
         {
             xtype: 'splitbutton',
-            text: 'Whitelist',
+            text: Greyface.tools.Dictionary.translate("whitelist"),
             actionId: "whiteListSplitButton",
             icon: "resources/images/page_white.png",
             menu: new Ext.menu.Menu({
                 items: [
-                    {text: 'Email list', actionId: "whiteListEmailMenuButton"},
-                    {text: 'Domain  list', actionId: "whiteListDomainMenuButton"}
+                    {text:  Greyface.tools.Dictionary.translate("emailList"), actionId: "whiteListEmailMenuButton"},
+                    {text:  Greyface.tools.Dictionary.translate("domainList"), actionId: "whiteListDomainMenuButton"}
                 ]
             })
         },
         {
             xtype: 'splitbutton',
-            text: 'Blacklist',
+            text: Greyface.tools.Dictionary.translate("blacklist"),
             actionId: "blacklistSplitButton",
             icon: "resources/images/page_black.png",
             menu: new Ext.menu.Menu({
                 items: [
                     // these will render as dropdown menu items when the arrow is clicked:
-                    {text: 'Email list', actionId: "blacklistEmailMenuButton"},
-                    {text: 'Domain  list', actionId: "blacklistDomainMenuButton"}
+                    {text:  Greyface.tools.Dictionary.translate("emailList"), actionId: "blacklistEmailMenuButton"},
+                    {text:  Greyface.tools.Dictionary.translate("domainList"), actionId: "blacklistDomainMenuButton"}
                 ]
             })
         },
         {
             xtype: 'splitbutton',
-            text: 'User',
+            text: Greyface.tools.Dictionary.translate("user"),
             actionId: "userSplitButton",
             icon: "resources/images/user_go.png",
             menu: new Ext.menu.Menu({
                 items: [
-                    {text: 'User', actionId: "userAdminMenuButton"},
-                    {text: 'Aliases', actionId: "userAliasMenuButton"},
+                    {text:  Greyface.tools.Dictionary.translate("user"), actionId: "userAdminMenuButton"},
+                    {text:  Greyface.tools.Dictionary.translate("alias"), actionId: "userAliasMenuButton"}
                 ]
             })
         },
         {
             xtype: 'button',
-            text: 'Logout',
+            text: Greyface.tools.Dictionary.translate("logout"),
             actionId: "logoutButton",
             icon: "resources/images/door_in.png"
         },
@@ -74,7 +74,7 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
             editable: false,
             typeAhead:false,
             //store:languageStore,      // wire-up with the STORE
-            fieldLabel:"Language",      // Label that decorates the combo-box besides (left)
+            fieldLabel:Greyface.tools.Dictionary.translate("language"),      // Label that decorates the combo-box besides (left)
             labelAlign:"right",
             displayField:"language",    // the value that is shown
             valueField:"key",           // the underlying value of the item

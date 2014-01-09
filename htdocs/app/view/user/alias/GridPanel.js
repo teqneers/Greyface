@@ -2,7 +2,7 @@ Ext.define("Greyface.view.user.alias.GridPanel",{
     extend:"Ext.grid.GridPanel",
     xtype:"gf_userAliasPanel",
     actionId:"userAliasPanel",
-    title: "Alias",
+    title: Greyface.tools.Dictionary.translate("aliasManagement"),
     border:false,
     columns: [
         {
@@ -12,7 +12,7 @@ Ext.define("Greyface.view.user.alias.GridPanel",{
             items:[
                 {
                     icon: 'resources/images/delete.png',  // Use a URL in the icon config
-                    tooltip: 'Delete',
+                    tooltip: Greyface.tools.Dictionary.translate("delete"),
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
                         rec.deleteItem();
@@ -21,8 +21,8 @@ Ext.define("Greyface.view.user.alias.GridPanel",{
                 }
             ]
         },
-        {text: "Email alias",dataIndex:"email", autoSizeColumn:true},
-        {text: "Username", dataIndex:"username", autoSizeColumn:true}
+        {text: Greyface.tools.Dictionary.translate("alias"),dataIndex:"email", autoSizeColumn:true},
+        {text: Greyface.tools.Dictionary.translate("username"), dataIndex:"username", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {

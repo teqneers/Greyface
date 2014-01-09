@@ -2,7 +2,7 @@ Ext.define("Greyface.view.user.admin.SetUserPasswordWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_SetUserPasswordWindow",
     modal:true,
-    title: "Set new user password",
+    title: Greyface.tools.Dictionary.translate("setNewUserPassword"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,13 +19,13 @@ Ext.define("Greyface.view.user.admin.SetUserPasswordWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Password',
+                    fieldLabel: Greyface.tools.Dictionary.translate("password"),
                     name: 'password',
                     allowBlank: false,
                     inputType: 'password'
                 },
                 {
-                    fieldLabel: 'Retype password',
+                    fieldLabel: Greyface.tools.Dictionary.translate("retypePassword"),
                     name: 'retypePassword',
                     allowBlank: false,
                     inputType: 'password',
@@ -35,14 +35,14 @@ Ext.define("Greyface.view.user.admin.SetUserPasswordWindow",{
                         if (retypedPassword === password) {
                             return true;
                         } else {
-                            return "The retyped password differs to the password"
+                            return Greyface.tools.Dictionary.translate("retypePasswordError")
                         }
                     }
                 }
             ],
             buttons: [
                 {
-                    text: 'Set',
+                    text: Greyface.tools.Dictionary.translate("set"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

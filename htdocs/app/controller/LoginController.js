@@ -28,6 +28,7 @@
 
     // Login
     login: function() {
+        console.log("translate: " + Greyface.tools.Dictionary.translate("1"));
         var loginForm = this.getLoginForm().up("form");
         if (loginForm.isValid()) {
             loginForm.submit({

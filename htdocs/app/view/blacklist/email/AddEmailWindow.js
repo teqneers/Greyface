@@ -2,7 +2,7 @@ Ext.define("Greyface.view.blacklist.email.AddEmailWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_blacklistAddEmailWindow",
     modal:true,
-    title: "Add Email to Blacklist",
+    title: Greyface.tools.Dictionary.translate("blacklist") + ": " + Greyface.tools.Dictionary.translate("addEmail"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,7 +19,7 @@ Ext.define("Greyface.view.blacklist.email.AddEmailWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Email',
+                    fieldLabel: Greyface.tools.Dictionary.translate("email"),
                     name: 'email',
                     allowBlank: false,
                     vtype: 'email'
@@ -27,7 +27,7 @@ Ext.define("Greyface.view.blacklist.email.AddEmailWindow",{
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

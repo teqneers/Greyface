@@ -2,7 +2,7 @@ Ext.define("Greyface.view.whitelist.domain.AddDomainWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_whitelistAddDomainWindow",
     modal:true,
-    title: "Add Email to Whitelist",
+    title: Greyface.tools.Dictionary.translate("whitelist") + ": " + Greyface.tools.Dictionary.translate("addDomain"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,14 +19,14 @@ Ext.define("Greyface.view.whitelist.domain.AddDomainWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Domain',
+                    fieldLabel: Greyface.tools.Dictionary.translate("domain"),
                     name: 'domain',
                     allowBlank: false
                 }
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

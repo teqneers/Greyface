@@ -71,7 +71,7 @@ class UserAliasStore extends AbstractStore {
         // Determine the total rows number (respect WHERE-statement).
         $rowNumber = DataBase::getInstance()->queryArray("SELECT COUNT(*) as nr" . $fromStatement . $whereStatement)[0]["nr"];
 
-        return $query.new AjaxRowsResult($result, $rowNumber);
+        return new AjaxRowsResult($result, $rowNumber);
     }
 
     private function mapFilters($filters) {

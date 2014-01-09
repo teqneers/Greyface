@@ -2,7 +2,7 @@ Ext.define("Greyface.view.user.alias.AddAliasWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_AddUserWindow",
     modal:true,
-    title: "Create new user",
+    title: Greyface.tools.Dictionary.translate("addAlias"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,12 +19,12 @@ Ext.define("Greyface.view.user.alias.AddAliasWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Username',
+                    fieldLabel: Greyface.tools.Dictionary.translate("username"),
                     name: 'username',
                     allowBlank: false
                 },
                 {
-                    fieldLabel: 'Alias',
+                    fieldLabel: Greyface.tools.Dictionary.translate("alias"),
                     name: 'alias',
                     allowBlank: false,
                     vtype:'email'
@@ -32,7 +32,7 @@ Ext.define("Greyface.view.user.alias.AddAliasWindow",{
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

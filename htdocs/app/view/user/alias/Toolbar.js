@@ -7,7 +7,7 @@ Ext.define("Greyface.view.user.alias.Toolbar", {
         {
             xtype:"button",
             actionId:"userAliasToolbarAddAlias",
-            text:"Add alias",
+            text:Greyface.tools.Dictionary.translate("addAlias"),
             icon: "resources/images/user_add.png"
         },
         {
@@ -16,7 +16,7 @@ Ext.define("Greyface.view.user.alias.Toolbar", {
             multiselect:false,
             editable: false,
             typeAhead:false,
-            fieldLabel:"Filter by:",
+            fieldLabel:Greyface.tools.Dictionary.translate("filterBy"),
             labelAlign:"right",
             displayField: "username",
             valueField: "user_id",

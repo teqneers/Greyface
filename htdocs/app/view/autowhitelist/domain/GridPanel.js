@@ -2,7 +2,7 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
     extend:"Ext.grid.GridPanel",
     xtype:"gf_autoWhitelistDomainPanel",
     actionId:"autoWhitelistDomainPanel",
-    title: "Auto whitelist domains",
+    title: Greyface.tools.Dictionary.translate("autoWhitelist") + ": " + Greyface.tools.Dictionary.translate("domains"),
     border:false,
     columns: [
         {
@@ -12,7 +12,7 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
             items:[
                 {
                     icon: 'resources/images/delete.png',  // Use a URL in the icon config
-                    tooltip: 'Delete',
+                    tooltip: Greyface.tools.Dictionary.translate("delete"),
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
                         rec.deleteItem();
@@ -21,10 +21,10 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
                 }
             ]
         },
-        {text: "Domain", dataIndex:"sender_domain", autoSizeColumn:true},
-        {text: "Source", dataIndex:"src", autoSizeColumn:true},
-        {text: "First seen", dataIndex:"first_seen", autoSizeColumn:true},
-        {text: "Last seen", dataIndex:"last_seen", autoSizeColumn:true}
+        {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
+        {text: Greyface.tools.Dictionary.translate("source"), dataIndex:"src", autoSizeColumn:true},
+        {text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
+        {text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {

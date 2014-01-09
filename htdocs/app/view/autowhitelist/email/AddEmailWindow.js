@@ -2,7 +2,7 @@ Ext.define("Greyface.view.autowhitelist.email.AddEmailWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_autowhitelistAddEmailWindow",
     modal:true,
-    title: "Add Email to Auto whitelist",
+    title: Greyface.tools.Dictionary.translate("autoWhitelist") + ": " + Greyface.tools.Dictionary.translate("addEmail"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,26 +19,26 @@ Ext.define("Greyface.view.autowhitelist.email.AddEmailWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Sender',
+                    fieldLabel: Greyface.tools.Dictionary.translate("sender"),
                     name: 'sender',
                     allowBlank: false
                 },
                 {
-                    fieldLabel: 'Domain',
+                    fieldLabel: Greyface.tools.Dictionary.translate("domain"),
                     name: 'domain',
                     allowBlank: false
                 },
                 {
-                    fieldLabel: 'Source',
+                    fieldLabel: Greyface.tools.Dictionary.translate("source"),
                     name: 'source',
                     allowBlank: false,
-                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/,
-                    regexText: "Should be a valid IPv4/6 address"
+                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/, //@TODO replace with reusable vtype!
+                    regexText: Greyface.tools.Dictionary.translate("hasToBeValidIp4/6")
                 }
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){

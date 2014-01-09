@@ -2,7 +2,7 @@ Ext.define("Greyface.view.blacklist.email.GridPanel",{
     extend:"Ext.grid.GridPanel",
     xtype:"gf_blacklistEmailPanel",
     actionId:"blacklistEmailPanel",
-    title: "Blacklist email",
+    title: Greyface.tools.Dictionary.translate("blacklist") + ": " + Greyface.tools.Dictionary.translate("email"),
     border:false,
     columns: [
         {
@@ -12,7 +12,7 @@ Ext.define("Greyface.view.blacklist.email.GridPanel",{
             items:[
                 {
                     icon: 'resources/images/delete.png',  // Use a URL in the icon config
-                    tooltip: 'Delete',
+                    tooltip: Greyface.tools.Dictionary.translate("delete"),
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
                         rec.deleteItem();
@@ -21,7 +21,7 @@ Ext.define("Greyface.view.blacklist.email.GridPanel",{
                 }
             ]
         },
-        {text: "Email",dataIndex:"email", autoSizeColumn:true}
+        {text: Greyface.tools.Dictionary.translate("email"),dataIndex:"email", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {

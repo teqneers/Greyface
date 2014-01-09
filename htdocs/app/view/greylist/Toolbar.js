@@ -7,7 +7,7 @@ Ext.define("Greyface.view.greylist.Toolbar", {
         {
             xtype:"button",
             actionId:"greylistToolbarDeleteEntriesByTime",
-            text:"Delete entries by time",
+            text: Greyface.tools.Dictionary.translate("deleteEntriesByTime"),
             icon: "resources/images/clock_delete.png"
         },
         {
@@ -16,7 +16,7 @@ Ext.define("Greyface.view.greylist.Toolbar", {
             multiselect:false,
             editable: false,
             typeAhead:false,
-            fieldLabel:"Filter by:",
+            fieldLabel:Greyface.tools.Dictionary.translate("filterBy"),
             labelAlign:"right",
             displayField: "username",
             valueField: "user_id",
@@ -27,7 +27,7 @@ Ext.define("Greyface.view.greylist.Toolbar", {
             actionId:"greylistToolbarFulltext",
             name:"greylistToolbarFulltext",
             emptyText:"search value...",
-            fieldLabel:"Fulltext:",
+            fieldLabel:Greyface.tools.Dictionary.translate("fulltextSearch"),
             labelAlign:"right",
             enableKeyEvents:true
         },

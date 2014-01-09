@@ -7,15 +7,15 @@ Ext.define("Greyface.view.user.admin.Toolbar", {
         {
             xtype:"button",
             actionId:"userAdminAddUser",
-            text:"Add user",
+            text:Greyface.tools.Dictionary.translate("addUser"),
             icon: "resources/images/user_add.png"
         },
         {
             xtype:"textfield",
             actionId:"userAdminToolbarSearchForUser",
             name:"userAdminToolbarSearchForUser",
-            emptyText:"search value...",
-            fieldLabel:"Search for user:",
+            emptyText:Greyface.tools.Dictionary.translate("searchValue"),
+            fieldLabel:Greyface.tools.Dictionary.translate("searchUser"),
             labelAlign:"right",
             enableKeyEvents:true
         },

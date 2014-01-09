@@ -2,7 +2,8 @@ Ext.application({
     name: "Greyface",
     appFolder: "app",
     requires: [
-        "Greyface.tools.Registry"
+        "Greyface.tools.Registry",
+        "Greyface.tools.Dictionary"
     ],
     controllers: [
         "LoginController",

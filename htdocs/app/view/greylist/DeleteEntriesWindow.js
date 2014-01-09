@@ -3,7 +3,7 @@ Ext.define("Greyface.view.greylist.DeleteEntriesWindow",{
     xtype:"gf_greylistDeleteEntriesWindow",
     modal:true,
 //    actionId:"",
-    title: "Delete Entries by Date",
+    title: Greyface.tools.Dictionary.translate("deleteEntriesByTime"),
     resizable:false,
     layout:"fit",
     config: {
@@ -23,13 +23,13 @@ Ext.define("Greyface.view.greylist.DeleteEntriesWindow",{
                     xtype:"text",
                     anchor: "100%",
                     padding:"20 20 10 20",
-                    text:'All entrys from the past to the selected date will be deleted!'
+                    text:Greyface.tools.Dictionary.translate("deleteEntriesByTimeDescription")
                 },
                 {
                     xtype:"datefield",
                     actionId:"greylistDeleteToDate",
                     name:"to_date",
-                    fieldLabel: 'To',
+                    fieldLabel: Greyface.tools.Dictionary.translate("to:"),
                     anchor: "100%",
                     padding:"10 20 20 20",
                     value: new Date()
@@ -40,7 +40,7 @@ Ext.define("Greyface.view.greylist.DeleteEntriesWindow",{
     ],
     buttons: [
         {
-            text: 'Delete',
+            text:Greyface.tools.Dictionary.translate("delete"),
             handler: function(){
                 var datefield = Ext.ComponentQuery.query("datefield[actionId=greylistDeleteToDate]")[0];
                 var value = datefield.getValue();

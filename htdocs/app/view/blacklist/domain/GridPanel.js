@@ -2,7 +2,7 @@ Ext.define("Greyface.view.blacklist.domain.GridPanel",{
     extend:"Ext.grid.GridPanel",
     xtype:"gf_blacklistDomainPanel",
     actionId:"blacklistDomainPanel",
-    title: "Blacklist domains",
+    title: Greyface.tools.Dictionary.translate("blacklist") + ": " + Greyface.tools.Dictionary.translate("domains"),
     border:false,
     columns: [
         {
@@ -12,7 +12,7 @@ Ext.define("Greyface.view.blacklist.domain.GridPanel",{
             items:[
                 {
                     icon: 'resources/images/delete.png',  // Use a URL in the icon config
-                    tooltip: 'Delete',
+                    tooltip: Greyface.tools.Dictionary.translate("delete"),
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
                         rec.deleteItem();
@@ -21,7 +21,7 @@ Ext.define("Greyface.view.blacklist.domain.GridPanel",{
                 }
             ]
         },
-        {text: "Domain",dataIndex:"domain", autoSizeColumn:true}
+        {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"domain", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {

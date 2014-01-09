@@ -7,15 +7,15 @@ Ext.define("Greyface.view.blacklist.domain.Toolbar", {
         {
             xtype:"button",
             actionId:"blacklistToolbarAddDomain",
-            text:"Add domain",
+            text:Greyface.tools.Dictionary.translate("addDomain"),
             icon: "resources/images/domain_add.png"
         },
         {
             xtype:"textfield",
             actionId:"blacklistToolbarSearchForDomain",
             name:"blacklistToolbarSearchForDomain",
-            emptyText:"search value...",
-            fieldLabel:"Search for domain:",
+            emptyText:Greyface.tools.Dictionary.translate("searchValue"),
+            fieldLabel:Greyface.tools.Dictionary.translate("searchDomain"),
             labelAlign:"right",
             enableKeyEvents:true
         },

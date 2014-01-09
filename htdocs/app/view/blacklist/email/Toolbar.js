@@ -7,15 +7,15 @@ Ext.define("Greyface.view.blacklist.email.Toolbar", {
         {
             xtype:"button",
             actionId:"blacklistToolbarAddEmail",
-            text:"Add Email",
+            text:Greyface.tools.Dictionary.translate("addEmail"),
             icon: "resources/images/email_add.png"
         },
         {
             xtype:"textfield",
             actionId:"blacklistToolbarSearchForEmail",
             name:"blacklistToolbarSearchForEmail",
-            emptyText:"search value...",
-            fieldLabel:"Search for email:",
+            emptyText:Greyface.tools.Dictionary.translate("searchValue"),
+            fieldLabel:Greyface.tools.Dictionary.translate("SearchEmail"),
             labelAlign:"right",
             enableKeyEvents:true
         },

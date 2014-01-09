@@ -2,7 +2,7 @@ Ext.define("Greyface.view.autowhitelist.domain.AddDomainWindow",{
     extend:"Ext.window.Window",
     xtype:"gf_autowhitelistAddDomainWindow",
     modal:true,
-    title: "Add Domain to Auto whitelist",
+    title: Greyface.tools.Dictionary.translate("autoWhitelist") + ": " + Greyface.tools.Dictionary.translate("addDomain"),
     resizable:false,
     layout:"fit",
     config: {
@@ -19,21 +19,21 @@ Ext.define("Greyface.view.autowhitelist.domain.AddDomainWindow",{
             defaultType: 'textfield',
             items: [
                 {
-                    fieldLabel: 'Domain',
+                    fieldLabel: Greyface.tools.Dictionary.translate("domain"),
                     name: 'domain',
                     allowBlank: false
                 },
                 {
-                    fieldLabel: 'Source',
+                    fieldLabel: Greyface.tools.Dictionary.translate("source"),
                     name: 'source',
                     allowBlank: false,
-                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/,
+                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/, //@TODO replace with reusable vtype!
                     regexText: "Should be a valid IPv4/6 address"
                 }
             ],
             buttons: [
                 {
-                    text: 'Add',
+                    text: Greyface.tools.Dictionary.translate("add"),
                     formBind: true,
                     disabled: true,
                     handler: function(){
