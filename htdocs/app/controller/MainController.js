@@ -1,7 +1,9 @@
 ﻿Ext.define("Greyface.controller.MainController", {
     requires: [],
     extend: "Ext.app.Controller",
-    refs: [],
+    refs: [
+        { ref: "languageSelector", selector: "splitbutton[actionId=languageSelectorMain]" }
+    ],
     views: ["MainScreen"],
 
     init: function () {
@@ -96,7 +98,14 @@
                 }
             },
 
-            "combobox[actionId=comboBoxLanguage]": {}
+            // Language selector
+            "menu[actionId=languageSelectorMenuMain]": {
+                click: function(menu, item, e, eOpts) {
+                    this.getLanguageSelector().setText(item.text);
+                    this.getLanguageSelector().setIcon(item.icon);
+                    location.replace("index.php?language="+item.languageKey);
+                }
+            }
         });
     },
 

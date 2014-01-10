@@ -88,32 +88,54 @@ Ext.define("Greyface.tools.Dictionary",{
         // w
         {key:"whitelist", en:"Whitelist"}
     ],
-    language: "de",
-    defaultLaguage:"en",
-    supportedLang: ("en", "de"),
-    exists: function($key) {
-        var result = this.get($key);
+    supportedLanguage: [
+        {key:"en", name:"English"},
+        {key:"de", name:"Deutsch"}
+    ],
+    // @TODO: configure time/date formattings here for language specific time formats.
+    exists: function(key) {
+        var result = this.get(key);
         if (result == null) {
             return false;
         } else {
             return true;
         }
     },
-    setLanguage: function($lang) {
-        if (this.supportedLang.indexOf($lang) != -1) {
-            this.language = $lang;
-        }
+    getLanguage: function() {
+        return Detect.getLanguage();
     },
-    translate: function($key) {
-        var row = this.findExact("key", $key);
+    getLanguageName: function() {
+        return this.getLanguageNameForKey(Detect.getLanguage());
+    },
+    getDefaultLanguage: function() {
+        return Detect.getDefaultLanguage();
+    },
+    translate: function(key) {
+        var row = this.findExact("key", key);
         if (row == -1) {
             return null;
         } else {
-            if( "" == this.getAt(row).get(this.language) ) {
-                return this.getAt(row).get(this.defaultLaguage);
+            if( "undefined" === typeof this.getAt(row).get(Detect.getLanguage()) ) {
+                return this.getAt(row).get(Detect.getDefaultLanguage());
             } else {
-                return this.getAt(row).get(this.language);
+                return this.getAt(row).get(Detect.getLanguage());
             }
         }
+    },
+    getLanguageItems: function() {
+        var langItems = [];
+        this.supportedLanguage.forEach(function(lang){
+            langItems.push({icon: "resources/language/"+lang.key+".png", text: lang.name, languageKey: lang.key});
+        });
+        return langItems;
+    },
+    getLanguageNameForKey: function(key) {
+        var name=""
+        this.supportedLanguage.forEach(function(lang){
+            if (lang.key == key) {
+                name=lang.name;
+            }
+        });
+        return name;
     }
 });

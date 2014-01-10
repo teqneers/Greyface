@@ -3,7 +3,9 @@
     refs: [
         { ref: "userName", selector: "gf_login textfield[actionId=usernametext]" },
         { ref: "password", selector: "gf_login textfield[actionId=passwordtext]" },
-        { ref: "loginForm", selector: "panel[actionId=loginForm]" }
+        { ref: "loginForm", selector: "panel[actionId=loginForm]" },
+        { ref: "languageSelector", selector: "splitbutton[actionId=languageSelector]" }
+
     ],
     views: ["LoginScreen"],
 
@@ -16,6 +18,15 @@
             // Login button
             "gf_login button[actionId=loginButton]": {
                 click: this.login
+            },
+
+            // Language selector
+            "gf_login menu[actionId=languageSelectorMenu]": {
+                click: function(menu, item, e, eOpts) {
+                    this.getLanguageSelector().setText(item.text);
+                    this.getLanguageSelector().setIcon(item.icon);
+                    location.replace("index.php?language="+item.languageKey);
+                }
             }
         })
     },
@@ -28,7 +39,6 @@
 
     // Login
     login: function() {
-        console.log("translate: " + Greyface.tools.Dictionary.translate("1"));
         var loginForm = this.getLoginForm().up("form");
         if (loginForm.isValid()) {
             loginForm.submit({

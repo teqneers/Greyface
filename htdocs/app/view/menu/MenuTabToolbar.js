@@ -68,36 +68,17 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
         },
         '->',
         {
-            xtype:"combo",
-            actionId:"comboBoxLanguage",
-            multiselect:false,
-            editable: false,
-            typeAhead:false,
-            //store:languageStore,      // wire-up with the STORE
-            fieldLabel:Greyface.tools.Dictionary.translate("language"),      // Label that decorates the combo-box besides (left)
-            labelAlign:"right",
-            displayField:"language",    // the value that is shown
-            valueField:"key",           // the underlying value of the item
-            queryMode: "local",
-            queryCaching:true,
-            enableKeyEvents:false,
-            listeners:{
-                change: function(combo, newValue, oldValue){
-                    console.log("CHANGE");
-                    console.log("Old Value: " + oldValue);
-                    console.log("New Value: " + newValue);
-                },
-                select: function(combo, records, eOpts){
-                    console.log("SELECT");
-                    console.log(records[0].get("language"));
-                },
-                expand: function(field, eOpts){
-                    console.log("EXPAND");
-                    console.log(field);
-                    field.reset();
-                },
-                dirtychange: function(combo, isDirty, eOpts ){
-                    console.log("DIRTYCHANGE");
+            xtype: "splitbutton",
+            text: Greyface.tools.Dictionary.getLanguageName(),
+            actionId: "languageSelectorMain",
+            icon: "resources/language/"+Greyface.tools.Dictionary.getLanguage()+".png",
+            menu: new Ext.menu.Menu({
+                actionId: "languageSelectorMenuMain",
+                items: Greyface.tools.Dictionary.getLanguageItems()
+            }),
+            listeners: {
+                click: function(cmp){
+                    cmp.showMenu()
                 }
             }
         }

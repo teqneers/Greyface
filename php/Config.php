@@ -9,7 +9,9 @@ class Config {
     private $db_hostname;
     private $db_username;
     private $db_password;
-    private $db_Name;
+    private $db_name;
+
+    private $application_name = "Greyface";
 
     /**
      * @var Singleton instance
@@ -47,7 +49,7 @@ class Config {
         $this->db_hostname = $ini_array["mySQLData"]["hostname"];
         $this->db_username = $ini_array["mySQLData"]["username"];
         $this->db_password = $ini_array["mySQLData"]["password"];
-        $this->db_Name   = $ini_array["mySQLData"]["dbName"];
+        $this->db_name   = $ini_array["mySQLData"]["dbName"];
     }
 
     public function getHostname() {
@@ -66,6 +68,6 @@ class Config {
 
     public function getDbName()
     {
-        return $this->db_Name;
+        return $this->db_name;
     }
-} 
+}

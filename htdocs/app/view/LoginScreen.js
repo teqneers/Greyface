@@ -49,16 +49,40 @@
                     actionId: "rememberLogin",
                     fieldLabel: Greyface.tools.Dictionary.translate("rememberMe"),
                     checked:false,
-                    margin:"10 10 0 10"
-                },
+                    margin:"10 10 20 10"
+                }
+            ],
+            dockedItems: [
                 {
-                    xtype: "button",
-                    text: Greyface.tools.Dictionary.translate("login"),
-                    actionId: "loginButton",
-                    disabled:true,
-                    formBind:true,
-                    align:"right",
-                    margin:"10 10 10 10"
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    items: [
+                        "->",
+                        {
+                            xtype: "splitbutton",
+                            text: Greyface.tools.Dictionary.getLanguageName(),
+                            actionId: "languageSelector",
+                            icon: "resources/language/"+Greyface.tools.Dictionary.getLanguage()+".png",
+                            menu: new Ext.menu.Menu({
+                                actionId: "languageSelectorMenu",
+                                items: Greyface.tools.Dictionary.getLanguageItems()
+                            }),
+                            listeners: {
+                                click: function(cmp){
+                                    cmp.showMenu()
+                                }
+                            }
+                        },
+                        {
+                            xtype: "button",
+                            text: Greyface.tools.Dictionary.translate("login"),
+                            actionId: "loginButton",
+                            icon: "resources/images/door_in.png",
+                            disabled:true,
+                            formBind:true,
+                            align:"right"
+                        }
+                    ]
                 }
             ]
         }
