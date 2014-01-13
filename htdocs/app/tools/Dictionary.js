@@ -102,23 +102,23 @@ Ext.define("Greyface.tools.Dictionary",{
         }
     },
     getLanguage: function() {
-        return Detect.getLanguage();
+        return LanguageDetect.getLanguage();
     },
     getLanguageName: function() {
-        return this.getLanguageNameForKey(Detect.getLanguage());
+        return this.getLanguageNameForKey(LanguageDetect.getLanguage());
     },
     getDefaultLanguage: function() {
-        return Detect.getDefaultLanguage();
+        return LanguageDetect.getDefaultLanguage();
     },
     translate: function(key) {
         var row = this.findExact("key", key);
         if (row == -1) {
             return null;
         } else {
-            if( "undefined" === typeof this.getAt(row).get(Detect.getLanguage()) ) {
-                return this.getAt(row).get(Detect.getDefaultLanguage());
+            if( "undefined" === typeof this.getAt(row).get(LanguageDetect.getLanguage()) ) {
+                return this.getAt(row).get(LanguageDetect.getDefaultLanguage());
             } else {
-                return this.getAt(row).get(Detect.getLanguage());
+                return this.getAt(row).get(LanguageDetect.getLanguage());
             }
         }
     },

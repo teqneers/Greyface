@@ -1,8 +1,12 @@
-var Detect = new function() {
-    this.language = "apple";
-    this.defaultLanguage = "apple";
+var LanguageDetect = new function() {
+    this.language = "";
+    this.defaultLanguage = "en";
     this.getLanguage = function () {
-        return this.language;
+        if (this.language == "") {
+            return this.defaultLanguage;
+        } else {
+            return this.language;
+        }
     };
     this.getDefaultLanguage = function () {
         return this.defaultLanguage;
@@ -19,4 +23,4 @@ var Detect = new function() {
         });
     };
 }
-Detect.detectLanguage();
+LanguageDetect.detectLanguage();
