@@ -36,7 +36,7 @@ Ext.define("Greyface.tools.Dictionary",{
 
         // f
         {key:"firstSeen", en:"First Seen", de:"Erstmals Gesichtet"},
-        {key:"filterBy", en:"Filter by:", en:"Filter nach:"},
+        {key:"filterBy", en:"Filter by:", de:"Filter nach:"},
         {key:"fulltextSearch", en:"Fulltext search:", de:"Volltextsuche:"},
 
         // g
@@ -67,7 +67,7 @@ Ext.define("Greyface.tools.Dictionary",{
         {key:"sender", en:"Sender", de:"Sender"},
         {key:"set", en:"Set", de:"Zuweisen"},
         {key:"searchDomain", en:"Search for domain:", de:"Domäne suchen:"},
-        {key:"searchMail", en:"Search for email:", de:"Email suchen:"},
+        {key:"searchEmail", en:"Search for email:", de:"Email suchen:"},
         {key:"searchUser", en:"Search for user:", de:"Benutzer suchen:"},
         {key:"searchValue", en:"search value...", de:"Suchwert..."},
         {key:"sendEmail", en:"Send email", de:"Sende Email"},
@@ -113,9 +113,9 @@ Ext.define("Greyface.tools.Dictionary",{
     translate: function(key) {
         var row = this.findExact("key", key);
         if (row == -1) {
-            return null;
+            return "";
         } else {
-            if( "undefined" === typeof this.getAt(row).get(LanguageDetect.getLanguage()) ) {
+            if( "" == this.getAt(row).get(LanguageDetect.getLanguage()) ) {
                 return this.getAt(row).get(LanguageDetect.getDefaultLanguage());
             } else {
                 return this.getAt(row).get(LanguageDetect.getLanguage());

@@ -14,12 +14,12 @@
 class Login {
 
     /**
-     * @var Singleton instance
+     * @var Login Singleton instance
      */
     private static $instance = null;
 
     /**
-     * @var The dataBase connection instance.
+     * @var DataBase|null The dataBase connection instance.
      */
     private $dataBase = null;
 
@@ -27,6 +27,13 @@ class Login {
      * @var Instance of login result
      */
     private $loginResult = null;
+
+    /**
+     * Successfully logged-in user instance
+     *
+     * @var User|null
+     */
+    private $loggedInUser = null;
 
 
 
@@ -45,7 +52,8 @@ class Login {
     }
 
     /**
-     * Singleton getInstance method.
+     * Singleton getInstance method
+     *
      * @return Login|Singleton
      */
     public static function getInstance(){
@@ -56,8 +64,9 @@ class Login {
     }
 
     /**
-     * Trys to authenticate the user.
-     * @return LoginResult object
+     * Trys to authenticate the user
+     *
+     * @return LoginResult - instance of LoginResult with the result of login attempt
      */
     public function login(){
         session_start();
@@ -74,6 +83,7 @@ class Login {
                     $_SESSION["greyFaceLogin"] = $sessionString;                                                        // Write to SESSION[]
                     $user->setSession($sessionString);                                                                  // Write session id to database
 
+                    $this->setLoggedInUser($user);
                     // checks if remember me cookie should be saved
                     if( isset($_POST["rememberLogin"]) && $_POST["rememberLogin"] == "on") {
                         setcookie("greyFaceRememberMe", $user->createAndSaveCookie(), time()+31557600);                 // creates a cookie which expires in 1 year
@@ -104,6 +114,7 @@ class Login {
             if ($user->isUserExisting()) {
                 if($user->hasCookieInDB()) {
                     if($user->getCookie() == $_COOKIE["greyFaceRememberMe"]) {
+
                         return $this->setLoginResult(new LoginResult(true, "User recognized with cookie", $user));
                     }
                 }
@@ -117,7 +128,10 @@ class Login {
     }
 
     /**
+     * Logout
+     *
      * Destroys the session and clears the $_SESSION array.
+     * @return LoginResult
      */
     public function logout(){
         $_SESSION[] = array();
@@ -130,6 +144,8 @@ class Login {
     }
 
     /**
+     * Sets the LoginResult
+     *
      * @return LoginResult
      */
     public function getLoginResult()
@@ -138,13 +154,31 @@ class Login {
     }
 
     /**
+     * Gets the successfully logged-in user instance
+     *
+     * @return User|null
+     */
+    public function getLoggedInUser() {
+        return $this->loggedInUser;
+    }
+
+    /**
      * Sets the LoginResult and RETURNS the assigned LoginResult BACK!
-     * @param $loginResult
-     * @return mixed
+     * @param LoginResult instance with status of login
+     * @return LoginResult
      */
     private function setLoginResult($loginResult) {
         $this->loginResult = $loginResult;
         return $loginResult;
+    }
+
+    /**
+     * Sets the successfully logged-in user instance
+     *
+     * @param $user
+     */
+    private function setLoggedInUser($user) {
+        $this->loggedInUser = $user;
     }
 
 }

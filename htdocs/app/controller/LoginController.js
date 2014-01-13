@@ -43,7 +43,8 @@
         if (loginForm.isValid()) {
             loginForm.submit({
                 success: function(form, action) {
-                    console.log('Success',  action.result.msg);
+                    console.log(action.result)
+                    Greyface.tools.User.setUser(action.result.usr);
                     this.createMainScreen();
                     this.showMainScreen();
                 },
@@ -60,6 +61,7 @@
             success: function(response, opts) {
                 var decResponse = Ext.decode(response.responseText);
                 console.log(decResponse)
+                Greyface.tools.User.setUser(decResponse.usr);
                 if(decResponse.success == true) {
                     this.createMainScreen();
                     this.showMainScreen();
@@ -87,6 +89,7 @@
         if(this.getIsMainCreated()) {
             this.application.viewport.getLayout().setActiveItem(1);
         }
+        Greyface.tools.User.configureUserDependentLayout();
     },
     showLoginScreen: function() {
         this.application.viewport.getLayout().setActiveItem(0);

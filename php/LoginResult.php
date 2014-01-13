@@ -39,7 +39,7 @@ class LoginResult {
      */
     public function getResult()
     {
-        return ($this->result)?true:false;
+        return $this->result;
     }
 
     public function getResultString() {
