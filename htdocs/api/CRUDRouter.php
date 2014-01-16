@@ -41,6 +41,7 @@ require "../../php/requestFilters/UsernameFilter.php";
 require "../../php/requestFilters/CreateUserFilter.php";
 require "../../php/requestFilters/CreateAliasFilter.php";
 require "../../php/requestFilters/DeleteAliasFilter.php";
+require "../../php/requestFilters/ChangeUserPasswordFilter.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -59,14 +60,14 @@ if($loginResult->getResult()) {
     $store = $_GET["store"];
     $action = $_GET["action"];
 
-    echo dispatch($store, $action);
+    echo dispatch($store, $action, $loginResult->getUser());
     return;
 } else {
     echo new AjaxResult(false, $loginResult->getMsg());
     return;
 }
 
-function dispatch($store, $action) {
+function dispatch($store, $action, User $user) {
 
     $request = ReadRequestFilter::getInstance();
 
@@ -272,7 +273,20 @@ function dispatch($store, $action) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "setPassword":
-                    return new AjaxResult(true, "set password...");
+                    $changeUserRequest = ChangeUserPasswordFilter::getInstance();
+                    if($changeUserRequest->isTupelComplete()) {
+                        if($user->getUsername() == $changeUserRequest->getUsername() || $user->isAdmin()){
+                            $userObject = User::getUserByName($changeUserRequest->getUsername());
+                            if($user->isUserExisting()) {
+                                $success = $user->setPassword($changeUserRequest->getPassword());
+                                return new AjaxResult($success, "Tryed to set password");
+                            }
+                        } else {
+                            return new AjaxResult(false, 'not allowed...');
+                        }
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }

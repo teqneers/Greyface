@@ -179,6 +179,19 @@ class User {
         return $this->cookie = $cookieHash;
     }
 
+    public function setPassword($password) {
+        if(empty($password)) {
+            return false;
+        } else {
+            $res = DataBase::getInstance()->queryAffect(
+                "UPDATE tq_user"
+                ." SET password = '".$this->encryptPassword($password)."'"
+                ." WHERE user_id = '".$this->user_id."'"
+            );
+            return true;
+        }
+    }
+
     public function unsetCookie() {
         $this->setCookie("");
         return true;
