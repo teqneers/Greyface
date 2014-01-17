@@ -309,7 +309,7 @@ Ext.define("Ext.locale.de.grid.NumberColumn", {
 
 Ext.define("Ext.locale.de.grid.DateColumn", {
     override: "Ext.grid.DateColumn",
-    format: 'd.m.Y'
+    format: 'd.m.Y - H:i:s'
 });
 
 Ext.define("Ext.locale.de.form.field.Time", {

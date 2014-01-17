@@ -4,8 +4,18 @@ Ext.define("Greyface.model.AutoWhitelistEmailModel",{
         "sender_name",
         "sender_domain",
         "src",
-        "first_seen",
-        "last_seen"
+        {
+            name: "first_seen",
+            type: "date",
+            dateReadFormat: "Y-m-d H:i:s",
+            dateWriteFormat: "timestamp"
+        },
+        {
+            name: "last_seen",
+            type: "date",
+            dateReadFormat: "Y-m-d H:i:s",
+            dateWriteFormat: "timestamp"
+        }
     ],
 
     deleteItem: function() {

@@ -23,8 +23,8 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
         },
         {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
         {text: Greyface.tools.Dictionary.translate("source"), dataIndex:"src", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
+        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
+        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {
