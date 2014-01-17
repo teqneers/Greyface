@@ -1,10 +1,4 @@
-+======================================================================================================================+
-|                                                   GREYFACE2                                                          |
-+======================================================================================================================+
-
-
-
-ABSTRACT
+GREYFACE
 ========
 
 Greyface is an open source AJAX based web interface to SQLGrey, a greylisting policy daemon for the Postfix MTA.
@@ -45,13 +39,15 @@ The user management of Greyface provides two user roles: system administrators a
 This does not only guarantee highest privacy but also easy editing their emails.
 System administrators have full access to the system. These include the following points:
 
-    #WHITELIST: The whitelist determines which emails shall be forwarded without permission of the recipient.
+    -WHITELIST: The whitelist determines which emails shall be forwarded without
+                permission of the recipient.
 
-    #BLACKLIST: The blacklist defines which e-mail addresses will be permanently blocked from the system.
+    -BLACKLIST: The blacklist defines which e-mail addresses will be permanently
+                blocked from the system.
 
-    #GREYLIST: The greylist includes all e-mails that are in the queue.
+    -GREYLIST: The greylist includes all e-mails that are in the queue.
 
-    #USER MANAGEMENT: New users can be added or edited by the user management functions.
+    -USER MANAGEMENT: New users can be added or edited by the user management functions.
                       E-mail addresses and aliases can be managed.
 
 Created users in the system have access to their greylist and have the opportunity to put emails directly to the
