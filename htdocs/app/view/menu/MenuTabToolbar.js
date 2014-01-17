@@ -68,6 +68,12 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
         },
         '->',
         {
+            xtype:"button",
+            text: Greyface.tools.Dictionary.translate("setNewUserPassword"),
+            actionId: "changePasswordButton",
+            icon:"resources/images/user_edit.png"
+        },
+        {
             xtype: "splitbutton",
             text: Greyface.tools.Dictionary.getLanguageName(),
             actionId: "languageSelectorMain",

@@ -43,5 +43,9 @@ Ext.define("Greyface.tools.User",{
         } else {
             this.showUserUi();
         }
+    },
+
+    getUserRecord: function() {
+        return Ext.create("Greyface.model.UserModel", { is_admin:this.getIsAdmin(), username:this.getUsername(), email:this.getEmail() });
     }
 });

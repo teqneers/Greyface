@@ -53,7 +53,7 @@ class ChangeUserPasswordFilter {
     }
 
     // Checks and Validates the tupel.
-    public function isTupelComplete() {
+    public function isComplete() {
         if ( !empty($this->username) && !empty($this->password) ) {
                 return true;
         }

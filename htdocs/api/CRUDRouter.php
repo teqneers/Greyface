@@ -67,7 +67,7 @@ if($loginResult->getResult()) {
     return;
 }
 
-function dispatch($store, $action, User $user) {
+function dispatch($store, $action, User $loggedInUser) {
 
     $request = ReadRequestFilter::getInstance();
 
@@ -82,20 +82,25 @@ function dispatch($store, $action, User $user) {
                     return $greylistEntriesDeleteToDate->isDateComplete() ? GreylistStore::getInstance()->deleteTo($greylistEntriesDeleteToDate->getDateTime()) : null;
                 case"delete":
                     $greylistDeleteEntry = GreyfaceEntryFilter::getInstance();
-                    return $greylistDeleteEntry->isTupelComplete() ? GreylistStore::getInstance()->delete($greylistDeleteEntry->getSenderName(), $greylistDeleteEntry->getDomainName(), $greylistDeleteEntry->getSource(), $greylistDeleteEntry->getRecipient() ) : null;
+                    return $greylistDeleteEntry->isComplete() ? GreylistStore::getInstance()->delete($greylistDeleteEntry->getSenderName(), $greylistDeleteEntry->getDomainName(), $greylistDeleteEntry->getSource(), $greylistDeleteEntry->getRecipient() ) : null;
                 case"toWhitelist":
                     $greylistToWhitelist = GreyfaceEntryFilter::getInstance();
-                    return $greylistToWhitelist->isTupelComplete() ? GreylistStore::getInstance()->toWhitelist($greylistToWhitelist->getSenderName(), $greylistToWhitelist->getDomainName(), $greylistToWhitelist->getSource(), $greylistToWhitelist->getRecipient() ) : null;
+                    return $greylistToWhitelist->isComplete() ? GreylistStore::getInstance()->toWhitelist($greylistToWhitelist->getSenderName(), $greylistToWhitelist->getDomainName(), $greylistToWhitelist->getSource(), $greylistToWhitelist->getRecipient() ) : null;
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "autoWhitelistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return AutoWhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addEmail":
                     $addEmailRequest = EmailAutoWhitelistFilter::getInstance();
-                    if ( $addEmailRequest->isTupelComplete() && $addEmailRequest->isValidIp() ) {
+                    if ( $addEmailRequest->isComplete() && $addEmailRequest->isValidIp() ) {
                         return AutoWhitelistEmailStore::getInstance()->addEmail(
                             $addEmailRequest->getSender(),
                             $addEmailRequest->getDomain(),
@@ -106,7 +111,7 @@ function dispatch($store, $action, User $user) {
                     }
                 case "delete":
                     $deleteEmailRequest = EmailAutoWhitelistFilter::getInstance();
-                    if ( $deleteEmailRequest->isTupelComplete() ) {
+                    if ( $deleteEmailRequest->isComplete() ) {
                         return AutoWhitelistEmailStore::getInstance()->deleteEmail(
                             $deleteEmailRequest->getSender(),
                             $deleteEmailRequest->getDomain(),
@@ -119,12 +124,17 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "autoWhitelistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  AutoWhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addDomain":
                     $addDomainRequest = DomainAutoWhitelistFilter::getInstance();
-                    if ( $addDomainRequest->isTupelComplete() ) {
+                    if ( $addDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->addDomain(
                             $addDomainRequest->getDomain(),
                             $addDomainRequest->getSource()
@@ -134,7 +144,7 @@ function dispatch($store, $action, User $user) {
                     }
                 case "delete":
                     $deleteDomainRequest = DomainAutoWhitelistFilter::getInstance();
-                    if ( $deleteDomainRequest->isTupelComplete() ) {
+                    if ( $deleteDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain(),
                             $deleteDomainRequest->getSource()
@@ -146,6 +156,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "whitelistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  WhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -171,6 +186,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "whitelistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  WhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -196,6 +216,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "blacklistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  BlacklistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -221,6 +246,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "blacklistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  BlacklistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -246,12 +276,17 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userAdminStore":
+
+            if(!$loggedInUser->isAdmin() && $action != "setPassword" ) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  UserAdminStore::getInstance()->getUsers($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addUser":
                     $addUserRequest = CreateUserFilter::getInstance();
-                    if ( $addUserRequest->isTupelComplete() ) {
+                    if ( $addUserRequest->isComplete() ) {
                         return UserAdminStore::getInstance()->addUser(
                             $addUserRequest->getUsername(),
                             $addUserRequest->getEmail(),
@@ -274,15 +309,15 @@ function dispatch($store, $action, User $user) {
                     }
                 case "setPassword":
                     $changeUserRequest = ChangeUserPasswordFilter::getInstance();
-                    if($changeUserRequest->isTupelComplete()) {
-                        if($user->getUsername() == $changeUserRequest->getUsername() || $user->isAdmin()){
+                    if($changeUserRequest->isComplete()) {
+                        if($loggedInUser->getUsername() == $changeUserRequest->getUsername() || $loggedInUser->isAdmin()){
                             $userObject = User::getUserByName($changeUserRequest->getUsername());
-                            if($user->isUserExisting()) {
-                                $success = $user->setPassword($changeUserRequest->getPassword());
+                            if($userObject->isUserExisting()) {
+                                $success = $userObject->setPassword($changeUserRequest->getPassword());
                                 return new AjaxResult($success, "Tryed to set password");
                             }
                         } else {
-                            return new AjaxResult(false, 'not allowed...');
+                            return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
                         }
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
@@ -291,6 +326,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userAliasStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  UserAliasStore::getInstance()->getAliases($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -317,6 +357,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userFilterStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "getGreylistFilter":
                     return UserAdminStore::getInstance()->getGreylistUserFilterOptions();

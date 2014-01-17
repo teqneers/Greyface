@@ -55,4 +55,11 @@ class AjaxResult {
     public static function getUnhandledActionMsg() {
         return "The requested action is not handled.";
     }
+
+    /**
+     * @return string - "The given data is incomplete"
+     */
+    public static function getAccessDeniedMsg() {
+        return "The access to this function has been denied.";
+    }
 } 
