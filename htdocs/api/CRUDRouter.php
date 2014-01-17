@@ -67,7 +67,7 @@ if($loginResult->getResult()) {
     return;
 }
 
-function dispatch($store, $action, User $user) {
+function dispatch($store, $action, User $loggedInUser) {
 
     $request = ReadRequestFilter::getInstance();
 
@@ -90,6 +90,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "autoWhitelistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return AutoWhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -119,6 +124,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "autoWhitelistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  AutoWhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -146,6 +156,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "whitelistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  WhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -171,6 +186,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "whitelistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  WhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -196,6 +216,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "blacklistEmailStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  BlacklistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -221,6 +246,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "blacklistDomainStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  BlacklistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -246,6 +276,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userAdminStore":
+
+            if(!$loggedInUser->isAdmin() && $action != "setPassword" ) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  UserAdminStore::getInstance()->getUsers($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -275,14 +310,14 @@ function dispatch($store, $action, User $user) {
                 case "setPassword":
                     $changeUserRequest = ChangeUserPasswordFilter::getInstance();
                     if($changeUserRequest->isComplete()) {
-                        if($user->getUsername() == $changeUserRequest->getUsername() || $user->isAdmin()){
+                        if($loggedInUser->getUsername() == $changeUserRequest->getUsername() || $loggedInUser->isAdmin()){
                             $userObject = User::getUserByName($changeUserRequest->getUsername());
-                            if($user->isUserExisting()) {
-                                $success = $user->setPassword($changeUserRequest->getPassword());
+                            if($userObject->isUserExisting()) {
+                                $success = $userObject->setPassword($changeUserRequest->getPassword());
                                 return new AjaxResult($success, "Tryed to set password");
                             }
                         } else {
-                            return new AjaxResult(false, 'not allowed...');
+                            return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
                         }
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
@@ -291,6 +326,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userAliasStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "read":
                     return  UserAliasStore::getInstance()->getAliases($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
@@ -317,6 +357,11 @@ function dispatch($store, $action, User $user) {
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
         case "userFilterStore":
+
+            if(!$loggedInUser->isAdmin()) {
+                return new AjaxResult(false, AjaxResult::getAccessDeniedMsg());
+            }
+
             switch ($action) {
                 case "getGreylistFilter":
                     return UserAdminStore::getInstance()->getGreylistUserFilterOptions();
