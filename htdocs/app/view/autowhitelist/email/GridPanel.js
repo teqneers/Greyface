@@ -25,8 +25,8 @@ Ext.define("Greyface.view.autowhitelist.email.GridPanel",{
         {text: "@", xtype:"templatecolumn", tpl:"@", width:20, align:"center"},
         {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
         {text: Greyface.tools.Dictionary.translate("source"), dataIndex:"src", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
+        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
+        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
     ],
     viewConfig: {
         listeners: {
