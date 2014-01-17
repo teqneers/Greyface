@@ -61,7 +61,7 @@ class GreyfaceEntryFilter {
         return $this->rcpt;
     }
 
-    public function isTupelComplete() {
+    public function isComplete() {
         if ( isset($this->senderName) && isset($this->domainName) && isset($this->src) && isset($this->rcpt) ) {
             return true;
         } else {

@@ -71,7 +71,7 @@ Ext.define("Greyface.tools.Dictionary",{
         {key:"searchUser", en:"Search for user:", de:"Benutzer suchen:"},
         {key:"searchValue", en:"search value...", de:"Suchwert..."},
         {key:"sendEmail", en:"Send email", de:"Sende Email"},
-        {key:"setNewUserPassword", en:"Set new user password", de:"Setze neues Benutzer-Passwort"},
+        {key:"setNewUserPassword", en:"Change password", de:"Ändere Benutzer-Passwort"},
         {key:"source", en:"Source", de:"Quelle"},
         {key:"statusAdmin", en:"Admin", de:"Administrator"},
         {key:"statusUser", en:"User", de:"Benutzer"},

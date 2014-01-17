@@ -82,10 +82,10 @@ function dispatch($store, $action, User $user) {
                     return $greylistEntriesDeleteToDate->isDateComplete() ? GreylistStore::getInstance()->deleteTo($greylistEntriesDeleteToDate->getDateTime()) : null;
                 case"delete":
                     $greylistDeleteEntry = GreyfaceEntryFilter::getInstance();
-                    return $greylistDeleteEntry->isTupelComplete() ? GreylistStore::getInstance()->delete($greylistDeleteEntry->getSenderName(), $greylistDeleteEntry->getDomainName(), $greylistDeleteEntry->getSource(), $greylistDeleteEntry->getRecipient() ) : null;
+                    return $greylistDeleteEntry->isComplete() ? GreylistStore::getInstance()->delete($greylistDeleteEntry->getSenderName(), $greylistDeleteEntry->getDomainName(), $greylistDeleteEntry->getSource(), $greylistDeleteEntry->getRecipient() ) : null;
                 case"toWhitelist":
                     $greylistToWhitelist = GreyfaceEntryFilter::getInstance();
-                    return $greylistToWhitelist->isTupelComplete() ? GreylistStore::getInstance()->toWhitelist($greylistToWhitelist->getSenderName(), $greylistToWhitelist->getDomainName(), $greylistToWhitelist->getSource(), $greylistToWhitelist->getRecipient() ) : null;
+                    return $greylistToWhitelist->isComplete() ? GreylistStore::getInstance()->toWhitelist($greylistToWhitelist->getSenderName(), $greylistToWhitelist->getDomainName(), $greylistToWhitelist->getSource(), $greylistToWhitelist->getRecipient() ) : null;
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -95,7 +95,7 @@ function dispatch($store, $action, User $user) {
                     return AutoWhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addEmail":
                     $addEmailRequest = EmailAutoWhitelistFilter::getInstance();
-                    if ( $addEmailRequest->isTupelComplete() && $addEmailRequest->isValidIp() ) {
+                    if ( $addEmailRequest->isComplete() && $addEmailRequest->isValidIp() ) {
                         return AutoWhitelistEmailStore::getInstance()->addEmail(
                             $addEmailRequest->getSender(),
                             $addEmailRequest->getDomain(),
@@ -106,7 +106,7 @@ function dispatch($store, $action, User $user) {
                     }
                 case "delete":
                     $deleteEmailRequest = EmailAutoWhitelistFilter::getInstance();
-                    if ( $deleteEmailRequest->isTupelComplete() ) {
+                    if ( $deleteEmailRequest->isComplete() ) {
                         return AutoWhitelistEmailStore::getInstance()->deleteEmail(
                             $deleteEmailRequest->getSender(),
                             $deleteEmailRequest->getDomain(),
@@ -124,7 +124,7 @@ function dispatch($store, $action, User $user) {
                     return  AutoWhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addDomain":
                     $addDomainRequest = DomainAutoWhitelistFilter::getInstance();
-                    if ( $addDomainRequest->isTupelComplete() ) {
+                    if ( $addDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->addDomain(
                             $addDomainRequest->getDomain(),
                             $addDomainRequest->getSource()
@@ -134,7 +134,7 @@ function dispatch($store, $action, User $user) {
                     }
                 case "delete":
                     $deleteDomainRequest = DomainAutoWhitelistFilter::getInstance();
-                    if ( $deleteDomainRequest->isTupelComplete() ) {
+                    if ( $deleteDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain(),
                             $deleteDomainRequest->getSource()
@@ -251,7 +251,7 @@ function dispatch($store, $action, User $user) {
                     return  UserAdminStore::getInstance()->getUsers($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addUser":
                     $addUserRequest = CreateUserFilter::getInstance();
-                    if ( $addUserRequest->isTupelComplete() ) {
+                    if ( $addUserRequest->isComplete() ) {
                         return UserAdminStore::getInstance()->addUser(
                             $addUserRequest->getUsername(),
                             $addUserRequest->getEmail(),
@@ -274,7 +274,7 @@ function dispatch($store, $action, User $user) {
                     }
                 case "setPassword":
                     $changeUserRequest = ChangeUserPasswordFilter::getInstance();
-                    if($changeUserRequest->isTupelComplete()) {
+                    if($changeUserRequest->isComplete()) {
                         if($user->getUsername() == $changeUserRequest->getUsername() || $user->isAdmin()){
                             $userObject = User::getUserByName($changeUserRequest->getUsername());
                             if($user->isUserExisting()) {

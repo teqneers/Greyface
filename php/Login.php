@@ -91,9 +91,9 @@ class Login {
                     }
                     return $this->setLoginResult(new LoginResult(true, "User is logged in.", $user));
                 }
-                return $this->setLoginResult(new LoginResult(false, "Password does not exist.", null));
+                return $this->setLoginResult(new LoginResult(false, "Invalid user/password.", null));
             }
-            return $this->setLoginResult(new LoginResult(false, "User does not exist.", null));
+            return $this->setLoginResult(new LoginResult(false, "Invalid user/password.", null));
         }
 
         // user is already in session

@@ -60,7 +60,7 @@ class EmailAutoWhitelistFilter {
 
     // Checks and Validates the tupel.
     // Also checks if the given IP-Address is in valid ipv4/ipv6 format - if its not it returns false!
-    public function isTupelComplete() {
+    public function isComplete() {
         if ( !empty($this->sender) && !empty($this->domain) && !empty($this->source) ) {
             return true;
         } else {
