@@ -78,7 +78,7 @@ class CreateUserFilter {
 
     // Checks and Validates the tupel.
     // Password can only be empty if isRandomizeEmail = true
-    public function isTupelComplete() {
+    public function isComplete() {
         if ( !empty($this->username) && !empty($this->email) ) {
             if (!empty($this->password)) {
                 return true;

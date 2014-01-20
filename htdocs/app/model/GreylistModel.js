@@ -5,7 +5,12 @@ Ext.define("Greyface.model.GreylistModel",{
         "sender_domain",
         "source",
         "alias_name",
-        "first_seen",
+        {
+            name: "first_seen",
+            type: "date",
+            dateReadFormat: "Y-m-d H:i:s",
+            dateWriteFormat: "timestamp"
+        },
         "username",
         "recipient"
     ],

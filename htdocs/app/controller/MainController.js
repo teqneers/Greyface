@@ -98,6 +98,16 @@
                 }
             },
 
+            // Change password
+            "button[actionId=changePasswordButton]": {
+                click: function() {
+                    var userRecord = Greyface.tools.User.getUserRecord();
+                    console.log(userRecord)
+                    Ext.create("Greyface.view.user.admin.SetUserPasswordWindow", {userRecord:userRecord}).show();
+                }
+
+            },
+
             // Language selector
             "menu[actionId=languageSelectorMenuMain]": {
                 click: function(menu, item, e, eOpts) {

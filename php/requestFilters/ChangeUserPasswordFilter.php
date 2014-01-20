@@ -6,10 +6,10 @@
  * Time: 12:15
  */
 
-class DomainAutoWhitelistFilter {
+class ChangeUserPasswordFilter {
 
-    private $domain = null;
-    private $source = null;
+    private $username = null;
+    private $password = null;
 
     /**
      * @var Singleton instance
@@ -32,7 +32,7 @@ class DomainAutoWhitelistFilter {
 
     /**
      * Singleton getInstance method.
-     * @return DomainAutoWhitelistFilter|Singleton
+     * @return ChangeUserPasswordFilter|Singleton
      */
     public static function getInstance(){
         if(!isset(self::$instance)){
@@ -41,29 +41,28 @@ class DomainAutoWhitelistFilter {
         return self::$instance;
     }
 
-    public function getDomain()
+
+    public function getUsername()
     {
-        return $this->domain;
+        return $this->username;
     }
 
-    public function getSource()
+    public function getPassword()
     {
-        return $this->source;
+        return $this->password;
     }
 
     // Checks and Validates the tupel.
-    // Also checks if the given IP-Address is in valid ipv4/ipv6 format - if its not it returns false!
     public function isComplete() {
-        if ( !empty($this->domain) && !empty($this->source) ) {
-            return @inet_pton($this->source) ? true : false;
-        } else {
-            return false;
+        if ( !empty($this->username) && !empty($this->password) ) {
+                return true;
         }
+        return false;
     }
 
     public function parseRequest() {
-        $this->domain = array_key_exists("domain", $_GET) ? $_GET['domain'] : null;
-        $this->source = array_key_exists("source", $_GET) ? $_GET['source'] : null;
+        $this->username = array_key_exists('username', $_GET) ? $_GET['username'] : null ;
+        $this->password = array_key_exists("password", $_GET) ? $_GET['password'] : null;
     }
 
 }
