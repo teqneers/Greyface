@@ -66,17 +66,24 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
             icon: "resources/images/door_in.png"
         },
         '->',
-        'tbseparator',
         {
             xtype:'splitbutton',
             actionId: 'userProfile',
-            icon: "resources/images/user_edit.png"
-        },
-        {
-            xtype:"button",
-            text: Greyface.tools.Dictionary.translate("setNewUserPassword"),
-            actionId: "changePasswordButton",
-            icon:"resources/images/user_edit.png"
+            icon: "resources/images/user_edit.png",
+            menu: new Ext.menu.Menu({
+                items: [
+                    {
+                        text: Greyface.tools.Dictionary.translate("setNewUserPassword"),
+                        actionId: "changePasswordButton",
+                        icon:"resources/images/user_edit.png"
+                    }
+                ]
+            }),
+            listeners: {
+                click: function(cmp){
+                    cmp.showMenu()
+                }
+            }
         },
         {
             xtype: "splitbutton",

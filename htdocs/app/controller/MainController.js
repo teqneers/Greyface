@@ -86,10 +86,6 @@
                     this.toggleContentScreen(8);
                 }
             },
-            "menuitem[actionId=userChangePasswordMenuButton]": {
-                click: function(){console.log("userChangePasswordMenuButton")}
-            },
-
 
             // Logout button
             "button[actionId=logoutButton]": {
@@ -99,7 +95,7 @@
             },
 
             // Change password
-            "button[actionId=changePasswordButton]": {
+            "menuitem[actionId=changePasswordButton]": {
                 click: function() {
                     var userRecord = Greyface.tools.User.getUserRecord();
                     console.log(userRecord)
