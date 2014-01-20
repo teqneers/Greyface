@@ -42,7 +42,6 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
             icon: "resources/images/page_black.png",
             menu: new Ext.menu.Menu({
                 items: [
-                    // these will render as dropdown menu items when the arrow is clicked:
                     {text:  Greyface.tools.Dictionary.translate("emailList"), actionId: "blacklistEmailMenuButton"},
                     {text:  Greyface.tools.Dictionary.translate("domainList"), actionId: "blacklistDomainMenuButton"}
                 ]
@@ -67,6 +66,12 @@ Ext.define("Greyface.view.menu.MenuTabToolbar", {
             icon: "resources/images/door_in.png"
         },
         '->',
+        'tbseparator',
+        {
+            xtype:'splitbutton',
+            actionId: 'userProfile',
+            icon: "resources/images/user_edit.png"
+        },
         {
             xtype: "splitbutton",
             text: Greyface.tools.Dictionary.getLanguageName(),

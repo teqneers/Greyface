@@ -22,6 +22,9 @@ Ext.define("Greyface.tools.User",{
     },
     configureUserDependentLayout: function() {
 
+        Ext.ComponentQuery.query("splitbutton[actionId=userProfile]")[0].setText(this.getUsername());
+        Ext.ComponentQuery.query("splitbutton[actionId=userProfile]")[1].setText(this.getUsername());
+
         if(this.getMutableUiElements() == "") {
             var mutableUiComponents = new Array();
 

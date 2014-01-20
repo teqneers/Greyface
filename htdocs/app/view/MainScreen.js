@@ -10,6 +10,22 @@
             xtype: 'panel',
             region:	"north",
             border:	false,
+            layout: {
+                type:"hbox",
+                pack: "end"
+            },
+            items: [
+                {
+                    xtype:'splitbutton',
+                    actionId: 'userProfile',
+                    icon: "resources/images/user_edit.png"
+                }
+            ]
+        },
+        {
+            xtype: 'panel',
+            region:	"north",
+            border:	false,
             height: 60,
             width:220,
             html: "<img src='resources/images/logo.jpg' height='55' width='220'>"
