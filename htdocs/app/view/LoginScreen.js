@@ -32,7 +32,8 @@
                     fieldLabel: Greyface.tools.Dictionary.translate("username"),
                     value:"admin",
                     margin:"10 10 10 10",
-                    allowBlank:false
+                    allowBlank:false,
+                    enableKeyEvents:true,
                 },
                 {
                     xtype: "textfield",
@@ -41,7 +42,10 @@
                     fieldLabel: Greyface.tools.Dictionary.translate("password"),
                     inputType: "password",
                     value:"admin",
-                    margin:"10 10 0 10"
+                    margin:"10 10 0 10",
+                    keys: [{
+                        'enter': function() {console.log("username")}
+                    }]
                 },
                 {
                     xtype: "checkbox",
@@ -49,7 +53,10 @@
                     actionId: "rememberLogin",
                     fieldLabel: Greyface.tools.Dictionary.translate("rememberMe"),
                     checked:false,
-                    margin:"10 10 20 10"
+                    margin:"10 10 20 10",
+                    keys: [{
+                        'enter': function() {console.log("username")}
+                    }]
                 }
             ],
             dockedItems: [

@@ -3,6 +3,13 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
     xtype:"gf_userAdminPanel",
     actionId:"userAdminPanel",
     title: Greyface.tools.Dictionary.translate("userManagement"),
+    selType:'cellmodel',
+    plugins:[
+        {
+            ptype:'rowediting',
+            clicksToEdit:2
+        }
+    ],
     border:false,
     columns: [
         {
@@ -40,11 +47,39 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
             text:Greyface.tools.Dictionary.translate("userStatus"),
             xtype: 'templatecolumn',
             tpl: "<tpl if='is_admin == 1'>Admin<tpl else>User</tpl>",
-            autoSizeColumn:true
+            autoSizeColumn:true,
+            editor:{
+                xtype:'checkboxfield'
+            }
         },
-        {text: Greyface.tools.Dictionary.translate("username"), dataIndex:"username", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("email"),dataIndex:"email", autoSizeColumn:true}
+        {
+            text: Greyface.tools.Dictionary.translate("username"),
+            dataIndex:"username",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            text: Greyface.tools.Dictionary.translate("email"),
+            dataIndex:"email",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false,
+                vtype:'email'
+            }
+        }
     ],
+    listeners:{
+        edit: function(src,context) {
+            var record = context.record;
+            console.log('edit...')
+            console.log(record)
+//            record.update();
+        }
+    },
     viewConfig: {
         listeners: {
             refresh: function(dataview) {

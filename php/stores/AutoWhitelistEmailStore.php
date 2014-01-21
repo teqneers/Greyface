@@ -36,7 +36,7 @@ class AutoWhitelistEmailStore extends AbstractStore {
     public function addEmail($sender, $domain, $source) {
         $insertQuery =  "INSERT INTO from_awl".
                         " (sender_name, sender_domain, src, last_seen)".
-                        " VALUES ('$sender', '$domain', '$source', CURRENT_TIMESTAMP)";
+                        " VALUES ('".self::$db->quote($sender)."', '".self::$db->quote($domain)."', '".self::$db->quote($source)."', CURRENT_TIMESTAMP)";
 
         self::$db->query($insertQuery);
         return new AjaxResult(true, "Data has been added to database!");
@@ -44,9 +44,9 @@ class AutoWhitelistEmailStore extends AbstractStore {
 
     public function deleteEmail($sender, $domain, $source) {
         $deleteQuery =  "DELETE FROM from_awl"
-                        ." WHERE sender_name='$sender'"
-                        ." AND sender_domain='$domain'"
-                        ." AND src='$source'";
+                        ." WHERE sender_name='".self::$db->quote($sender)."'"
+                        ." AND sender_domain='".self::$db->quote($domain)."'"
+                        ." AND src='".self::$db->quote($source)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }

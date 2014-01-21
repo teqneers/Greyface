@@ -3,9 +3,11 @@ Ext.define("Greyface.model.UserModel",{
     fields:[
         "is_admin",
         "username",
-        "email"
+        "email",
+        "user_id"
     ],
-    
+    idProperty:'user_id',
+
     deleteItem: function() {
         Ext.Ajax.request({
             url: "api/CRUDRouter.php?action=delete",
@@ -40,4 +42,5 @@ Ext.define("Greyface.model.UserModel",{
             }
         });
     }
+
 });

@@ -9,7 +9,8 @@ class UserAdminStore extends AbstractStore {
         $this->dbFields = array(
             "username",
             "email",
-            "is_admin"
+            "is_admin",
+            "user_id"
         );
     }
 
@@ -30,11 +31,11 @@ class UserAdminStore extends AbstractStore {
         // Insert to DB
         $insertQuery =  "INSERT INTO tq_user".
             " (username, email,  password, is_admin)".
-            " VALUES ('$username','$email','".User::encryptPassword($password)."','$isAdmin')";
+            " VALUES ('".self::$db->quote($username)."','".self::$db->quote($email)."','".self::$db->quote(User::encryptPassword($password))."','$isAdmin')";
         self::$db->query($insertQuery);
 
         // Sends Email
-        if ($isSendEmail) {
+        if ($isSendEmail && Config::getInstance()->isSendMail()) {
             mail(
                 $email,
                 "Your Greyface account",
@@ -52,10 +53,21 @@ class UserAdminStore extends AbstractStore {
 
 	public function deleteUser($username) {
 	    $deleteQuery =  "DELETE FROM tq_user"
-            ." WHERE username='$username'";
+            ." WHERE username='".self::$db->quote($username)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "User has been removed from database!");
 	}
+
+    public function updateUser($user_id, $username, $email, $isAdmin) {
+        $updateQuery =  "UPDATE tq_user"
+                            ." SET username='".self::$db->quote($username)."'"
+                            .", email='".self::$db->quote($email)."'"
+                            .", is_admin='".self::$db->quote($isAdmin)."'"
+                        ." WHERE user_id='".self::$db->quote($user_id)."'";
+        $res = self::$db->queryAffect($updateQuery);
+        return new AjaxResult(true, "User has been updated in database!");
+
+    }
 
     public function getGreylistUserFilterOptions() {
         $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";

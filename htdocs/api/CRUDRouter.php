@@ -31,17 +31,22 @@ require "../../php/stores/UserAliasStore.php";
 
 // Request Filter
 require "../../php/requestFilters/ReadRequestFilter.php";
-require "../../php/requestFilters/DeleteGreyfaceEntriesToFilter.php";
 require "../../php/requestFilters/GreyfaceEntryFilter.php";
 require "../../php/requestFilters/EmailAutoWhitelistFilter.php";
 require "../../php/requestFilters/DomainAutoWhitelistFilter.php";
 require "../../php/requestFilters/EmailFilter.php";
 require "../../php/requestFilters/DomainFilter.php";
 require "../../php/requestFilters/UsernameFilter.php";
+
 require "../../php/requestFilters/CreateUserFilter.php";
 require "../../php/requestFilters/CreateAliasFilter.php";
+
+require "../../php/requestFilters/DeleteGreyfaceEntriesToFilter.php";
 require "../../php/requestFilters/DeleteAliasFilter.php";
+
 require "../../php/requestFilters/ChangeUserPasswordFilter.php";
+require "../../php/requestFilters/AbstractAjaxRequestFilter.php";
+require "../../php/requestFilters/UpdateUserFilter.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -322,6 +327,13 @@ function dispatch($store, $action, User $loggedInUser) {
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
+                case "update":
+                    $updateUserReqest = UpdateUserFilter::getInstance();
+                    if($updateUserReqest->isComplete()) {
+                        return UserAdminStore::getInstance()->updateUser($updateUserReqest->getId(), $updateUserReqest->getUsername(), $updateUserReqest->getEmail(), $updateUserReqest->isAdmin());
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -367,6 +379,8 @@ function dispatch($store, $action, User $loggedInUser) {
                     return UserAdminStore::getInstance()->getGreylistUserFilterOptions();
                 case "getUserAliasFilter":
                     return UserAliasStore::getInstance()->getUserAliasFilterOptions();
+                case "getUsers":
+                    return UserAliasStore::getInstance()->getUserList();
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }

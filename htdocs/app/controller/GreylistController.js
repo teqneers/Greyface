@@ -37,6 +37,9 @@ Ext.define("Greyface.controller.GreylistController", {
                         store.addFilter([{id:"user_id", property:"user_id", value:"show_unassigned"}], false);
                     }
                     this.getGreylistFilterTextfield().fireEvent("change");
+                },
+                expand: function(field, eOpts){
+                    Ext.getStore("Greyface.store.UserFilterStore").reload();
                 }
             },
 

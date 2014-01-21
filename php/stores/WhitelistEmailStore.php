@@ -18,7 +18,7 @@ class WhitelistEmailStore extends AbstractStore {
     public function addEmail($email) {
         $insertQuery =  "INSERT INTO optout_email".
             " (email)".
-            " VALUES ('$email')";
+            " VALUES ('".self::$db->quote($email)."')";
 
         self::$db->query($insertQuery);
         return new AjaxResult(true, "Data has been added to database!");
@@ -26,7 +26,7 @@ class WhitelistEmailStore extends AbstractStore {
 
     public function deleteEmail($email) {
         $deleteQuery =  "DELETE FROM optout_email"
-            ." WHERE email='$email'";
+            ." WHERE email='".self::$db->quote($email)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }

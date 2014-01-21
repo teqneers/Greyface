@@ -11,6 +11,8 @@ class Config {
     private $db_password;
     private $db_name;
 
+    private $app_sendMail;
+
     private $application_name = "Greyface";
 
     /**
@@ -50,6 +52,8 @@ class Config {
         $this->db_username = $ini_array["mySQLData"]["username"];
         $this->db_password = $ini_array["mySQLData"]["password"];
         $this->db_name   = $ini_array["mySQLData"]["dbName"];
+
+        $this->app_sendMail   = ($ini_array["application"]["sendMail"] == true) ? true : false;
     }
 
     public function getHostname() {
@@ -69,5 +73,10 @@ class Config {
     public function getDbName()
     {
         return $this->db_name;
+    }
+
+    public function isSendMail()
+    {
+        return $this->app_sendMail;
     }
 }

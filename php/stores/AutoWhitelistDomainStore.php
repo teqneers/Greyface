@@ -21,7 +21,7 @@ class AutoWhitelistDomainStore extends AbstractStore {
     public function addDomain($domain, $source) {
         $insertQuery =  "INSERT INTO domain_awl".
             " (sender_domain, src, last_seen)".
-            " VALUES ('$domain', '$source', CURRENT_TIMESTAMP)";
+            " VALUES ('".self::$db->quote($domain)."', '".self::$db->quote($source)."', CURRENT_TIMESTAMP)";
 
         self::$db->query($insertQuery);
         return new AjaxResult(true, "Data has been added to database!");
@@ -29,8 +29,8 @@ class AutoWhitelistDomainStore extends AbstractStore {
 
     public function deleteDomain($domain, $source) {
         $deleteQuery =  "DELETE FROM domain_awl"
-            ." WHERE sender_domain='$domain'"
-            ." AND src='$source'";
+            ." WHERE sender_domain='".self::$db->quote($domain)."'"
+            ." AND src='".$source."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }

@@ -93,7 +93,7 @@ class UserAliasStore extends AbstractStore {
             $userId = $user->getUserId();
             $insertQuery =  "INSERT INTO tq_alias".
                 " (user_id, alias_name)".
-                " VALUES ('$userId','$alias')";
+                " VALUES ('".self::$db->quote($userId)."','".self::$db->quote($alias)."')";
             self::$db->query($insertQuery);
 
             return new AjaxResult(true, "Alias has been added to database!");
@@ -104,7 +104,7 @@ class UserAliasStore extends AbstractStore {
 
     public function deleteAlias($aliasId) {
         $deleteQuery =  "DELETE FROM tq_alias"
-            ." WHERE alias_id='$aliasId'";
+            ." WHERE alias_id='".self::$db->quote($aliasId)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Alias has been removed from database!");
     }
@@ -117,5 +117,14 @@ class UserAliasStore extends AbstractStore {
         $result->prependRow(array("username"=>"show all","user_id"=>"show_all"));
         return $result;
     }
+
+    public function getUserList() {
+        $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
+        $result = self::$db->queryArray($selectQuery);
+
+        return new AjaxRowsResult($result, count($result));
+    }
+
+
 
 }

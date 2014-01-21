@@ -185,7 +185,7 @@ class User {
         } else {
             $res = DataBase::getInstance()->queryAffect(
                 "UPDATE tq_user"
-                ." SET password = '".$this->encryptPassword($password)."'"
+                ." SET password = '".DataBase::getInstance()->quote($this->encryptPassword($password))."'"
                 ." WHERE user_id = '".$this->user_id."'"
             );
             return true;

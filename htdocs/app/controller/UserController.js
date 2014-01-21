@@ -81,6 +81,9 @@ Ext.define("Greyface.controller.UserController", {
                         store.addFilter([{id:"user_id", property:"user_id", value:box.getValue()}], false);
                     }
                     store.load();
+                },
+                expand: function(field, eOpts){
+                    Ext.getStore("Greyface.store.UserAliasFilterStore").reload();
                 }
             }
         });

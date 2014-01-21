@@ -27,6 +27,22 @@
                     this.getLanguageSelector().setIcon(item.icon);
                     location.replace("index.php?language="+item.languageKey);
                 }
+            },
+
+            // Enable Enter-Key if username or password field are in context
+            "gf_login textfield[actionId=usernametext]": {
+                specialkey: function(field, e){
+                    if (e.getKey() == e.ENTER) {
+                        this.login();
+                    }
+                }
+            },
+            "gf_login textfield[actionId=passwordtext]": {
+                specialkey: function(field, e){
+                    if (e.getKey() == e.ENTER) {
+                        this.login();
+                    }
+                }
             }
         })
     },

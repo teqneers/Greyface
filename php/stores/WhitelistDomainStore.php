@@ -18,7 +18,7 @@ class WhitelistDomainStore extends AbstractStore {
     public function addDomain($domain) {
         $insertQuery =  "INSERT INTO optout_domain".
             " (domain)".
-            " VALUES ('$domain')";
+            " VALUES ('".self::$db->quote($domain)."')";
 
         self::$db->query($insertQuery);
         return new AjaxResult(true, "Data has been added to database!");
@@ -26,7 +26,7 @@ class WhitelistDomainStore extends AbstractStore {
 
     public function deleteDomain($domain) {
         $deleteQuery =  "DELETE FROM optout_domain"
-            ." WHERE domain='$domain'";
+            ." WHERE domain='".self::$db->quote($domain)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }

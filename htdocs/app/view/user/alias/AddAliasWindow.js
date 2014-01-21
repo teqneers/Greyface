@@ -19,9 +19,18 @@ Ext.define("Greyface.view.user.alias.AddAliasWindow",{
             defaultType: 'textfield',
             items: [
                 {
+                    xtype:'combobox',
+                    store: Ext.create("Greyface.store.UserListStore"),
+                    displayField:'username',
+                    actionId:'userselect',
                     fieldLabel: Greyface.tools.Dictionary.translate("username"),
                     name: 'username',
-                    allowBlank: false
+                    allowBlank: false,
+                    typeAhead:true,
+                    typeAheadDelay:100,
+                    multiselect:false,
+                    queryCaching:false,
+                    minChars:1
                 },
                 {
                     fieldLabel: Greyface.tools.Dictionary.translate("alias"),
