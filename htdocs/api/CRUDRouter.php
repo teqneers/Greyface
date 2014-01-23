@@ -47,6 +47,7 @@ require "../../php/requestFilters/DeleteAliasFilter.php";
 require "../../php/requestFilters/ChangeUserPasswordFilter.php";
 require "../../php/requestFilters/AbstractAjaxRequestFilter.php";
 require "../../php/requestFilters/UpdateUserFilter.php";
+require "../../php/requestFilters/UpdateAliasFilter.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -361,6 +362,17 @@ function dispatch($store, $action, User $loggedInUser) {
                     if ( $deleteAliasRequest->isComplete() ) {
                         return UserAliasStore::getInstance()->deleteAlias(
                             $deleteAliasRequest->getAliasId()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
+                case "update":
+                    $updateAliasRequest = UpdateAliasFilter::getInstance();
+                    if( $updateAliasRequest->isComplete() ) {
+                        return UserAliasStore::getInstance()->updateAlias(
+                            $updateAliasRequest->getAliasId(),
+                            $updateAliasRequest->getEmail(),
+                            $updateAliasRequest->getUsername()
                         );
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());

@@ -30,7 +30,8 @@ Ext.define("Greyface.view.user.alias.AddAliasWindow",{
                     typeAheadDelay:100,
                     multiselect:false,
                     queryCaching:false,
-                    minChars:1
+                    minChars:1,
+                    forceSelection:true
                 },
                 {
                     fieldLabel: Greyface.tools.Dictionary.translate("alias"),

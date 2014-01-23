@@ -45,9 +45,11 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
         },
         {
             text:Greyface.tools.Dictionary.translate("userStatus"),
-            xtype: 'templatecolumn',
-            tpl: "<tpl if='is_admin == 1'>Admin<tpl else>User</tpl>",
+            xtype: 'booleancolumn',
             autoSizeColumn:true,
+            dataIndex:'is_admin',
+            trueText:Greyface.tools.Dictionary.translate("statusAdmin"),
+            falseText:'-',
             editor:{
                 xtype:'checkboxfield'
             }

@@ -81,7 +81,7 @@ Ext.define("Greyface.tools.Dictionary",{
 
         // u
         {key:"user", en:"User", de:"Benutzer"},
-        {key:"userStatus", en:"User Status", de:"Benutzerstatus"},
+        {key:"userStatus", en:"Admin", de:"Admin"},
         {key:"userManagement", en:"User Management", de:"Benutzermanagement"},
         {key:"username", en:"Username", de:"Benutzername"},
 

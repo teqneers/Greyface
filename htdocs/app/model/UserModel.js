@@ -1,10 +1,27 @@
 Ext.define("Greyface.model.UserModel",{
     extend:"Ext.data.Model",
     fields:[
-        "is_admin",
-        "username",
-        "email",
-        "user_id"
+        {name: "username", type:"string"},
+        {name: "email", type:"string"},
+        {name: "user_id"},
+        {
+            name: "is_admin",
+            type:'int',
+            convert: function(value, record){
+                if (Number(value) == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            serialize: function(value, record) {
+                if (value) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        }
     ],
     idProperty:'user_id',
 
@@ -42,5 +59,4 @@ Ext.define("Greyface.model.UserModel",{
             }
         });
     }
-
 });

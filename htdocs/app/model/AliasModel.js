@@ -2,10 +2,11 @@ Ext.define("Greyface.model.AliasModel",{
     extend:"Ext.data.Model",
     fields:[
         "alias_id",
-        "user_id",
+//        "user_id",
         "username",
         "email"
     ],
+    idProperty:'alias_id',
 
     deleteItem: function() {
         Ext.Ajax.request({

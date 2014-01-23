@@ -17,10 +17,8 @@ Ext.define("Greyface.store.UserAliasStore",{
     proxy: {
         type:"ajax",
         api: {
-            create: "api/CRUDRouter.php?action=create",
             read: "api/CRUDRouter.php?action=read",
-            update: "api/CRUDRouter.php?action=update",
-            destroy: "api/CRUDRouter.php?action=destroy"
+            update: "api/CRUDRouter.php?action=update"
         },
         extraParams: {
             store:"userAliasStore"

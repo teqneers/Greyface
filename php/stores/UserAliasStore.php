@@ -26,7 +26,7 @@ class UserAliasStore extends AbstractStore {
         // Get all Whitelist Data for the Email.
         $selectStatement .= "SELECT tq_alias.alias_name AS email, ".
             "tq_alias.alias_id AS alias_id, ".
-            "tq_user.user_id AS user_id, ".
+//            "tq_user.user_id AS user_id, ".
             "tq_user.username AS username";
 
         $fromStatement .= " FROM tq_alias ".
@@ -109,6 +109,24 @@ class UserAliasStore extends AbstractStore {
         return new AjaxResult(true, "Alias has been removed from database!");
     }
 
+    public function updateAlias($aliasId, $aliasEmail, $username) {
+
+        // First checks if the given username exists.
+        $selectQuery = "SELECT user_id FROM tq_user WHERE username='".self::$db->quote($username)."'";
+        $result = self::$db->queryArray($selectQuery);
+        if( count($result[0]) < 1 ) {
+            // Cancel execution. The username does not exist!
+            return new AjaxResult(false, "Given username does not exist!");
+        }
+
+        $updateQuery =  "Update tq_alias"
+                        ." SET alias_name='".self::$db->quote($aliasEmail)."'"
+                        ." ,user_id='".self::$db->quote($result[0]['user_id'])."'"
+                        ." WHERE alias_id='".self::$db->quote($aliasId)."'";
+        $result = self::$db->query($updateQuery);
+        return new AjaxResult(true, "Alias has been updated!");
+    }
+
     public function getUserAliasFilterOptions() {
         $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
         $result = self::$db->queryArray($selectQuery);
@@ -124,7 +142,4 @@ class UserAliasStore extends AbstractStore {
 
         return new AjaxRowsResult($result, count($result));
     }
-
-
-
 }
