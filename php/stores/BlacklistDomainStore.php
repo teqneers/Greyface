@@ -30,4 +30,16 @@ class BlacklistDomainStore extends AbstractStore {
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }
+
+    public function updateDomain($oldDomain, $newDomain) {
+        $updateQuery = "UPDATE optin_domain"
+            ." SET domain='".self::$db->quote($newDomain)."'"
+            ." WHERE domain='".self::$db->quote($oldDomain)."'";
+        $affectedRows = self::$db->queryAffect($updateQuery);
+        if($affectedRows > 0) {
+            return new AjaxResult(true, "Data has been updated!");
+        } else {
+            return new AjaxResult(false, "The data you specified was not there. Updated 0 entries!");
+        }
+    }
 } 

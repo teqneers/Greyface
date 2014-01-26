@@ -17,10 +17,8 @@ Ext.define("Greyface.store.BlacklistDomainStore",{
     proxy: {
         type:"ajax",
         api: {
-            create: "api/CRUDRouter.php?action=create",
             read: "api/CRUDRouter.php?action=read",
-            update: "api/CRUDRouter.php?action=update",
-            destroy: "api/CRUDRouter.php?action=destroy"
+            update: "api/CRUDRouter.php?action=update"
         },
         extraParams: {
             store:"blacklistDomainStore"
@@ -30,5 +28,12 @@ Ext.define("Greyface.store.BlacklistDomainStore",{
             root:"rows",
             totalProperty:"totalRows"
         }
+    },
+
+    onUpdateRecords: function(records, operation, success) {
+        if (operation.action == "update") {
+            this.reload();
+        }
     }
+
 });

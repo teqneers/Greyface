@@ -44,10 +44,13 @@ require "../../php/requestFilters/CreateAliasFilter.php";
 require "../../php/requestFilters/DeleteGreyfaceEntriesToFilter.php";
 require "../../php/requestFilters/DeleteAliasFilter.php";
 
-require "../../php/requestFilters/ChangeUserPasswordFilter.php";
-require "../../php/requestFilters/AbstractAjaxRequestFilter.php";
-require "../../php/requestFilters/UpdateUserFilter.php";
-require "../../php/requestFilters/UpdateAliasFilter.php";
+require "../../php/requestFilters/UpdateUserPasswordFilter.php";
+
+require "../../php/requestFilters/AbstractPostAjaxRequestFilter.php";
+require "../../php/requestFilters/UpdateUserFilterPost.php";
+require "../../php/requestFilters/UpdateAliasFilterPost.php";
+require "../../php/requestFilters/UpdateEmailFilterPost.php";
+require "../../php/requestFilters/UpdateDomainFilterPost.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -188,6 +191,16 @@ function dispatch($store, $action, User $loggedInUser) {
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
+                case "update":
+                    $updateEmailRequest = UpdateEmailFilterPost::getInstance();
+                    if( $updateEmailRequest->isComplete() ) {
+                        return WhitelistEmailStore::getInstance()->updateEmail(
+                            $updateEmailRequest->getOldEmail(),
+                            $updateEmailRequest->getNewEmail()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -214,6 +227,16 @@ function dispatch($store, $action, User $loggedInUser) {
                     if ( $deleteDomainRequest->isComplete() ) {
                         return WhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
+                case "update":
+                    $updateDomainRequest = UpdateDomainFilterPost::getInstance();
+                    if( $updateDomainRequest->isComplete() ) {
+                        return WhitelistDomainStore::getInstance()->updateDomain(
+                            $updateDomainRequest->getOldDomain(),
+                            $updateDomainRequest->getNewDomain()
                         );
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
@@ -248,6 +271,16 @@ function dispatch($store, $action, User $loggedInUser) {
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
+                case "update":
+                    $updateEmailRequest = UpdateEmailFilterPost::getInstance();
+                    if( $updateEmailRequest->isComplete() ) {
+                        return BlacklistEmailStore::getInstance()->updateEmail(
+                            $updateEmailRequest->getOldEmail(),
+                            $updateEmailRequest->getNewEmail()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -274,6 +307,16 @@ function dispatch($store, $action, User $loggedInUser) {
                     if ( $deleteEmailRequest->isComplete() ) {
                         return BlacklistDomainStore::getInstance()->deleteDomain(
                             $deleteEmailRequest->getDomain()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
+                case "update":
+                    $updateDomainRequest = UpdateDomainFilterPost::getInstance();
+                    if( $updateDomainRequest->isComplete() ) {
+                        return BlacklistDomainStore::getInstance()->updateDomain(
+                            $updateDomainRequest->getOldDomain(),
+                            $updateDomainRequest->getNewDomain()
                         );
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
@@ -314,12 +357,12 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "setPassword":
-                    $changeUserRequest = ChangeUserPasswordFilter::getInstance();
-                    if($changeUserRequest->isComplete()) {
-                        if($loggedInUser->getUsername() == $changeUserRequest->getUsername() || $loggedInUser->isAdmin()){
-                            $userObject = User::getUserByName($changeUserRequest->getUsername());
+                    $UpdateUserPasswordRequest = UpdateUserPasswordFilter::getInstance();
+                    if($UpdateUserPasswordRequest->isComplete()) {
+                        if($loggedInUser->getUsername() == $UpdateUserPasswordRequest->getUsername() || $loggedInUser->isAdmin()){
+                            $userObject = User::getUserByName($UpdateUserPasswordRequest->getUsername());
                             if($userObject->isUserExisting()) {
-                                $success = $userObject->setPassword($changeUserRequest->getPassword());
+                                $success = $userObject->setPassword($UpdateUserPasswordRequest->getPassword());
                                 return new AjaxResult($success, "Tryed to set password");
                             }
                         } else {
@@ -329,7 +372,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "update":
-                    $updateUserReqest = UpdateUserFilter::getInstance();
+                    $updateUserReqest = UpdateUserFilterPost::getInstance();
                     if($updateUserReqest->isComplete()) {
                         return UserAdminStore::getInstance()->updateUser($updateUserReqest->getId(), $updateUserReqest->getUsername(), $updateUserReqest->getEmail(), $updateUserReqest->isAdmin());
                     } else {
@@ -367,7 +410,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "update":
-                    $updateAliasRequest = UpdateAliasFilter::getInstance();
+                    $updateAliasRequest = UpdateAliasFilterPost::getInstance();
                     if( $updateAliasRequest->isComplete() ) {
                         return UserAliasStore::getInstance()->updateAlias(
                             $updateAliasRequest->getAliasId(),

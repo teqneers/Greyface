@@ -6,7 +6,7 @@
  * Time: 12:15
  */
 
-class UpdateAliasFilter extends AbstractAjaxRequestFilter {
+class UpdateAliasFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $aliasId = null;
     private $email = null;

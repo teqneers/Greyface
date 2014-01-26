@@ -28,5 +28,11 @@ Ext.define("Greyface.store.UserAdminStore",{
             root:"rows",
             totalProperty:"totalRows"
         }
+    },
+
+    onUpdateRecords: function(records, operation, success) {
+        if (operation.action == "update" && success) {
+            this.reload();
+        }
     }
 });

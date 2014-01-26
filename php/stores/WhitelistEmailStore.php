@@ -31,4 +31,15 @@ class WhitelistEmailStore extends AbstractStore {
         return new AjaxResult(true, "Data has been removed from database!");
     }
 
+    public function updateEmail($oldEmail, $newEmail) {
+        $updateQuery = "UPDATE optout_email"
+            ." SET email='".self::$db->quote($newEmail)."'"
+            ." WHERE email='".self::$db->quote($oldEmail)."'";
+        $affectedRows = self::$db->queryAffect($updateQuery);
+        if($affectedRows > 0) {
+            return new AjaxResult(true, "Data has been updated!");
+        } else {
+            return new AjaxResult(false, "The data you specified was not there. Updated 0 entries!");
+        }
+    }
 } 

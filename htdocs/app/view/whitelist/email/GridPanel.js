@@ -4,6 +4,13 @@ Ext.define("Greyface.view.whitelist.email.GridPanel",{
     actionId:"whitelistEmailPanel",
     title: Greyface.tools.Dictionary.translate("whitelist") + ": " + Greyface.tools.Dictionary.translate("email"),
     border:false,
+    selType:'cellmodel',
+    plugins:[
+        {
+            ptype:'rowediting',
+            clicksToEdit:2
+        }
+    ],
     columns: [
         {
             xtype: "actioncolumn",
@@ -21,7 +28,16 @@ Ext.define("Greyface.view.whitelist.email.GridPanel",{
                 }
             ]
         },
-        {text: Greyface.tools.Dictionary.translate("email"),dataIndex:"email", autoSizeColumn:true}
+        {
+            text: Greyface.tools.Dictionary.translate("email"),
+            dataIndex:"email",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false,
+                vtype:'email'
+            }
+        }
     ],
     viewConfig: {
         listeners: {

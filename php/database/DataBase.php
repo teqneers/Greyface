@@ -89,6 +89,11 @@ class DataBase {
 		return $result;
 	}
 
+    /**
+     * Executes the query and gives back the number of affected rows
+     * @param string - $query - The SQL query which shall be executed.
+     * @return int - The number of affected rows of the given query.
+     */
     public function queryAffect($query) {
         $result = $this->query($query);
         return self::$mysqli->affected_rows;
