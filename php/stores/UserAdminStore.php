@@ -78,4 +78,6 @@ class UserAdminStore extends AbstractStore {
         $result->prependRow(array("username"=>"show all","user_id"=>"show_all"));
         return $result;
     }
+
+
 }

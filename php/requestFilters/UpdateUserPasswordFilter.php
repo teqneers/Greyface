@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: svencc
- * Date: 11.12.13
- * Time: 12:15
- */
 
-class ChangeUserPasswordFilter {
+class UpdateUserPasswordFilter {
 
     private $username = null;
     private $password = null;
@@ -32,7 +26,7 @@ class ChangeUserPasswordFilter {
 
     /**
      * Singleton getInstance method.
-     * @return ChangeUserPasswordFilter|Singleton
+     * @return UpdateUserPasswordFilter|Singleton
      */
     public static function getInstance(){
         if(!isset(self::$instance)){

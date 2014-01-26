@@ -28,5 +28,11 @@ Ext.define("Greyface.store.BlacklistEmailStore",{
             root:"rows",
             totalProperty:"totalRows"
         }
+    },
+
+    onUpdateRecords: function(records, operation, success) {
+        if (operation.action == "update") {
+            this.reload();
+        }
     }
 });

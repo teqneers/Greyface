@@ -1,6 +1,6 @@
 <?php
 
-class UpdateUserFilter extends AbstractAjaxRequestFilter{
+class UpdateUserFilterPost extends AbstractPostAjaxRequestFilter{
 
     private $userId = null;
     private $username = null;

@@ -5,8 +5,7 @@ Ext.define("Greyface.model.BlacklistDomainModel",{
             name:"domain",
             type:"string",
             serialize: function(value, record) {
-                console.log("serialize: " + record.oldDomain + "->" + value);
-                return record.oldDomain + "->" + value;
+                return record.oldDomain + "--->" + value;
             }
         }
     ],

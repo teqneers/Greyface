@@ -28,5 +28,12 @@ Ext.define("Greyface.store.BlacklistDomainStore",{
             root:"rows",
             totalProperty:"totalRows"
         }
+    },
+
+    onUpdateRecords: function(records, operation, success) {
+        if (operation.action == "update") {
+            this.reload();
+        }
     }
+
 });

@@ -74,14 +74,6 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
             }
         }
     ],
-    listeners:{
-        edit: function(src,context) {
-            var record = context.record;
-            console.log('edit...')
-            console.log(record)
-//            record.update();
-        }
-    },
     viewConfig: {
         listeners: {
             refresh: function(dataview) {

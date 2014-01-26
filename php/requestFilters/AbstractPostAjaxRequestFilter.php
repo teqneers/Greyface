@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractAjaxRequestFilter {
+abstract class AbstractPostAjaxRequestFilter {
 
     private static $raw;
     private static $json;
@@ -20,7 +20,7 @@ abstract class AbstractAjaxRequestFilter {
     /**
      * The abstract inherited getInstance method of Singleton objects.
      *
-     * @return AbstractAjaxRequestFilter
+     * @return AbstractPostAjaxRequestFilter
      */
     final public static function getInstance()
     {
@@ -37,10 +37,32 @@ abstract class AbstractAjaxRequestFilter {
         return self::$instances[$class];                // Returns the requested instance.
     }
 
+    /**
+     * Gets the decoded json string from $GLOBALS['HTTP_RAW_POST_DATA']
+     * @return array -  json decoded php array
+     */
     public function getJSON() {
         return self::$json;
     }
+
+    /**
+     * Gets the raw json string from $GLOBALS['HTTP_RAW_POST_DATA']
+     * @return string
+     */
     public function getRAW() {
         return self::$raw;
+    }
+
+    /**
+     * Splits a string, seperated with "--->" to get the old and new value.
+     * @param string - $value - A string in the form "email@old.de--->email@new.de"
+     * @return array - An associative array with the indexes "old" and "new". ["old"=>"emaol@old.de"] and ["new"=>"emaol@new.de"].
+     */
+    protected function explodeOldNewValue($value) {
+        $oldNnew = explode("--->",$value);
+        return array(
+            "old" => $oldNnew[0],
+            "new" => $oldNnew[1],
+        );
     }
 } 

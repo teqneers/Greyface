@@ -4,6 +4,13 @@ Ext.define("Greyface.view.whitelist.domain.GridPanel",{
     actionId:"whitelistDomainPanel",
     title: Greyface.tools.Dictionary.translate("whitelist") + ": " + Greyface.tools.Dictionary.translate("domains"),
     border:false,
+    selType:'cellmodel',
+    plugins:[
+        {
+            ptype:'rowediting',
+            clicksToEdit:2
+        }
+    ],
     columns: [
         {
             xtype: "actioncolumn",
@@ -21,7 +28,15 @@ Ext.define("Greyface.view.whitelist.domain.GridPanel",{
                 }
             ]
         },
-        {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"domain", autoSizeColumn:true}
+        {
+            text: Greyface.tools.Dictionary.translate("domain"),
+            dataIndex:"domain",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        }
     ],
     viewConfig: {
         listeners: {
