@@ -26,9 +26,7 @@ Ext.define("Greyface.view.autowhitelist.domain.AddDomainWindow",{
                 {
                     fieldLabel: Greyface.tools.Dictionary.translate("source"),
                     name: 'source',
-                    allowBlank: false,
-                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/, //@TODO replace with reusable vtype!
-                    regexText: "Should be a valid IPv4/6 address"
+                    allowBlank: false
                 }
             ],
             buttons: [

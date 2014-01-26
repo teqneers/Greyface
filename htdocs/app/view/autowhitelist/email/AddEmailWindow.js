@@ -31,9 +31,7 @@ Ext.define("Greyface.view.autowhitelist.email.AddEmailWindow",{
                 {
                     fieldLabel: Greyface.tools.Dictionary.translate("source"),
                     name: 'source',
-                    allowBlank: false,
-                    regex: /([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\d{1,3}\.){3}\d{1,3}/, //@TODO replace with reusable vtype!
-                    regexText: Greyface.tools.Dictionary.translate("hasToBeValidIp4/6")
+                    allowBlank: false
                 }
             ],
             buttons: [
