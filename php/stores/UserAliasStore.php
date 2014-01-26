@@ -123,8 +123,13 @@ class UserAliasStore extends AbstractStore {
                         ." SET alias_name='".self::$db->quote($aliasEmail)."'"
                         ." ,user_id='".self::$db->quote($result[0]['user_id'])."'"
                         ." WHERE alias_id='".self::$db->quote($aliasId)."'";
-        $result = self::$db->query($updateQuery);
-        return new AjaxResult(true, "Alias has been updated!");
+
+        $affectedRows = self::$db->queryAffect($updateQuery);
+        if($affectedRows > 0) {
+            return new AjaxResult(true, "Alias has been updated!");
+        } else {
+            return new AjaxResult(false, "The data you specified was not there. Updated 0 entries!");
+        }
     }
 
     public function getUserAliasFilterOptions() {

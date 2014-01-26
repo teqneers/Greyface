@@ -34,4 +34,19 @@ class AutoWhitelistDomainStore extends AbstractStore {
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "Data has been removed from database!");
     }
+
+    public function updateDomain($senderDomain, $src, $senderDomainId, $srcId) {
+        $updateQuery =  "UPDATE domain_awl"
+            ." SET sender_domain='".self::$db->quote($senderDomain)."'"
+            .", src='".self::$db->quote($src)."'"
+            ." WHERE sender_domain='".self::$db->quote($senderDomainId)."'"
+            ." AND src='".self::$db->quote($srcId)."'";
+
+        $affectedRows = self::$db->queryAffect($updateQuery);
+        if($affectedRows > 0) {
+            return new AjaxResult(true, "Data has been updated!");
+        } else {
+            return new AjaxResult(false, "The data you specified was not there. Updated 0 entries!");
+        }
+    }
 }

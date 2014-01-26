@@ -51,6 +51,8 @@ require "../../php/requestFilters/UpdateUserFilterPost.php";
 require "../../php/requestFilters/UpdateAliasFilterPost.php";
 require "../../php/requestFilters/UpdateEmailFilterPost.php";
 require "../../php/requestFilters/UpdateDomainFilterPost.php";
+require "../../php/requestFilters/UpdateAutoWhitelistEmailPost.php";
+require "../../php/requestFilters/UpdateAutoWhitelistDomainPost.php";
 
 // AJAX Results
 require "../../php/ajaxResult/AjaxResult.php";
@@ -129,6 +131,20 @@ function dispatch($store, $action, User $loggedInUser) {
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
+                case "update":
+                    $updateEmailRequest = UpdateAutoWhitelistEmailPost::getInstance();
+                    if( $updateEmailRequest->isComplete() ) {
+                        return AutoWhitelistEmailStore::getInstance()->updateEmail(
+                            $updateEmailRequest->getSenderName(),
+                            $updateEmailRequest->getSenderDomain(),
+                            $updateEmailRequest->getSrc(),
+                            $updateEmailRequest->getSenderNameId(),
+                            $updateEmailRequest->getSenderDomainId(),
+                            $updateEmailRequest->getSrcId()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -157,6 +173,18 @@ function dispatch($store, $action, User $loggedInUser) {
                         return AutoWhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain(),
                             $deleteDomainRequest->getSource()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
+                case "update":
+                    $updateDomainRequest = UpdateAutoWhitelistDomainPost::getInstance();
+                    if( $updateDomainRequest->isComplete() ) {
+                        return AutoWhitelistDomainStore::getInstance()->updateDomain(
+                            $updateDomainRequest->getSenderDomain(),
+                            $updateDomainRequest->getSrc(),
+                            $updateDomainRequest->getSenderDomainId(),
+                            $updateDomainRequest->getSrcId()
                         );
                     } else {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());

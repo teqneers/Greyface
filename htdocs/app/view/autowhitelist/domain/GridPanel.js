@@ -4,6 +4,13 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
     actionId:"autoWhitelistDomainPanel",
     title: Greyface.tools.Dictionary.translate("autoWhitelist") + ": " + Greyface.tools.Dictionary.translate("domains"),
     border:false,
+    selType:'cellmodel',
+    plugins:[
+        {
+            ptype:'rowediting',
+            clicksToEdit:2
+        }
+    ],
     columns: [
         {
             xtype: "actioncolumn",
@@ -21,10 +28,36 @@ Ext.define("Greyface.view.autowhitelist.domain.GridPanel",{
                 }
             ]
         },
-        {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("source"), dataIndex:"src", autoSizeColumn:true},
-        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
-        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
+        {
+            text: Greyface.tools.Dictionary.translate("domain"),
+            dataIndex:"sender_domain",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            text: Greyface.tools.Dictionary.translate("source"),
+            dataIndex:"src",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            xtype:"datecolumn",
+            text: Greyface.tools.Dictionary.translate("firstSeen"),
+            dataIndex:"first_seen",
+            autoSizeColumn:true
+        },
+        {
+            xtype:"datecolumn",
+            text: Greyface.tools.Dictionary.translate("lastSeen"),
+            dataIndex:"last_seen",
+            autoSizeColumn:true
+        }
     ],
     viewConfig: {
         listeners: {

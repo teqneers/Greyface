@@ -4,6 +4,13 @@ Ext.define("Greyface.view.autowhitelist.email.GridPanel",{
     actionId:"autoWhitelistEmailPanel",
     title: Greyface.tools.Dictionary.translate("autoWhitelist") + ": " + Greyface.tools.Dictionary.translate("emails"),
     border:false,
+    selType:'cellmodel',
+    plugins:[
+        {
+            ptype:'rowediting',
+            clicksToEdit:2
+        }
+    ],
     columns: [
         {
             xtype: "actioncolumn",
@@ -21,12 +28,51 @@ Ext.define("Greyface.view.autowhitelist.email.GridPanel",{
                 }
             ]
         },
-        {text: Greyface.tools.Dictionary.translate("sender"), dataIndex:"sender_name", autoSizeColumn:true, align:"right"},
-        {text: "@", xtype:"templatecolumn", tpl:"@", width:20, align:"center"},
-        {text: Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
-        {text: Greyface.tools.Dictionary.translate("source"), dataIndex:"src", autoSizeColumn:true},
-        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
-        {xtype:"datecolumn", text: Greyface.tools.Dictionary.translate("lastSeen"), dataIndex:"last_seen", autoSizeColumn:true}
+        {
+            text: Greyface.tools.Dictionary.translate("sender"),
+            dataIndex:"sender_name",
+            autoSizeColumn:true,
+            align:"right",
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            text: "@", xtype:"templatecolumn",
+            tpl:"@", width:20,
+            align:"center"
+        },
+        {
+            text: Greyface.tools.Dictionary.translate("domain"),
+            dataIndex:"sender_domain",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            text: Greyface.tools.Dictionary.translate("source"),
+            dataIndex:"src",
+            autoSizeColumn:true,
+            editor:{
+                xtype:'textfield',
+                allowBlank: false
+            }
+        },
+        {
+            xtype:"datecolumn",
+            text: Greyface.tools.Dictionary.translate("firstSeen"),
+            dataIndex:"first_seen",
+            autoSizeColumn:true
+        },
+        {
+            xtype:"datecolumn",
+            text: Greyface.tools.Dictionary.translate("lastSeen"),
+            dataIndex:"last_seen",
+            autoSizeColumn:true
+        }
     ],
     viewConfig: {
         listeners: {

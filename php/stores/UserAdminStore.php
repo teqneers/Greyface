@@ -64,8 +64,13 @@ class UserAdminStore extends AbstractStore {
                             .", email='".self::$db->quote($email)."'"
                             .", is_admin='".self::$db->quote($isAdmin)."'"
                         ." WHERE user_id='".self::$db->quote($user_id)."'";
-        $res = self::$db->queryAffect($updateQuery);
-        return new AjaxResult(true, "User has been updated in database!");
+
+        $affectedRows = self::$db->queryAffect($updateQuery);
+        if($affectedRows > 0) {
+            return new AjaxResult(true, "User has been updated!");
+        } else {
+            return new AjaxResult(false, "The user you specified was not there. Updated 0 entries!");
+        }
 
     }
 
