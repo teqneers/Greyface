@@ -75,11 +75,11 @@ class Login {
         // or already in $SESSION[] array (already logged in.
 
         // user uses login form
-        if ( isset($_POST["username"]) && isset($_POST["password"]) ){
-            $user = User::getUserByName($_POST["username"]);
+        if ( isset($_POST["login_username"]) && isset($_POST["login_password"]) ){
+            $user = User::getUserByName($_POST["login_username"]);
             if( $user->isUserExisting() ) {                                                                             // Does user exist in db?
-                if( $user->getPassword() == User::encryptPassword($_POST["password"]) ) {                                                   // Is valid password?
-                    $sessionString = serialize(array("username" => $_POST["username"], "session" => session_id()));     // Create session String
+                if( $user->getPassword() == User::encryptPassword($_POST["login_password"]) ) {                                                   // Is valid password?
+                    $sessionString = serialize(array("username" => $_POST["login_username"], "session" => session_id()));     // Create session String
                     $_SESSION["greyFaceLogin"] = $sessionString;                                                        // Write to SESSION[]
                     $user->setSession($sessionString);                                                                  // Write session id to database
 

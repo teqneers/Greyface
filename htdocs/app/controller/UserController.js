@@ -185,7 +185,7 @@ Ext.define("Greyface.controller.UserController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"userAdminStore",
                 username:username,
@@ -217,7 +217,7 @@ Ext.define("Greyface.controller.UserController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"userAliasStore",
                 username:username,

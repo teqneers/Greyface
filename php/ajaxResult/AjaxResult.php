@@ -43,23 +43,23 @@ class AjaxResult {
     }
 
     /**
-     * @return string - "The given IP is invalid"
-     */
-    public static function getIpInvalidMsg() {
-        return "The given IP is invalid.";
-    }
-
-    /**
-     * @return string - "The given data is incomplete"
+     * @return string - "The requested action is not handled."
      */
     public static function getUnhandledActionMsg() {
         return "The requested action is not handled.";
     }
 
     /**
-     * @return string - "The given data is incomplete"
+     * @return string - "The access to this function has been denied."
      */
     public static function getAccessDeniedMsg() {
         return "The access to this function has been denied.";
+    }
+
+    /**
+     * @return string - "The given data is incomplete"
+     */
+    public static function getWrongRoutingMsg() {
+        return "The provided routing information is invalid.";
     }
 } 

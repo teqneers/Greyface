@@ -6,9 +6,6 @@ class UpdateDomainFilterPost extends AbstractPostAjaxRequestFilter {
     private $oldDomain = null;
 
 
-    /**
-     * Private __constructor due to singleton pattern
-     */
     public function __construct() {
         $this->parseRequest();
     }

@@ -24,7 +24,7 @@ abstract class AbstractPostAjaxRequestFilter {
      */
     final public static function getInstance()
     {
-        if(empty(self::$db)) {
+        if( array_key_exists("HTTP_RAW_POST_DATA", $GLOBALS)  ) {
             self::$raw = $GLOBALS['HTTP_RAW_POST_DATA'];
             self::$json = json_decode($GLOBALS['HTTP_RAW_POST_DATA'], true);
         }

@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: svencc
- * Date: 11.12.13
- * Time: 12:15
- */
 
-class ResetUserPasswordFilter {
+class CreateUserFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $username = null;
     private $email = null;
@@ -15,36 +9,9 @@ class ResetUserPasswordFilter {
     private $randomizePassword = null;
     private $sendEmail = null;
 
-    /**
-     * @var Singleton instance
-     */
-    private static $instance = null;
-
-    /**
-     * Private __constructor due to singleton pattern
-     */
-    private function __construct() {
+    public function __construct() {
         $this->parseRequest();
     }
-
-    /**
-     * Private __clone due to singleton pattern
-     */
-    private function __clone(){
-        // Empty due to singleton pattern.
-    }
-
-    /**
-     * Singleton getInstance method.
-     * @return CreateUserFilter|Singleton
-     */
-    public static function getInstance(){
-        if(!isset(self::$instance)){
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
-
 
     public function getUsername()
     {
@@ -92,12 +59,12 @@ class ResetUserPasswordFilter {
     }
 
     public function parseRequest() {
-        $this->username = array_key_exists('username', $_GET) ? $_GET['username'] : null ;
-        $this->email = array_key_exists("email", $_GET) ? $_GET['email'] : null;
-        $this->password = array_key_exists("password", $_GET) ? $_GET['password'] : null;
-        $this->isAdmin = array_key_exists("isAdmin", $_GET) ? $_GET['isAdmin'] : false;
-        $this->randomizePassword = array_key_exists("randomizePassword", $_GET) ? $_GET['randomizePassword'] : false;
-        $this->sendEmail = array_key_exists("sendEmail", $_GET) ? $_GET['sendEmail'] : false;
+        $this->username = array_key_exists('username', $_POST) ? $_POST['username'] : null ;
+        $this->email = array_key_exists("email", $_POST) ? $_POST['email'] : null;
+        $this->password = array_key_exists("password", $_POST) ? $_POST['password'] : null;
+        $this->isAdmin = array_key_exists("isAdmin", $_POST) ? $_POST['isAdmin'] : false;
+        $this->randomizePassword = array_key_exists("randomizePassword", $_POST) ? $_POST['randomizePassword'] : false;
+        $this->sendEmail = array_key_exists("sendEmail", $_POST) ? $_POST['sendEmail'] : false;
         
         // Ensure that isAdmin, randomizePassword and sendEmail are true or false:
         ( strtolower($this->isAdmin) === "true" ) ? $this->isAdmin = true : $this->isAdmin = false;

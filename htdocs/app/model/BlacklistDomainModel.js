@@ -31,7 +31,7 @@ Ext.define("Greyface.model.BlacklistDomainModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"blacklistDomainStore",
                 domain:this.get("domain")

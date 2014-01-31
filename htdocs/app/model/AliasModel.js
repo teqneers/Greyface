@@ -16,7 +16,7 @@ Ext.define("Greyface.model.AliasModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"userAliasStore",
                 alias_id:this.get("alias_id")

@@ -53,7 +53,7 @@ Ext.define("Greyface.model.AutoWhitelistDomainModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"autoWhitelistDomainStore",
                 domain:this.get("sender_domain"),

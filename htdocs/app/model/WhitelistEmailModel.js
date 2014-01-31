@@ -30,7 +30,7 @@ Ext.define("Greyface.model.WhitelistEmailModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"whitelistEmailStore",
                 email:this.get("email")

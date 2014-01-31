@@ -12,6 +12,7 @@ class Config {
     private $db_name;
 
     private $app_sendMail;
+    private $app_logging;
 
     private $application_name = "Greyface";
 
@@ -54,6 +55,7 @@ class Config {
         $this->db_name   = $ini_array["mySQLData"]["dbName"];
 
         $this->app_sendMail   = ($ini_array["application"]["sendMail"] == true) ? true : false;
+        $this->app_logging   = ($ini_array["application"]["logging"] == true) ? true : false;
     }
 
     public function getHostname() {
@@ -78,5 +80,10 @@ class Config {
     public function isSendMail()
     {
         return $this->app_sendMail;
+    }
+
+    public function isLogging()
+    {
+        return $this->app_logging;
     }
 }

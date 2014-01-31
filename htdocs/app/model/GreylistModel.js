@@ -23,7 +23,7 @@ Ext.define("Greyface.model.GreylistModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"greylistStore",
                 senderName:this.get("sender_name"),
@@ -42,7 +42,7 @@ Ext.define("Greyface.model.GreylistModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"greylistStore",
                 senderName:this.get("sender_name"),
