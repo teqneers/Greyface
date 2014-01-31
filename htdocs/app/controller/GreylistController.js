@@ -132,7 +132,7 @@ Ext.define("Greyface.controller.GreylistController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"greylistStore", toDay:day+1, toMonth:month+1, toYear:year
             }

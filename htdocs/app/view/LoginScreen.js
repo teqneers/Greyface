@@ -27,17 +27,17 @@
             items:[
                 {
                     xtype: "textfield",
-                    name:"username",
+                    name:"login_username",
                     actionId: "usernametext",
                     fieldLabel: Greyface.tools.Dictionary.translate("username"),
                     value:"admin",
                     margin:"10 10 10 10",
                     allowBlank:false,
-                    enableKeyEvents:true,
+                    enableKeyEvents:true
                 },
                 {
                     xtype: "textfield",
-                    name: "password",
+                    name: "login_password",
                     actionId: "passwordtext",
                     fieldLabel: Greyface.tools.Dictionary.translate("password"),
                     inputType: "password",

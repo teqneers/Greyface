@@ -31,7 +31,7 @@ Ext.define("Greyface.model.BlacklistEmailModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"blacklistEmailStore",
                 email:this.get("email")

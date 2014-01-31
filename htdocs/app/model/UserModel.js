@@ -34,7 +34,7 @@ Ext.define("Greyface.model.UserModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"userAdminStore",
                 username:this.get("username")
@@ -51,7 +51,7 @@ Ext.define("Greyface.model.UserModel",{
             },
             failure: function(response, opts) {
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"userAdminStore",
                 username:this.get("username"),

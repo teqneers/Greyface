@@ -161,7 +161,7 @@ Ext.define("Greyface.controller.WhitelistController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"whitelistEmailStore",
                 email:email
@@ -187,7 +187,7 @@ Ext.define("Greyface.controller.WhitelistController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"whitelistDomainStore",
                 domain:domain

@@ -4,3 +4,6 @@
 
 - greyface_template.ini -> greyface_template
 - greyface.ini
+
+- rw access to Greyface/log
+- rw access to Greyface/log/greyface.log

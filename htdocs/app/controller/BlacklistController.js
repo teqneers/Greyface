@@ -159,7 +159,7 @@ Ext.define("Greyface.controller.BlacklistController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"blacklistEmailStore",
                 email:email
@@ -185,7 +185,7 @@ Ext.define("Greyface.controller.BlacklistController", {
             failure: function(response, opts) {
                 // nothing
             },
-            method: "GET",
+            method: "POST",
             params: {
                 store:"blacklistDomainStore",
                 domain:domain

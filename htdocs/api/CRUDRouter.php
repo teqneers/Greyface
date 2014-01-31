@@ -1,12 +1,11 @@
 <?php
-// Activate error output...
-//@TODO: Move to dedicated Error Reporting or Logging class. Make configurable in greyface.ini!
+
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 
+// Error handling
+require "../../php/errorHandler/Handler.php";
 
-// Config
-// require_once "../../php/Config.php"; // allready in Config Class
 
 // Database
 require "../../php/database/DataBase.php";
@@ -30,23 +29,26 @@ require "../../php/stores/UserAdminStore.php";
 require "../../php/stores/UserAliasStore.php";
 
 // Request Filter
-require "../../php/requestFilters/ReadRequestFilter.php";
-require "../../php/requestFilters/GreyfaceEntryFilter.php";
-require "../../php/requestFilters/EmailAutoWhitelistFilter.php";
-require "../../php/requestFilters/DomainAutoWhitelistFilter.php";
-require "../../php/requestFilters/EmailFilter.php";
-require "../../php/requestFilters/DomainFilter.php";
-require "../../php/requestFilters/UsernameFilter.php";
+require "../../php/requestFilters/AbstractAjaxRequestFilterPost.php";
 
-require "../../php/requestFilters/CreateUserFilter.php";
-require "../../php/requestFilters/CreateAliasFilter.php";
+require "../../php/requestFilters/ReadRequestFilterGet.php";
 
-require "../../php/requestFilters/DeleteGreyfaceEntriesToFilter.php";
-require "../../php/requestFilters/DeleteAliasFilter.php";
+require "../../php/requestFilters/GreyfaceEntryFilterPost.php";
+require "../../php/requestFilters/EmailAutoWhitelistFilterPost.php";
+require "../../php/requestFilters/DomainAutoWhitelistFilterPost.php";
+require "../../php/requestFilters/EmailFilterPost.php";
+require "../../php/requestFilters/DomainFilterPost.php";
 
-require "../../php/requestFilters/UpdateUserPasswordFilter.php";
 
-require "../../php/requestFilters/AbstractPostAjaxRequestFilter.php";
+require "../../php/requestFilters/CreateAliasFilterPost.php";
+require "../../php/requestFilters/CreateUserFilterPost.php";
+
+require "../../php/requestFilters/DeleteUserFilterPost.php";
+require "../../php/requestFilters/DeleteGreyfaceEntriesToFilterPost.php";
+require "../../php/requestFilters/DeleteAliasFilterPost.php";
+
+
+require "../../php/requestFilters/UpdateUserPasswordFilterPost.php";
 require "../../php/requestFilters/UpdateUserFilterPost.php";
 require "../../php/requestFilters/UpdateAliasFilterPost.php";
 require "../../php/requestFilters/UpdateEmailFilterPost.php";
@@ -68,9 +70,15 @@ $loginResult = Login::getInstance()->login();
 // ELSE stop here without dispatching the request!
 if($loginResult->getResult()) {
     // Read routing information
-    $store = $_GET["store"];
-    $action = $_GET["action"];
-
+    if ( array_key_exists('action', $_GET) && array_key_exists('store', $_GET) ) {
+        $store = $_GET["store"];
+        $action = $_GET["action"];
+    } else if( array_key_exists('action', $_GET) && array_key_exists('store', $_POST)) {
+        $store = $_POST["store"];
+        $action = $_GET["action"];
+    } else {
+        return new AjaxResult(false, AjaxResult::getWrongRoutingMsg());
+    }
     echo dispatch($store, $action, $loginResult->getUser());
     return;
 } else {
@@ -89,14 +97,36 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return GreylistStore::getInstance()->getGreylist($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case"deleteTo":
-                    $greylistEntriesDeleteToDate = DeleteGreyfaceEntriesToFilter::getInstance();
-                    return $greylistEntriesDeleteToDate->isDateComplete() ? GreylistStore::getInstance()->deleteTo($greylistEntriesDeleteToDate->getDateTime()) : null;
+                    $greylistEntriesDeleteToDate = DeleteGreyfaceEntriesToFilterPost::getInstance();
+                    if( $greylistEntriesDeleteToDate->isDateComplete() ) {
+                        return GreylistStore::getInstance()->deleteTo($greylistEntriesDeleteToDate->getDateTime());
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 case"delete":
-                    $greylistDeleteEntry = GreyfaceEntryFilter::getInstance();
-                    return $greylistDeleteEntry->isComplete() ? GreylistStore::getInstance()->delete($greylistDeleteEntry->getSenderName(), $greylistDeleteEntry->getDomainName(), $greylistDeleteEntry->getSource(), $greylistDeleteEntry->getRecipient() ) : null;
+                    $greylistDeleteEntry = GreyfaceEntryFilterPost::getInstance();
+                    if ( $greylistDeleteEntry->isComplete() ) {
+                        return GreylistStore::getInstance()->delete(
+                            $greylistDeleteEntry->getSenderName(),
+                            $greylistDeleteEntry->getDomainName(),
+                            $greylistDeleteEntry->getSource(),
+                            $greylistDeleteEntry->getRecipient()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 case"toWhitelist":
-                    $greylistToWhitelist = GreyfaceEntryFilter::getInstance();
-                    return $greylistToWhitelist->isComplete() ? GreylistStore::getInstance()->toWhitelist($greylistToWhitelist->getSenderName(), $greylistToWhitelist->getDomainName(), $greylistToWhitelist->getSource(), $greylistToWhitelist->getRecipient() ) : null;
+                    $greylistToWhitelist = GreyfaceEntryFilterPost::getInstance();
+                    if( $greylistToWhitelist->isComplete() ) {
+                        return GreylistStore::getInstance()->toWhitelist(
+                            $greylistToWhitelist->getSenderName(),
+                            $greylistToWhitelist->getDomainName(),
+                            $greylistToWhitelist->getSource(),
+                            $greylistToWhitelist->getRecipient()
+                        );
+                    } else {
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
+                    }
                 default:
                     return new AjaxResult(false, AjaxResult::getUnhandledActionMsg());
             }
@@ -110,18 +140,18 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return AutoWhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addEmail":
-                    $addEmailRequest = EmailAutoWhitelistFilter::getInstance();
-                    if ( $addEmailRequest->isComplete() && $addEmailRequest->isValidIp() ) {
+                    $addEmailRequest = EmailAutoWhitelistFilterPost::getInstance();
+                    if ( $addEmailRequest->isComplete() ) {
                         return AutoWhitelistEmailStore::getInstance()->addEmail(
                             $addEmailRequest->getSender(),
                             $addEmailRequest->getDomain(),
                             $addEmailRequest->getSource()
                         );
                     } else {
-                        return new AjaxResult(false, AjaxResult::getIncompleteMsg()." or ".AjaxResult::getIpInvalidMsg());
+                        return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteEmailRequest = EmailAutoWhitelistFilter::getInstance();
+                    $deleteEmailRequest = EmailAutoWhitelistFilterPost::getInstance();
                     if ( $deleteEmailRequest->isComplete() ) {
                         return AutoWhitelistEmailStore::getInstance()->deleteEmail(
                             $deleteEmailRequest->getSender(),
@@ -158,7 +188,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  AutoWhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addDomain":
-                    $addDomainRequest = DomainAutoWhitelistFilter::getInstance();
+                    $addDomainRequest = DomainAutoWhitelistFilterPost::getInstance();
                     if ( $addDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->addDomain(
                             $addDomainRequest->getDomain(),
@@ -168,7 +198,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteDomainRequest = DomainAutoWhitelistFilter::getInstance();
+                    $deleteDomainRequest = DomainAutoWhitelistFilterPost::getInstance();
                     if ( $deleteDomainRequest->isComplete() ) {
                         return AutoWhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain(),
@@ -202,7 +232,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  WhitelistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addEmail":
-                    $addEmailRequest = EmailFilter::getInstance();
+                    $addEmailRequest = EmailFilterPost::getInstance();
                     if ( $addEmailRequest->isComplete() ) {
                         return WhitelistEmailStore::getInstance()->addEmail(
                             $addEmailRequest->getEmail()
@@ -211,7 +241,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteEmailRequest = EmailFilter::getInstance();
+                    $deleteEmailRequest = EmailFilterPost::getInstance();
                     if ( $deleteEmailRequest->isComplete() ) {
                         return WhitelistEmailStore::getInstance()->deleteEmail(
                             $deleteEmailRequest->getEmail()
@@ -242,7 +272,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  WhitelistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addDomain":
-                    $addDomainRequest = DomainFilter::getInstance();
+                    $addDomainRequest = DomainFilterPost::getInstance();
                     if ( $addDomainRequest->isComplete() ) {
                         return WhitelistDomainStore::getInstance()->addDomain(
                             $addDomainRequest->getDomain()
@@ -251,7 +281,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteDomainRequest = DomainFilter::getInstance();
+                    $deleteDomainRequest = DomainFilterPost::getInstance();
                     if ( $deleteDomainRequest->isComplete() ) {
                         return WhitelistDomainStore::getInstance()->deleteDomain(
                             $deleteDomainRequest->getDomain()
@@ -282,7 +312,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  BlacklistEmailStore::getInstance()->getEmails($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addEmail":
-                    $addEmailRequest = EmailFilter::getInstance();
+                    $addEmailRequest = EmailFilterPost::getInstance();
                     if ( $addEmailRequest->isComplete() ) {
                         return BlacklistEmailStore::getInstance()->addEmail(
                             $addEmailRequest->getEmail()
@@ -291,7 +321,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteEmailRequest = EmailFilter::getInstance();
+                    $deleteEmailRequest = EmailFilterPost::getInstance();
                     if ( $deleteEmailRequest->isComplete() ) {
                         return BlacklistEmailStore::getInstance()->deleteEmail(
                             $deleteEmailRequest->getEmail()
@@ -322,7 +352,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  BlacklistDomainStore::getInstance()->getDomains($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addDomain":
-                    $addEmailRequest = DomainFilter::getInstance();
+                    $addEmailRequest = DomainFilterPost::getInstance();
                     if ( $addEmailRequest->isComplete() ) {
                         return BlacklistDomainStore::getInstance()->addDomain(
                             $addEmailRequest->getDomain()
@@ -331,7 +361,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteEmailRequest = DomainFilter::getInstance();
+                    $deleteEmailRequest = DomainFilterPost::getInstance();
                     if ( $deleteEmailRequest->isComplete() ) {
                         return BlacklistDomainStore::getInstance()->deleteDomain(
                             $deleteEmailRequest->getDomain()
@@ -362,7 +392,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  UserAdminStore::getInstance()->getUsers($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addUser":
-                    $addUserRequest = CreateUserFilter::getInstance();
+                    $addUserRequest = CreateUserFilterPost::getInstance();
                     if ( $addUserRequest->isComplete() ) {
                         return UserAdminStore::getInstance()->addUser(
                             $addUserRequest->getUsername(),
@@ -376,7 +406,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteUserRequest = UsernameFilter::getInstance();
+                    $deleteUserRequest = DeleteUserFilterPost::getInstance();
                     if ( $deleteUserRequest->isComplete() ) {
                         return UserAdminStore::getInstance()->deleteUser(
                             $deleteUserRequest->getUsername()
@@ -385,7 +415,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "setPassword":
-                    $UpdateUserPasswordRequest = UpdateUserPasswordFilter::getInstance();
+                    $UpdateUserPasswordRequest = UpdateUserPasswordFilterPost::getInstance();
                     if($UpdateUserPasswordRequest->isComplete()) {
                         if($loggedInUser->getUsername() == $UpdateUserPasswordRequest->getUsername() || $loggedInUser->isAdmin()){
                             $userObject = User::getUserByName($UpdateUserPasswordRequest->getUsername());
@@ -419,7 +449,7 @@ function dispatch($store, $action, User $loggedInUser) {
                 case "read":
                     return  UserAliasStore::getInstance()->getAliases($request->getLimit(), $request->getStart(), $request->getSortProperty(), $request->getSortDirection(), $request->getFilters());
                 case "addAlias":
-                    $addAliasRequest = CreateAliasFilter::getInstance();
+                    $addAliasRequest = CreateAliasFilterPost::getInstance();
                     if ( $addAliasRequest->isComplete() ) {
                         return UserAliasStore::getInstance()->addAlias(
                             $addAliasRequest->getUsername(),
@@ -429,7 +459,7 @@ function dispatch($store, $action, User $loggedInUser) {
                         return new AjaxResult(false, AjaxResult::getIncompleteMsg());
                     }
                 case "delete":
-                    $deleteAliasRequest = DeleteAliasFilter::getInstance();
+                    $deleteAliasRequest = DeleteAliasFilterPost::getInstance();
                     if ( $deleteAliasRequest->isComplete() ) {
                         return UserAliasStore::getInstance()->deleteAlias(
                             $deleteAliasRequest->getAliasId()
