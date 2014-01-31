@@ -30,7 +30,6 @@
                     name:"login_username",
                     actionId: "usernametext",
                     fieldLabel: Greyface.tools.Dictionary.translate("username"),
-                    value:"admin",
                     margin:"10 10 10 10",
                     allowBlank:false,
                     enableKeyEvents:true
@@ -41,7 +40,6 @@
                     actionId: "passwordtext",
                     fieldLabel: Greyface.tools.Dictionary.translate("password"),
                     inputType: "password",
-                    value:"admin",
                     margin:"10 10 0 10",
                     keys: [{
                         'enter': function() {console.log("username")}

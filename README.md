@@ -66,4 +66,4 @@ the future.
 INTERESTED?
 ===========
 The latest version of Greyface can be found on https://github.com/teqneers/Greyface
-For more information about installing GREYFACE2 on your system, read the install.txt
+For more information about installing GREYFACE on your system, read the install.txt
