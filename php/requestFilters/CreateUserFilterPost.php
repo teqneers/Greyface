@@ -1,5 +1,7 @@
 <?php
-
+/*
+ * This class tries to get the POST parameters of a create user request.
+ */
 class CreateUserFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $username = null;

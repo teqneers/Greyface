@@ -1,11 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: svencc
- * Date: 11.12.13
- * Time: 12:15
- */
 
+/*
+ * This class tries to get the POST parameters of an update request.
+ */
 class UpdateAliasFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $aliasId = null;

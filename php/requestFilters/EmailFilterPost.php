@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters from a request to create and delete Emails in the Whitelist/Blacklist.
+ */
 class EmailFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $email = null;

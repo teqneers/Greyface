@@ -1,5 +1,7 @@
 <?php
 
+// This script configures the error handling of php!
+
 // Get Config
 require_once "../../php/Config.php";
 

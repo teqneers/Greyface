@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters from a request to create and delete Domains in the AutoWhitelist.
+ */
 class EmailAutoWhitelistFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $sender = null;

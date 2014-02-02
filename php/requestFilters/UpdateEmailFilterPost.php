@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters of an update request.
+ */
 class UpdateEmailFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $newEmail = null;

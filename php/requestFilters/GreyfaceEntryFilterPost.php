@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters from a request to delete entries from the Greylist and move entries from Grey- to Whitelist.
+ */
 class GreyfaceEntryFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $senderName = null;

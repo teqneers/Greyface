@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters of a delete-greyface-entries request.
+ */
 class DeleteGreyfaceEntriesToFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $year = null;

@@ -4,7 +4,7 @@ require_once "../../php/Config.php";
 
 /**
  * DataBase
- * This class is the connection to the database
+ * This class represents the connection and interface to the database
  */
 class DataBase {
 
@@ -91,6 +91,7 @@ class DataBase {
 
     /**
      * Executes the query and gives back the number of affected rows
+     * 
      * @param string - $query - The SQL query which shall be executed.
      * @return int - The number of affected rows of the given query.
      */
@@ -120,35 +121,7 @@ class DataBase {
     }
 
     /**
-     * Sets up a query to the database and gets the result as object[].
-     *
-     * @param String $query - The sql-query
-     * @return Array - The result as object-array
-     */
-    public function queryObjects($query) {
-        $array	= array();
-        $result	= $this->query($query);
-        while($obj = $result->fetch_object() ) {
-            $array[]	=	$obj;
-        }
-
-        return $array;
-    }
-
-    /**
-     * Gets the total amount of rows of the given table.
-     *
-     * @param String $tableName - The name of the table you will count
-     * @return int
-     */
-    public function getTotal($tableName)
-    {
-        $rowsTotal = $this->queryArray("SELECT COUNT(*) as nr FROM ". $tableName);
-        return $rowsTotal[0]["nr"];
-    }
-
-    /**
-     * Checks the incoming value and escape the value to make an inserted db-query-string save!
+     * Escapes the incoming value to make provided values save for use in sql-querys!
      *
      * @param String $value - The value to quote.
      * @return String - The quoted value.

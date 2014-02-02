@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters of a delete alias request.
+ */
 class DeleteAliasFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $aliasId = null;

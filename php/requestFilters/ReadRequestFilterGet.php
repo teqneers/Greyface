@@ -1,11 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: svencc
- * Date: 11.12.13
- * Time: 12:15
- */
 
+/*
+ * This class tries to get the GET parameters of read/filter request.
+ */
 class ReadRequestFilter {
 
     private $limit = null;

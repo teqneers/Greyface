@@ -1,5 +1,7 @@
 <?php
-
+/*
+ * This class tries to get the POST parameters of a create alias request.
+ */
 class CreateAliasFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $username = null;

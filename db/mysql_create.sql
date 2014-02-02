@@ -1,15 +1,12 @@
--- MySQL dump 10.11
+-- Use this script to extend the sglgrey database!
+-- This script adds 2 new tables, required for Greyface.
 --
--- Host: localhost    Database: sqlgrey
+-- Database: sqlgrey
 -- ------------------------------------------------------
--- Server version	5.0.51a
---
--- Table structure for table `config`
---
 
 
 --
--- Tabellenstruktur f�r Tabelle `tq_user`
+-- Table structure for table `tq_user`
 --
 DROP TABLE IF EXISTS `tq_user`;
 CREATE TABLE IF NOT EXISTS `tq_user` (
@@ -28,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `tq_user` (
 
 
 --
--- Tabellenstruktur f�r Tabelle `tq_alias`
+-- Table structure for table tq_alias`
 --
 DROP TABLE IF EXISTS `tq_alias`;
 CREATE TABLE IF NOT EXISTS `tq_alias` (

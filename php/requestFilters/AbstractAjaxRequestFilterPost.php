@@ -1,8 +1,20 @@
 <?php
 
+/**
+ * An Abstract singleton class to POST filter implementations.
+ * The filters can be used to get the POST parameters from a user request.
+ */
+
 abstract class AbstractPostAjaxRequestFilter {
 
+    /*
+     * The raw data from HTTP_RAW_POST_DATA
+     */
     private static $raw;
+    
+    /*
+     * The json encoded data from HTTP_RAW_POST_DATA
+     */
     private static $json;
 
     /**

@@ -1,10 +1,31 @@
 +======================================================================================================================+
 |                                             INSTALL INSTRUCTIONS                                                     |
+|                                                 GREYFACE 2.x                                                         |
 +======================================================================================================================+
 
+0. Prerequisites:
+    Greyface is a php and mysql based admin tool on top of sqlgrey. Due to this fact it is required that you 
+    download and install sqlgrey in a php/mysql envirenment!
 
-1. Make a copy of /Greyface/greyface_template.ini and name it /Greyface/greyface.ini
-2. Enter the data in the .ini file to configure Greyface:
+    0.1 Download and install sqlgrey from http://sqlgrey.sourceforge.net/
+    0.2 Provide a mySQL installation and combine it with sqlgrey.
+
+1. Deploy the greyface/ folder to a http-accesible folder on your webserver.
+
+2. You have to give read and write access to the Greyface log file in greyface/log/greyface.log
+3. You have to give read and write access to the htdocs directory at greyface/htdocs/
+4. Configure apache to use the Greyface/htdocs/ directory as root directory.
+
+5. Update/extend the database of sqlgrey with the following database scripts in Greyface/db directory:
+    5.1 mysql_create.sql
+    5.2 mysql_init.sql
+    
+    The first script adds 2 tables to your sqlgrey database.
+    The second one adds creates a new admin user (usr:admin, pwd: admin). 
+    Do not forget to change the password after installation!
+
+6. Make a copy of /Greyface/greyface_template.ini and name it /Greyface/greyface.ini
+7. Enter the data in the .ini file to configure Greyface:
 
             [mySQLData]
             hostname = localhost     <- the url to your mysql database with the sqlgrey table.
@@ -15,8 +36,6 @@
             [application]
             sendMail = true|false    <- says if the application can send emails to newly created users
             logging = true|false     <- defines if the error logging to /Greyface/log/greyface.log should be activated
-
-3. You have to give read and write access to the Greyface log file in Greyface/log/greyface.log
 
 
 

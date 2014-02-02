@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters of a delete-user request.
+ */
 class DeleteUserFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $username = null;

@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * This class tries to get the POST parameters from a request to create and delete Domains in the Whitelist/Blacklist.
+ */
 class DomainFilterPost extends AbstractPostAjaxRequestFilter {
 
     private $domain = null;
