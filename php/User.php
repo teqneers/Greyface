@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: svencc
- * Date: 09.12.13
- * Time: 11:16
+ * This class represents a user
  */
 
 class User {
@@ -179,11 +176,16 @@ class User {
         return $this->cookie = $cookieHash;
     }
 
+    /**
+     * Writes password to database.
+     * @param $password
+     * @return bool - if passwort was accepted (not empty string)
+     */
     public function setPassword($password) {
         if(empty($password)) {
             return false;
         } else {
-            $res = DataBase::getInstance()->queryAffect(
+            DataBase::getInstance()->queryAffect(
                 "UPDATE tq_user"
                 ." SET password = '".DataBase::getInstance()->quote($this->encryptPassword($password))."'"
                 ." WHERE user_id = '".$this->user_id."'"
@@ -192,11 +194,19 @@ class User {
         }
     }
 
+    /**
+     * Unsets the cookie in database and local variable
+     * @return bool - is true in any case
+     */
     public function unsetCookie() {
         $this->setCookie("");
         return true;
     }
 
+    /**
+     * Checks if a cookie is saved in database.
+     * @return bool - if cookie was found or not
+     */
     public function hasCookieInDB() {
         if (empty($this->cookie)) {
             return false;
@@ -222,6 +232,11 @@ class User {
         return substr($newPwString, 0, $length);
     }
 
+    /**
+     * Encrypts the given password string with the standard hash algorithm (sha1)
+     *
+     * @param string - $passwordToEncrypt - The password to encrypt.
+     */
     public static function encryptPassword($passwordToEncrypt) {
         return sha1($passwordToEncrypt);
     }

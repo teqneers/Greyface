@@ -1,11 +1,6 @@
 <?php
 /**
  * This class represents the result of the login attempt.
- *
- * Created by PhpStorm.
- * User: svencc
- * Date: 09.12.13
- * Time: 17:14
  */
 
 class LoginResult {
@@ -27,6 +22,8 @@ class LoginResult {
     }
 
     /**
+     * The message which tells some more about the login attempt
+     * 
      * @return string
      */
     public function getMsg()
@@ -35,6 +32,8 @@ class LoginResult {
     }
 
     /**
+     * If the login attempt was successful or not
+     * 
      * @return boolean
      */
     public function getResult()
@@ -42,12 +41,19 @@ class LoginResult {
         return $this->result;
     }
 
+    /**
+     * If the login attempt was successful or not (bool is represented as string)
+     * 
+     * @return string - "true" or "false"
+     */
     public function getResultString() {
         return ($this->result)?"true":"false";
     }
 
     /**
-     * @return User instance or null
+     * Gets the user which is logged in
+     * 
+     * @return User instance or null if login attempt failed
      */
     public function getUser()
     {

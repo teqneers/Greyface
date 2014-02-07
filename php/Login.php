@@ -1,11 +1,5 @@
 <?php
 /**
- * /**
- * Created by PhpStorm.
- * User: svencc
- * Date: 06.12.13
- * Time: 16:00
- *
  * This class is responsible for login/auto login the user.
  * This includes authentication and authorization.
  * The login-method returns an object of type LoginResult,

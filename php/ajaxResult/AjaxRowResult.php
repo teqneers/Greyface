@@ -33,6 +33,8 @@ class AjaxRowsResult extends AjaxResult {
     }
 
     /**
+     * Adds a row to the result set
+     * 
      * @param array - $oneRow - one row of the result set.
      */
     public function addRow($oneRow) {
@@ -40,11 +42,21 @@ class AjaxRowsResult extends AjaxResult {
             array_push($this->rows, $oneRow);
     }
 
+    /**
+     * Adds a row to the beginning of a result set.
+     * 
+     * @param array - $oneRow - one row of the result set.
+     */
     public function prependRow($oneRow) {
         if(is_array($oneRow))
             array_unshift($this->rows, $oneRow);
     }
 
+    /**
+     * The standard __tooString method of a class
+     * 
+     * @return string - a string which represents the object and tells about the success and lists the included dataSet. Everything in proper json format.
+     */
     public function __toString() {
         $string = "";
         $string .= '{ "' . $this->root . '":[{"success": ' . $this->getSuccessString() . ', "msg": "' . $this->message . '"}],';
@@ -52,11 +64,7 @@ class AjaxRowsResult extends AjaxResult {
         foreach($this->rows as $row ) {
             $string .= json_encode($row) . ",";
         }
-        // @TODO can this be deleted?
-//        if (count($this->rows) > 0) {
-//            // removes last comma
-//            $string = substr($string,0,-1);
-//        }
+
         $string = (substr($string, 0, -1 ) == "," ) ? substr($string, 0, -1) : $string; // cuts off the last comma!
         $string .= '],';
         $string .= ' "totalRows":' . (integer)$this->rowsTotal .'}';

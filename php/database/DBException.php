@@ -2,7 +2,7 @@
 /**
  * Class DBException
  *
- * This class represents and Exception which occurred while handling a mysql db request.
+ * This class represents any Exception which can occurre while handling a mysql db request.
  */
 class DBException extends Exception {
 
