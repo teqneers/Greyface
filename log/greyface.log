@@ -416,3 +416,4 @@ Type: ErrorException; Message: mysqli::mysqli(): (28000/1045): Access denied for
 Type: ErrorException; Message: mysqli::mysqli(): (28000/1045): Access denied for user 'root'@'localhost' (using password: YES); File: /var/www/Greyface/php/database/DataBase.php; Line: 34;
 Type: ErrorException; Message: mysqli::mysqli(): (28000/1045): Access denied for user 'root'@'localhost' (using password: YES); File: /var/www/Greyface/php/database/DataBase.php; Line: 34;
 Type: ErrorException; Message: mysqli::mysqli(): (28000/1045): Access denied for user 'root'@'localhost' (using password: YES); File: /var/www/Greyface/php/database/DataBase.php; Line: 34;
+Type: ErrorException; Message: mysqli::mysqli(): (28000/1045): Access denied for user 'root'@'localhost' (using password: YES); File: /var/www/Greyface/php/database/DataBase.php; Line: 34;
