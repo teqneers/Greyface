@@ -40,8 +40,23 @@ Ext.define("Greyface.view.greylist.GridPanel",{
                 }
             ]
         },
-        {text:Greyface.tools.Dictionary.translate("sender"), dataIndex:"sender_name", autoSizeColumn:true},
-        {text:Greyface.tools.Dictionary.translate("domain"), dataIndex:"sender_domain", autoSizeColumn:true},
+        {
+            text:Greyface.tools.Dictionary.translate("sender"),
+            dataIndex:"sender_name",
+            autoSizeColumn:true,
+            align:"right"
+        },
+        {
+            text: "@", xtype:"templatecolumn",
+            tpl:"@", width:20,
+            align:"center"
+        },
+        {
+            text:Greyface.tools.Dictionary.translate("domain"),
+            dataIndex:"sender_domain",
+            autoSizeColumn:true,
+            align:'left'
+        },
         {text:Greyface.tools.Dictionary.translate("source"), dataIndex:"source", autoSizeColumn:true},
         {text:Greyface.tools.Dictionary.translate("recipient"), dataIndex:"alias_name", autoSizeColumn:true},
         {xtype:"datecolumn", text:Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
