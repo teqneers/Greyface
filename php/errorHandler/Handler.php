@@ -20,6 +20,11 @@ function log_exception( Exception $e )
 {
     $message = "Type: " . get_class( $e ) . "; Message: {$e->getMessage()}; File: {$e->getFile()}; Line: {$e->getLine()};";
     file_put_contents( "../../log/greyface.log", $message . PHP_EOL, FILE_APPEND );
+
+    echo json_encode(array(
+        'success' => false,
+        'msg' => $message
+    ));
     exit();
 }
 
@@ -40,7 +45,10 @@ if(Config::getInstance()->isLogging()) {
     set_exception_handler( "log_exception" );
 }
 
-// Deactivate error output!
-ini_set( "display_errors", "off" );
-error_reporting( E_ALL );
-
+// Deactivate/activate error output
+if(!Config::getInstance()->isErrorOutput()) {
+    ini_set( "display_errors", "off" );
+} else {
+    ini_set( "display_errors", "on" );
+    error_reporting( E_ALL );
+}
