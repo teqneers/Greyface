@@ -1,4 +1,12 @@
 <?php
+    ini_set('error_reporting', E_ALL);
+    ini_set('display_errors', 1);
+
+    // Error handling
+    require "../../php/errorHandler/Handler.php";
+
+
+
     require "../../php/database/DataBase.php";
     require "../../php/Login.php";
     require "../../php/LoginResult.php";
