@@ -1,0 +1,7 @@
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
+Type: ErrorException; Message: Array to string conversion; File: /var/www/Greyface/php/stores/UserAliasStore.php; Line: 99;
+Type: DBException; Message: ; File: /var/www/Greyface/php/database/DataBase.php; Line: 68;
