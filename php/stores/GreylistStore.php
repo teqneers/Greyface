@@ -95,7 +95,9 @@ class GreylistStore extends AbstractStore {
             }
             foreach($filters as $column => $value) {
                 if ( $column == "tq_user.user_id" && $value == "show_unassigned" ) {
-                    empty($whereStatement) ? $whereStatement .= " WHERE tq_user.user_id = NULL" : $whereStatement .= " AND tq_user.user_id = NULL";
+                    empty($whereStatement)
+                        ? $whereStatement .= " WHERE tq_user.user_id = NULL OR tq_alias.user_id = NULL OR connect.rcpt = NULL "
+                        : $whereStatement .= " OR tq_user.user_id = NULL OR tq_alias.user_id = NULL OR connect.rcpt = NULL " ;
                 } elseif ($column == "tq_user.user_id") {
                     empty($whereStatement) ? $whereStatement .= " WHERE tq_user.user_id = '".self::$db->quote($value)."'" : $whereStatement .= " AND tq_user.user_id = '".self::$db->quote($value)."'";
                 }
