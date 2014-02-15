@@ -87,13 +87,23 @@ class UserAliasStore extends AbstractStore {
     }
 
     public function addAlias($username, $alias) {
+        // Emables the functionality to inser more that one alias!
+        // The aliases are concatenated by # -> so we have to explode it here.
+        $aliases = explode('#', $alias);
+
         // first we have to find the userId to the given username!
         $user = User::getUserByName($username);
         if($user->isUserExisting()) {
             $userId = $user->getUserId();
             $insertQuery =  "INSERT INTO tq_alias".
-                " (user_id, alias_name)".
-                " VALUES ('".self::$db->quote($userId)."','".self::$db->quote($alias)."')";
+                " (user_id, alias_name) VALUES ";
+            foreach($aliases as $key => $alias) {
+                if ($key != 0) {
+                    $insertQuery .= ',';
+                }
+                $insertQuery .= " ('".self::$db->quote($userId)."','".self::$db->quote($alias)."')";
+            }
+
             self::$db->query($insertQuery);
 
             return new AjaxResult(true, "Alias has been added to database!");

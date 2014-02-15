@@ -6,6 +6,7 @@ Ext.define("Greyface.tools.Dictionary",{
         // a
         {key:"add", en:"Add", de:"Hinzufügen"},
         {key:"addAlias", en:"Add alias", de:"Alias hinzufügen"},
+        {key:"addAnotherAlias", en:"Add another alias", de:"Weiteren Alias hinzufügen"},
         {key:"addDomain", en:"Add Domain", de:"Domäne hinzufügen"},
         {key:"addEmail", en:"Add Email", de:"Email hinzufügen"},
         {key:"addEmailToAutoWhitelist", en:"Add Email to Auto Whitelist", de:"Email zur Auto Whitelist hinzufügen"},
