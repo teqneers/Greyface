@@ -1,8 +1,21 @@
 <?php
 
+/**
+ * Class UserAdminStore
+ * Store to manage user entries in database.
+ */
 class UserAdminStore extends AbstractStore {
 
+    /**
+     * Configuration which db fields have to be selected
+     * @var array
+     */
     private $dbFields = array();
+
+    /**
+     * Configuration which table have to be used for selection
+     * @var string
+     */
     private $tableName = "tq_user";
 
     public function __construct(){
@@ -14,10 +27,31 @@ class UserAdminStore extends AbstractStore {
         );
     }
 
+    /**
+     * Gets the user list
+     *
+     * @param int - $limit - How much entries to show
+     * @param int- $start - at which entry number the selection will start
+     * @param string - $sortProperty after which column the selection should be sorted
+     * @param string - $sortDirection - ASC or DESC
+     * @param array - $filters - an array with filter options
+     * @return AjaxRowsResult
+     */
     public function getUsers($limit, $start, $sortProperty=NULL, $sortDirection=NULL, $filters=array()) {
         return $this->getData($this->tableName, implode(", ", $this->dbFields), $limit, $start, $sortProperty, $sortDirection, $filters);
     }
 
+    /**
+     * Adds a user to the database
+     *
+     * @param $username
+     * @param $email
+     * @param $password
+     * @param $isAdmin
+     * @param $isRandomizePassword
+     * @param $isSendEmail
+     * @return AjaxResult
+     */
     public function addUser($username, $email, $password, $isAdmin, $isRandomizePassword, $isSendEmail) {
 
         // Sanitize parameters: $isAdmin, $isRandomizePassword, $isSendEmail
@@ -51,13 +85,28 @@ class UserAdminStore extends AbstractStore {
         return new AjaxResult(true, "User has been added to database!");
 	}
 
-	public function deleteUser($username) {
+    /**
+     * Deletes a user from the database
+     *
+     * @param $username
+     * @return AjaxResult
+     */
+    public function deleteUser($username) {
 	    $deleteQuery =  "DELETE FROM tq_user"
             ." WHERE username='".self::$db->quote($username)."'";
         self::$db->query($deleteQuery);
         return new AjaxResult(true, "User has been removed from database!");
 	}
 
+    /**
+     * Alters a user in the database
+     *
+     * @param $user_id
+     * @param $username
+     * @param $email
+     * @param $isAdmin
+     * @return AjaxResult
+     */
     public function updateUser($user_id, $username, $email, $isAdmin) {
         $updateQuery =  "UPDATE tq_user"
                             ." SET username='".self::$db->quote($username)."'"
@@ -74,6 +123,10 @@ class UserAdminStore extends AbstractStore {
 
     }
 
+    /**
+    * Gets all usernames (prepended with show unassigned & show all option) for displaying in the user filter in the greylist store
+    * @return AjaxRowsResult
+    */
     public function getGreylistUserFilterOptions() {
         $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
         $result = self::$db->queryArray($selectQuery);

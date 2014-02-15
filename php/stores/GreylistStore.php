@@ -6,8 +6,22 @@
  */
 class GreylistStore extends AbstractStore {
 
+    /**
+     * The user which is logged in
+     * @var User instance
+     */
     private $user = null;
+
+    /**
+     * Filter propertys which will be blacklisted
+     * @var array
+     */
     private $filterBlacklist = array();
+
+    /**
+     * Configuration how filter properties have to be mapped in real table names
+     * @var array
+     */
     private $filterMapping = array();
 
     public function __construct(){

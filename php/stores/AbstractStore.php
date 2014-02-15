@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * Class AbstractStore
+ * An abstract store class to manage database tables.
+ * Can be implemented by specific store classes.
+ * This class provides a standard get/read method which supports filtering, sorting, paging
+ */
 abstract class AbstractStore {
 
+    /**
+     * Instances of derived child stores for singleton mechanism
+     * @var array
+     */
     private static $instances = array();
 
     /**

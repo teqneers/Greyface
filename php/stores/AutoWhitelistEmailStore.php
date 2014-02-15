@@ -1,8 +1,21 @@
 <?php
 
+/**
+ * Class AutoWhitelistEmailStore
+ * Store to manage the AutoWhitelist/emails in database
+ */
 class AutoWhitelistEmailStore extends AbstractStore {
 
+    /**
+     * Configuration which db fields have to be selected
+     * @var array
+     */
     private $dbFields = array();
+
+    /**
+     * Configuration which table have to be used for selection
+     * @var string
+     */
     private $tableName = "from_awl";
 
     public function __construct(){
@@ -17,12 +30,11 @@ class AutoWhitelistEmailStore extends AbstractStore {
 
     /**
      * Gets the emails from the Whitelist store [table: from_awl]
-     * @param $limit
-     * @param $start
-     * @param null $sortProperty
-     * @param null $sortDirection
-     * @param array $filters
-     * @return AjaxRowsResult
+     * @param int - $limit - How much entries to show
+     * @param int- $start - at which entry number the selection will start
+     * @param string - $sortProperty after which column the selection should be sorted
+     * @param string - $sortDirection - ASC or DESC
+     * @param array - $filters - an array with filter options
      */
     public function getEmails($limit, $start, $sortProperty=NULL, $sortDirection=NULL, $filters=array()) {
         // Because of the Error of Greytool we have to delete the entries with the
@@ -33,6 +45,13 @@ class AutoWhitelistEmailStore extends AbstractStore {
         return $this->getData($this->tableName, implode(", ", $this->dbFields), $limit, $start, $sortProperty, $sortDirection, $filters);
     }
 
+    /**
+     * Adds email to database
+     * @param $sender
+     * @param $domain
+     * @param $source
+     * @return AjaxResult
+     */
     public function addEmail($sender, $domain, $source) {
         $insertQuery =  "INSERT INTO from_awl".
                         " (sender_name, sender_domain, src, last_seen)".
@@ -42,6 +61,13 @@ class AutoWhitelistEmailStore extends AbstractStore {
         return new AjaxResult(true, "Data has been added to database!");
     }
 
+    /**
+     * Deletes email from database
+     * @param $sender
+     * @param $domain
+     * @param $source
+     * @return AjaxResult
+     */
     public function deleteEmail($sender, $domain, $source) {
         $deleteQuery =  "DELETE FROM from_awl"
                         ." WHERE sender_name='".self::$db->quote($sender)."'"
@@ -51,6 +77,16 @@ class AutoWhitelistEmailStore extends AbstractStore {
         return new AjaxResult(true, "Data has been removed from database!");
     }
 
+    /**
+     * Alters email in database
+     * @param $senderName
+     * @param $senderDomain
+     * @param $src
+     * @param $senderNameId
+     * @param $senderDomainId
+     * @param $srcId
+     * @return AjaxResult
+     */
     public function updateEmail($senderName, $senderDomain, $src, $senderNameId, $senderDomainId, $srcId) {
         $updateQuery =  "UPDATE from_awl"
                         ." SET sender_name='".self::$db->quote($senderName)."'"
