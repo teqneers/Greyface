@@ -10,9 +10,9 @@
             xtype: 'panel',
             region:	"north",
             border:	false,
-            height: 60,
+            height: 55,
             width:220,
-            html: "<img src='resources/images/logo.jpg' height='55' width='220'>"
+            html: "<img src='resources/images/greyface.jpg' height='55' width='220'>"
         },{
             xtype: 'panel',
             region:	"north",
