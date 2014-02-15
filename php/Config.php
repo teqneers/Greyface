@@ -14,6 +14,7 @@ class Config {
     private $app_sendMail;
     private $app_logging;
     private $app_displayErrors;
+    private $app_timezone;
 
     private $application_name = "Greyface";
 
@@ -65,7 +66,10 @@ class Config {
             $this->app_sendMail      = array_key_exists('sendMail', $ini_array["application"]) ? $ini_array["application"]["sendMail"] : null;
             $this->app_logging       = array_key_exists('logging',  $ini_array["application"]) ? $ini_array["application"]["logging"] : null;
             $this->app_displayErrors = array_key_exists('displayErrors',  $ini_array["application"]) ? $ini_array["application"]["displayErrors"] : null;
+            $this->app_timezone      = array_key_exists('timezone',  $ini_array["application"]) ? $ini_array["application"]["timezone"] : null;
         }
+
+        date_default_timezone_set($this->app_timezone);
 
         if ( !$this->isIniSet() ) {
             throw new Exception('Ini is not set properly!');
@@ -73,13 +77,14 @@ class Config {
     }
 
     private function isIniSet() {
-        return ( empty($this->db_hostname)   ||
-                 empty($this->db_username)   ||
-                 empty($this->db_password)   ||
-                 empty($this->db_name)       ||
-                 empty($this->app_sendMail)  ||
-                 empty($this->app_logging)   ||
-                 empty($this->app_displayErrors)
+        return ( empty($this->db_hostname)       ||
+                 empty($this->db_username)       ||
+                 empty($this->db_password)       ||
+                 empty($this->db_name)           ||
+                 empty($this->app_sendMail)      ||
+                 empty($this->app_logging)       ||
+                 empty($this->app_displayErrors) ||
+                 empty($this->app_timezone) 
         );
     }
 
@@ -144,7 +149,24 @@ class Config {
         return $this->app_logging;
     }
 
+    /*
+     * Gets the errorOutput option which is specified in the ini file
+     * This specifies if errors will be send back in JSON objects
+     *
+     * @return string - app_displayErrors
+     */
     public function isErrorOutput()
+    {
+        return $this->app_logging;
+    }
+
+    /*
+     * Gets the timezone option which is specified in the ini file
+     * This specifies the timezone which will be used in the application via set
+     *
+     * @return string - app_displayErrors
+     */
+    public function getTimezone()
     {
         return $this->app_logging;
     }

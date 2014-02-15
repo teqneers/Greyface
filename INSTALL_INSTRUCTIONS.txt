@@ -36,7 +36,8 @@
             [application]
             sendMail = true|false    <- says if the application can send emails to newly created users
             logging = true|false     <- defines if the error logging to /Greyface/log/greyface.log should be activated
-
+            displayErrors = true     <- defines if errors will be shown in the returne JSON objects which the server will send back
+            timezone = Europe/Berlin <- look here http://php.net/manual/de/timezones.php and choose a timezone fitting to your server settings
 
 
 That's it, enjoy!
