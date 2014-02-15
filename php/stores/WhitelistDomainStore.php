@@ -1,8 +1,21 @@
 <?php
 
+/**
+ * Class WhitelistDomainStore
+ * Store to manage Whitelist/domain entries in database.
+ */
 class WhitelistDomainStore extends AbstractStore {
 
+    /**
+     * Configuration which db fields have to be selected
+     * @var array
+     */
     private $dbFields = array();
+
+    /**
+     * Configuration which table have to be used for selection
+     * @var string
+     */
     private $tableName = "optout_domain";
 
     public function __construct(){
@@ -11,10 +24,26 @@ class WhitelistDomainStore extends AbstractStore {
         );
     }
 
+    /**
+     * Gets the domain list
+     *
+     * @param int - $limit - How much entries to show
+     * @param int- $start - at which entry number the selection will start
+     * @param string - $sortProperty after which column the selection should be sorted
+     * @param string - $sortDirection - ASC or DESC
+     * @param array - $filters - an array with filter options
+     * @return AjaxRowsResult
+     */
     public function getDomains($limit, $start, $sortProperty=NULL, $sortDirection=NULL, $filters=array()) {
         return $this->getData($this->tableName, implode(", ", $this->dbFields), $limit, $start, $sortProperty, $sortDirection, $filters);
     }
 
+    /**
+     * Adds an entry to the table
+     *
+     * @param $domain
+     * @return AjaxResult
+     */
     public function addDomain($domain) {
         $insertQuery =  "INSERT INTO optout_domain".
             " (domain)".
@@ -24,6 +53,12 @@ class WhitelistDomainStore extends AbstractStore {
         return new AjaxResult(true, "Data has been added to database!");
     }
 
+    /**
+     * Deletes an entry from the table
+     *
+     * @param $domain
+     * @return AjaxResult
+     */
     public function deleteDomain($domain) {
         $deleteQuery =  "DELETE FROM optout_domain"
             ." WHERE domain='".self::$db->quote($domain)."'";
@@ -31,6 +66,13 @@ class WhitelistDomainStore extends AbstractStore {
         return new AjaxResult(true, "Data has been removed from database!");
     }
 
+    /**
+     * Alters an entry in the table
+     *
+     * @param $oldDomain
+     * @param $newDomain
+     * @return AjaxResult
+     */
     public function updateDomain($oldDomain, $newDomain) {
         $updateQuery = "UPDATE optout_domain"
             ." SET domain='".self::$db->quote($newDomain)."'"

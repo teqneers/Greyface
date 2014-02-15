@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * Class UserAliasStore
+ * Store to manage user/alias entries in database.
+ */
 class UserAliasStore extends AbstractStore {
 
+    /**
+     * Configuration how filter properties have to be mapped in real table names
+     * @var array
+     */
     private $filterMapping = array();
 
     public function __construct(){
@@ -12,6 +20,16 @@ class UserAliasStore extends AbstractStore {
         );
     }
 
+    /**
+     * Gets the alias list
+     *
+     * @param int - $limit - How much entries to show
+     * @param int- $start - at which entry number the selection will start
+     * @param string - $sortProperty after which column the selection should be sorted
+     * @param string - $sortDirection - ASC or DESC
+     * @param array - $filters - an array with filter options
+     * @return AjaxRowsResult
+     */
     public function getAliases($limit, $start, $sortProperty, $sortDirection, $filters) {
 
         $filters = $this->mapFilters($filters);
@@ -74,6 +92,12 @@ class UserAliasStore extends AbstractStore {
         return new AjaxRowsResult($result, $rowNumber);
     }
 
+    /**
+     * Function to map the filters as configured in the $filterMapping array
+     *
+     * @param $filters
+     * @return array
+     */
     private function mapFilters($filters) {
         $mappedFilters = array();
         foreach($filters as $property => $value) {
@@ -86,6 +110,13 @@ class UserAliasStore extends AbstractStore {
         return $mappedFilters;
     }
 
+    /**
+     * Adds an alias to the database
+     *
+     * @param $username
+     * @param $alias
+     * @return AjaxResult
+     */
     public function addAlias($username, $alias) {
         // Emables the functionality to inser more that one alias!
         // The aliases are concatenated by # -> so we have to explode it here.
@@ -112,6 +143,12 @@ class UserAliasStore extends AbstractStore {
         }
     }
 
+    /**
+     * Deletes an alias from the database
+     *
+     * @param $aliasId
+     * @return AjaxResult
+     */
     public function deleteAlias($aliasId) {
         $deleteQuery =  "DELETE FROM tq_alias"
             ." WHERE alias_id='".self::$db->quote($aliasId)."'";
@@ -119,6 +156,14 @@ class UserAliasStore extends AbstractStore {
         return new AjaxResult(true, "Alias has been removed from database!");
     }
 
+    /**
+     * Alters an alias from the database
+     *
+     * @param $aliasId
+     * @param $aliasEmail
+     * @param $username
+     * @return AjaxResult
+     */
     public function updateAlias($aliasId, $aliasEmail, $username) {
 
         // First checks if the given username exists.
@@ -142,6 +187,10 @@ class UserAliasStore extends AbstractStore {
         }
     }
 
+    /**
+     * Gets all usernames (prepended with show all option) for displaying in the user filter in the alias store
+     * @return AjaxRowsResult
+     */
     public function getUserAliasFilterOptions() {
         $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
         $result = self::$db->queryArray($selectQuery);
@@ -151,6 +200,10 @@ class UserAliasStore extends AbstractStore {
         return $result;
     }
 
+    /**
+     * Gets a simple username list, without any other options
+     * @return AjaxRowsResult
+     */
     public function getUserList() {
         $selectQuery = "SELECT username, user_id FROM tq_user ORDER BY username ASC";
         $result = self::$db->queryArray($selectQuery);
