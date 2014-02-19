@@ -58,7 +58,7 @@ Ext.define("Greyface.view.greylist.GridPanel",{
             align:'left'
         },
         {text:Greyface.tools.Dictionary.translate("source"), dataIndex:"source", autoSizeColumn:true},
-        {text:Greyface.tools.Dictionary.translate("recipient"), dataIndex:"alias_name", autoSizeColumn:true},
+        {text:Greyface.tools.Dictionary.translate("recipient"), dataIndex:"recipient", autoSizeColumn:true},
         {xtype:"datecolumn", text:Greyface.tools.Dictionary.translate("firstSeen"), dataIndex:"first_seen", autoSizeColumn:true},
         {text:Greyface.tools.Dictionary.translate("username"), dataIndex:"username", autoSizeColumn:true}
     ],
