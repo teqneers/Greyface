@@ -69,18 +69,16 @@ class UserAdminStore extends AbstractStore {
         self::$db->query($insertQuery);
 
         // Sends Email
-        if ($isSendEmail && Config::getInstance()->isSendMail()) {
-            mail(
-                $email,
-                "Your Greyface account",
-                "Hello $username,\n\n".
-                "a new Greyface account has been created for you on ".$_SERVER['HTTP_HOST'].".\n\n".
-                "Your username: $username\n".
-                "Your password: $password\n\n\n".
-                "Greyface",
-                "From: Greyface"
-            );
-        }
+        mail(
+            $email,
+            "Your Greyface account",
+            "Hello $username,\n\n".
+            "a new Greyface account has been created for you on ".$_SERVER['HTTP_HOST'].".\n\n".
+            "Your username: $username\n".
+            "Your password: $password\n\n\n".
+            "Greyface",
+            "From: Greyface"
+        );
 
         return new AjaxResult(true, "User has been added to database!");
 	}

@@ -11,7 +11,6 @@ class Config {
     private $db_password;
     private $db_name;
 
-    private $app_sendMail;
     private $app_logging;
     private $app_displayErrors;
 
@@ -62,13 +61,12 @@ class Config {
         }
 
         if( array_key_exists('application',  $ini_array) ) {
-            $this->app_sendMail      = array_key_exists('sendMail', $ini_array["application"]) ? $ini_array["application"]["sendMail"] : null;
-            $this->app_logging       = array_key_exists('logging',  $ini_array["application"]) ? $ini_array["application"]["logging"] : null;
-            $this->app_displayErrors = array_key_exists('displayErrors',  $ini_array["application"]) ? $ini_array["application"]["displayErrors"] : null;
+            $this->app_logging       = array_key_exists('logging',  $ini_array["application"]) ? $ini_array["application"]["logging"] : true;
+            $this->app_displayErrors = array_key_exists('displayErrors',  $ini_array["application"]) ? $ini_array["application"]["displayErrors"] : true;
         }
 
         if ( !$this->isIniSet() ) {
-            throw new Exception('Ini is not set properly!');
+            throw new Exception('Ini is not set properly! You have to set hostname. username, password and dbName!');
         }
     }
 
@@ -76,10 +74,7 @@ class Config {
         return ( !is_null($this->db_hostname)        &&
                  !is_null($this->db_username)        &&
                  !is_null($this->db_password)        &&
-                 !is_null($this->db_name)            &&
-                 !is_null($this->app_sendMail)       &&
-                 !is_null($this->app_logging)        &&
-                 !is_null($this->app_displayErrors)
+                 !is_null($this->db_name)
         );
     }
 
@@ -123,21 +118,10 @@ class Config {
     }
 
     /*
-     * Gets the sendmail option which is specified in the ini file
-     * This specifies if mails can be send by greyface to newly created users.
-     *
-     * @return string - app_sendMail
-     */
-    public function isSendMail()
-    {
-        return $this->app_sendMail;
-    }
-
-    /*
      * Gets the logging option which is specified in the ini file
      * This specifies if logging will be activated or not
      *
-     * @return string - app_sendMail
+     * @return string - app_logging
      */
     public function isLogging()
     {
@@ -152,17 +136,6 @@ class Config {
      */
     public function isErrorOutput()
     {
-        return $this->app_logging;
-    }
-
-    /*
-     * Gets the timezone option which is specified in the ini file
-     * This specifies the timezone which will be used in the application via set
-     *
-     * @return string - app_displayErrors
-     */
-    public function getTimezone()
-    {
-        return $this->app_logging;
+        return $this->app_displayErrors;
     }
 }

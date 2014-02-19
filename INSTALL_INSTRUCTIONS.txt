@@ -28,16 +28,14 @@
 7. Enter the data in the .ini file to configure Greyface:
 
             [mySQLData]
-            hostname = localhost     <- the url to your mysql database with the sqlgrey table.
-            username = user          <- username to login to the database.
+            hostname = localhost     <- the url to your mysql database with the sqlgrey table
+            username = user          <- username to login to the database
             password = xxxx          <- the password which the given user will use to connect to mysql
             dbName = greyface        <- the database name of sqlgrey
 
             [application]
-            sendMail = true|false    <- says if the application can send emails to newly created users
             logging = true|false     <- defines if the error logging to /Greyface/log/greyface.log should be activated
             displayErrors = true     <- defines if errors will be shown in the returne JSON objects which the server will send back
-            timezone = Europe/Berlin <- look here http://php.net/manual/de/timezones.php and choose a timezone fitting to your server settings
 
 
 That's it, enjoy!
