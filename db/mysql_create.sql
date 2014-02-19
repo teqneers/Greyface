@@ -34,7 +34,11 @@ CREATE TABLE IF NOT EXISTS `tq_alias` (
   `alias_name` varchar(50) NOT NULL,
   PRIMARY KEY  (`alias_id`),
   KEY `user_id` (`user_id`),
-  KEY `alias_name` (`alias_name`)
+  KEY `alias_name` (`alias_name`),
+  CONSTRAINT `constraint_tq_alias___tq_user`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `tq_user` (`user_id`)
+  ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 
