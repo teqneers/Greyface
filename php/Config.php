@@ -73,7 +73,7 @@ class Config {
     }
 
     private function isIniSet() {
-        return ( empty($this->db_hostname)       ||
+        return !( empty($this->db_hostname)       ||
                  empty($this->db_username)       ||
                  empty($this->db_password)       ||
                  empty($this->db_name)           ||
