@@ -69,18 +69,16 @@ class UserAdminStore extends AbstractStore {
         self::$db->query($insertQuery);
 
         // Sends Email
-        if ($isSendEmail && Config::getInstance()->isSendMail()) {
-            mail(
-                $email,
-                "Your Greyface account",
-                "Hello $username,\n\n".
-                "a new Greyface account has been created for you on ".$_SERVER['HTTP_HOST'].".\n\n".
-                "Your username: $username\n".
-                "Your password: $password\n\n\n".
-                "Greyface",
-                "From: Greyface"
-            );
-        }
+        mail(
+            $email,
+            "Your Greyface account",
+            "Hello $username,\n\n".
+            "a new Greyface account has been created for you on ".$_SERVER['HTTP_HOST'].".\n\n".
+            "Your username: $username\n".
+            "Your password: $password\n\n\n".
+            "Greyface",
+            "From: Greyface"
+        );
 
         return new AjaxResult(true, "User has been added to database!");
 	}
@@ -93,30 +91,11 @@ class UserAdminStore extends AbstractStore {
      * @return AjaxResult
      */
     public function deleteUser($username) {
-        // First check if the users exists and get his user_id
-        $selectUserQuery = "SELECT user_id
-                              FROM tq_user
-                             WHERE username = '" . self::$db->quote($username) ."'";
-        $result = self::$db->queryArray($selectUserQuery);
-
-        // Decide if user exists or not
-        if ( sizeof($result) > 0 ) {
-            // Get user id from result
-            $userId = self::$db->queryArray($selectUserQuery)[0]['user_id'];
-
-            // Delete the user
-            $deleteUserQuery =  "DELETE FROM tq_user"
-                ." WHERE user_id ='".self::$db->quote($userId)."'";
-            self::$db->query($deleteUserQuery);
-
-            // Delete all associated aliases
-            $deleteAliasQuery =  "DELETE FROM tq_alias"
-                ." WHERE user_id='".self::$db->quote($userId)."'";
-            self::$db->query($deleteAliasQuery);
-
-            return new AjaxResult(true, "User has been removed from database!");
-        }
-        return new AjaxResult(false, "User does not exist in database!");
+        // Delete the user
+        $deleteUserQuery =  "DELETE FROM tq_user"
+            ." WHERE username ='".self::$db->quote($username)."'";
+        self::$db->query($deleteUserQuery);
+        return new AjaxResult(true, "User has been removed from database!");
 	}
 
     /**

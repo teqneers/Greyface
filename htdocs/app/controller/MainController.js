@@ -117,7 +117,9 @@
 
     toggleContentScreen: function(cardNr){
         var panel = Ext.ComponentQuery.query("panel[actionId=contentPanel]")[0];
-        panel.getLayout().setActiveItem(cardNr)
+        panel.getLayout().setActiveItem(cardNr);
+        var layout = panel.getLayout().getActiveItem();
+        layout.down('gridpanel').getStore().reload();
     },
 
     showLoginScreen: function(){
