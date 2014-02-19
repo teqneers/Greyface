@@ -23,12 +23,9 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
                         Ext.create("Greyface.view.user.admin.ConfirmDeleteUserWindow", {
-                            test: 'test'
-//                            userRecord: grid.getStore().getAt(rowIndex),
+                            userRecord: grid.getStore().getAt(rowIndex),
+                            store: grid.getStore()
                         }).show();
-//                        var rec = grid.getStore().getAt(rowIndex);
-//                        rec.deleteItem();
-//                        grid.getStore().reload();
                     }
                 }
             ]

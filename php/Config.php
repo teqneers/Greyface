@@ -68,8 +68,7 @@ class Config {
         }
 
         if ( !$this->isIniSet() ) {
-            $tiken =  $this->isIniSet() ==true ? 'true' : 'false';
-            throw new Exception('Ini is not set properly!'. $tiken);
+            throw new Exception('Ini is not set properly!');
         }
     }
 

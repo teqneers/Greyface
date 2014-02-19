@@ -8,10 +8,7 @@ Ext.define("Greyface.view.user.admin.ConfirmDeleteUserWindow",{
     layout:"fit",
     config: {
         userRecord:'',
-        test:''
-    },
-    constructor: function(cfg) {
-        this.callParent(arguments);
+        store:''
     },
     items: [
         {
@@ -21,44 +18,31 @@ Ext.define("Greyface.view.user.admin.ConfirmDeleteUserWindow",{
             defaultType: 'text',
             items: [
                 {
-//                    text: Greyface.tools.Dictionary.translate("confirmDeleteUserDescription") + '\n'+this.userRecord.get('username')
-                    text: Greyface.tools.Dictionary.translate("confirmDeleteUserDescription") + '\n'+ this.up("window").test
+                    text:'',
+                    actionId: 'userToDelete'
                 }
             ],
             buttons: [
                 {
                     text: Greyface.tools.Dictionary.translate("delete"),
-                    formBind: true,
-                    disabled: true,
                     handler: function(){
-                        var form = this.up('form').getForm();
-                        var username = form.findField("username").getValue();
-                        var email = form.findField("email").getValue();
-                        var password = form.findField("password").getValue();
-                        var isAdmin = form.findField("isAdmin").getValue();
-                        var randomizePassword = form.findField("randomizePassword").getValue();
-                        var sendEmail = form.findField("sendEmail").getValue();
-                        this.up("window").callbackDeleteUser(username, email, password, isAdmin, randomizePassword, sendEmail);
+                        this.up("window").userRecord.deleteItem();
+                        this.up("window").store.reload();
                         this.up('window').destroy();
                     }
                 },
                 {
-                    text: Greyface.tools.Dictionary.translate("delete"),
-                    formBind: true,
-                    disabled: true,
+                    text: Greyface.tools.Dictionary.translate("cancel"),
                     handler: function(){
-                        var form = this.up('form').getForm();
-                        var username = form.findField("username").getValue();
-                        var email = form.findField("email").getValue();
-                        var password = form.findField("password").getValue();
-                        var isAdmin = form.findField("isAdmin").getValue();
-                        var randomizePassword = form.findField("randomizePassword").getValue();
-                        var sendEmail = form.findField("sendEmail").getValue();
-                        this.up("window").callbackAddUser(username, email, password, isAdmin, randomizePassword, sendEmail);
                         this.up('window').destroy();
                     }
                 }
             ]
         }
-    ]
+    ],
+    listeners: {
+        beforerender: function(window, layout) {
+            window.down('text[actionId=userToDelete]').setText(Greyface.tools.Dictionary.translate("confirmDeleteUserDescription")+'\n'+this.getUserRecord().data.username);
+        }
+    }
 });
