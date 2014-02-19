@@ -19,6 +19,9 @@ Ext.define("Greyface.tools.Dictionary",{
         {key:"blacklist", en:"Blacklist"},
 
         // c
+        {key:"cancel", en:"Cancel", de:"Abbrechen"},
+        {key:"confirmDeleteUser", en:"Do you really want to delete the user?", de:"Soll der Benutzer wirklich gelöscht werden?"},
+        {key:"confirmDeleteUserDescription", en:"Do you really want to delete the following user?", de:"Soll folgende der Benutzer wirklich gelöscht werden?"},
         {key:"createRandomPasswort", en:"Create Random Password", de:"Erzeuge zufülliges Passwort"},
         {key:"createUser", en:"Create new user", de:"Neuen Benutzer anlegen"},
 

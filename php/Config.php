@@ -68,18 +68,19 @@ class Config {
         }
 
         if ( !$this->isIniSet() ) {
-            throw new Exception('Ini is not set properly!');
+            $tiken =  $this->isIniSet() ==true ? 'true' : 'false';
+            throw new Exception('Ini is not set properly!'. $tiken);
         }
     }
 
     private function isIniSet() {
-        return !( empty($this->db_hostname)       ||
-                 empty($this->db_username)       ||
-                 empty($this->db_password)       ||
-                 empty($this->db_name)           ||
-                 empty($this->app_sendMail)      ||
-                 empty($this->app_logging)       ||
-                 empty($this->app_displayErrors)
+        return ( !is_null($this->db_hostname)        &&
+                 !is_null($this->db_username)        &&
+                 !is_null($this->db_password)        &&
+                 !is_null($this->db_name)            &&
+                 !is_null($this->app_sendMail)       &&
+                 !is_null($this->app_logging)        &&
+                 !is_null($this->app_displayErrors)
         );
     }
 
