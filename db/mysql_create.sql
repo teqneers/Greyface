@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `tq_alias` (
   `user_id` int(11) NOT NULL,
   `alias_name` varchar(50) NOT NULL,
   PRIMARY KEY  (`alias_id`),
+  UNIQUE KEY `alias_name_unique` (`alias_name`),
   KEY `user_id` (`user_id`),
   KEY `alias_name` (`alias_name`),
   CONSTRAINT `constraint_tq_alias___tq_user`
