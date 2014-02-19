@@ -93,6 +93,7 @@ class GreylistStore extends AbstractStore {
                 $count++;
 
             }
+            // check if "show_unassigned" filter is set!
             foreach($filters as $column => $value) {
                 if ( $column == "tq_user.user_id" && $value == "show_unassigned" ) {
                     empty($whereStatement)
