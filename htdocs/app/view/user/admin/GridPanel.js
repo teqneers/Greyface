@@ -22,8 +22,10 @@ Ext.define("Greyface.view.user.admin.GridPanel",{
                     tooltip: Greyface.tools.Dictionary.translate("delete"),
                     handler: function(grid, rowIndex, colIndex) {
                         var rec = grid.getStore().getAt(rowIndex);
-                        rec.deleteItem();
-                        grid.getStore().reload();
+                        Ext.create("Greyface.view.user.admin.ConfirmDeleteUserWindow", {
+                            userRecord: grid.getStore().getAt(rowIndex),
+                            store: grid.getStore()
+                        }).show();
                     }
                 }
             ]

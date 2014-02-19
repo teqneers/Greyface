@@ -92,13 +92,13 @@ Ext.define("Greyface.controller.UserController", {
     wireupUserAdminStore: function () {
         var store = Ext.getStore("Greyface.store.UserAdminStore");
         store.load();
-        this.getUserAdminGrid().reconfigure(store)
+        this.getUserAdminGrid().reconfigure(store);
         this.getUserAdminGridPagingToolbar().bindStore(store);
     },
     wireupUserAliasStore: function () {
         var store = Ext.getStore("Greyface.store.UserAliasStore");
         store.load();
-        this.getUserAliasGrid().reconfigure(store)
+        this.getUserAliasGrid().reconfigure(store);
         this.getUserAliasGridPagingToolbar().bindStore(store);
 
         // wires up the store for the combobox which shows all users, after which the grid can be filtered.
