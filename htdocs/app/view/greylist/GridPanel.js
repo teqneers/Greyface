@@ -47,15 +47,13 @@ Ext.define("Greyface.view.greylist.GridPanel",{
             align:"right"
         },
         {
-            text: "@", xtype:"templatecolumn",
-            tpl:"@", width:20,
-            align:"center"
-        },
-        {
             text:Greyface.tools.Dictionary.translate("domain"),
-            dataIndex:"sender_domain",
             autoSizeColumn:true,
-            align:'left'
+            align:'left',
+            dataIndex: 'sender_domain',
+            renderer: function(value){
+                return '@'+value;
+            }
         },
         {text:Greyface.tools.Dictionary.translate("source"), dataIndex:"source", autoSizeColumn:true},
         {text:Greyface.tools.Dictionary.translate("recipient"), dataIndex:"recipient", autoSizeColumn:true},

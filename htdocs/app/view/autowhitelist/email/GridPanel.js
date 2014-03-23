@@ -39,14 +39,13 @@ Ext.define("Greyface.view.autowhitelist.email.GridPanel",{
             }
         },
         {
-            text: "@", xtype:"templatecolumn",
-            tpl:"@", width:20,
-            align:"center"
-        },
-        {
-            text: Greyface.tools.Dictionary.translate("domain"),
-            dataIndex:"sender_domain",
+            text:Greyface.tools.Dictionary.translate("domain"),
             autoSizeColumn:true,
+            align:'left',
+            dataIndex: 'sender_domain',
+            renderer: function(value){
+                return '@'+value;
+            },
             editor:{
                 xtype:'textfield',
                 allowBlank: false
