@@ -13,8 +13,12 @@ Ext.define("Greyface.controller.GreylistController", {
     ],
     stores:[
         "Greyface.store.GreylistStore",
-        "Greyface.store.UserFilterStore"
+        "Greyface.store.UserFilterStore",
+        "Greyface.store.KeyValueLocalStorageStore"
     ],
+    config: {
+        firstload: true
+    },
     init: function () {
         this.control({
             // wire up the stores to the datagrid in view
@@ -69,12 +73,40 @@ Ext.define("Greyface.controller.GreylistController", {
         var userFilterStore = Ext.getStore("Greyface.store.UserFilterStore");
         userFilterStore.load();
         this.getGreylistUserFilterByCombobox().bindStore(userFilterStore);
+        var scope = this
+
+        userFilterStore.on('load', this.useSavedUserFilter, scope);
+        this.getGreylistUserFilterByCombobox().on('change', this.saveUserFilter, scope);
+
+
+
+    },
+    useSavedUserFilter: function(store, records, successful, eOpts) {
+        if(successful === false) {
+            return
+        }
+        // only executes on very first load event!
+        if( this.getFirstload() ) {
+            this.setFirstload(false)
+
+            var keyValueLocalStorage =  Ext.getStore("Greyface.store.KeyValueLocalStorageStore");
+            var userFilterStore = Ext.getStore("Greyface.store.UserFilterStore");
+            if( keyValueLocalStorage.has('GreylistUserFilter') ) {
+                if ( userFilterStore.find('username', keyValueLocalStorage.get('GreylistUserFilter')) > -1 ) {
+                    var record = userFilterStore.getAt(userFilterStore.find('username', keyValueLocalStorage.get('GreylistUserFilter')))
+                    this.getGreylistUserFilterByCombobox().select(record)
+                }
+            }
+        }
+    },
+    saveUserFilter: function(combo, newValue, oldValue, eOpts) {
+        var keyValueLocalStorage =  Ext.getStore("Greyface.store.KeyValueLocalStorageStore");
+        keyValueLocalStorage.store('GreylistUserFilter',combo.getRawValue())
     },
 
 
     // Filtering Greylist
     initGreylistFilter: function() {
-        console.log("change event fired..")
         var task = this.createGreylistFilterTask();
         task.delay(300)
     },
