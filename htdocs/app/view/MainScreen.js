@@ -146,7 +146,7 @@
         {
             xtype: 'panel',
             region: "south",
-            html:"<center>Copyright TEQneers GmbH & Co. KG 2003-2013</center>",
+            html:"<center>Greyface by TEQneers GmbH & Co. KG</center>",
             height: 25
         }
     ]
