@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `tq_user` (
   `ip` varchar(32) NOT NULL,
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB;
+) ENGINE=`InnoDB`;
 
 
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `tq_alias` (
   FOREIGN KEY (`user_id`)
   REFERENCES `tq_user` (`user_id`)
   ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=`InnoDB`;
 
 
 
