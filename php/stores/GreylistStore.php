@@ -62,7 +62,7 @@ class GreylistStore extends AbstractStore {
         $orderByStatement = "";
         $limitStatement = "";
 
-        // Get all Whitelist Data for the Email.
+        // Get all Greylist data for the Email.
         $selectStatement .= "SELECT connect.sender_name AS sender_name, ".
                                    "connect.sender_domain AS sender_domain, ".
                                    "connect.src AS source, ".
@@ -128,9 +128,39 @@ class GreylistStore extends AbstractStore {
         $query = $selectStatement . $fromStatement . $whereStatement . $orderByStatement . $limitStatement;
         $result = self::$db->queryArray($query);
 
+        ################################################################################################################
+        ## Know we need to complete the result list. The problem is that we know only have looked for alias-names in the
+        ## 'username'-row,  we didn´t look up for real users and their given email! Know we need to look in the empty
+        ## 'username' rows if we can find a user instead an alias for it!
+        ##
+        ## github teqneers/Greyface -> Issue #72 | https://github.com/teqneers/Greyface/issues/72
+        ################################################################################################################
+        // First we get all users from table 'tq_user'
+        $userQuery = 'SELECT username, email
+                        FROM tq_user';
+        $users = self::$db->queryArray($userQuery);
+
+        // For performance reasons we create an key->value (email -> username) array, which we will use to find users in future steps
+        $userArray = array();
+        foreach($users as $user) {
+            $userArray[ strtolower($user['email']) ] = $user['username'];
+        }
+        unset($users);
+
+        // Now we go through the result greylist, look for empty usernames, and try to look them up in the user list we fetched just above!
+        foreach($result as &$itemToProcess) {
+            if( empty($itemToProcess['username']) ) {
+                if ( array_key_exists( strtolower($itemToProcess['recipient']), $userArray) ) {
+                    $itemToProcess['username'] = $userArray[strtolower($itemToProcess['recipient'])];
+                } else {
+                    $itemToProcess['username'] = '---';
+                }
+            }
+        }
+        ################################################################################################################
+
         // Determine the total rows number (respect WHERE-statement).
         $rowNumber = DataBase::getInstance()->queryArray("SELECT COUNT(*) as nr" . $fromStatement . $whereStatement)[0]["nr"];
-
         return new AjaxRowsResult($result, $rowNumber);
     }
 
