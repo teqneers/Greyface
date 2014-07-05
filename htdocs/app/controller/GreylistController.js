@@ -65,13 +65,13 @@ Ext.define("Greyface.controller.GreylistController", {
 
     wireupStore: function () {
         var store = Ext.getStore("Greyface.store.GreylistStore");
-        store.load();
+        store.load(); // We need to load this store on startup
         this.getGrid().reconfigure(store)
         this.getGridPagingToolbar().bindStore(store);
 
         // wires up the store for the combobox which shows all users, after which the grid can be filtered.
         var userFilterStore = Ext.getStore("Greyface.store.UserFilterStore");
-        userFilterStore.load();
+        userFilterStore.load(); // We need to load this store on startup anyway!
         this.getGreylistUserFilterByCombobox().bindStore(userFilterStore);
         var scope = this
 

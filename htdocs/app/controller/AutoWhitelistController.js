@@ -75,13 +75,13 @@ Ext.define("Greyface.controller.AutoWhitelistController", {
     // Configure Store and connect with gridTable and gridPagingToolbar...
     wireupEmailStore: function () {
         var store = Ext.getStore("Greyface.store.AutoWhitelistEmailStore");
-        store.load();
+//        store.load(); // Login proccess speed #73 -> improved issue. No need to load all stores on startup!
         this.getEmailGrid().reconfigure(store)
         this.getEmailGridPagingToolbar().bindStore(store);
     },
     wireupDomainStore: function () {
         var store = Ext.getStore("Greyface.store.AutoWhitelistDomainStore");
-        store.load();
+//        store.load(); // Login proccess speed #73 -> improved issue. No need to load all stores on startup!
         this.getDomainGrid().reconfigure(store)
         this.getDomainGridPagingToolbar().bindStore(store);
     },
