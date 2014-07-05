@@ -91,19 +91,19 @@ Ext.define("Greyface.controller.UserController", {
 
     wireupUserAdminStore: function () {
         var store = Ext.getStore("Greyface.store.UserAdminStore");
-        store.load();
+//        store.load(); // Login proccess speed #73 -> improved issue. No need to load all stores on startup!
         this.getUserAdminGrid().reconfigure(store);
         this.getUserAdminGridPagingToolbar().bindStore(store);
     },
     wireupUserAliasStore: function () {
         var store = Ext.getStore("Greyface.store.UserAliasStore");
-        store.load();
+//        store.load(); // Login proccess speed #73 -> improved issue. No need to load all stores on startup!
         this.getUserAliasGrid().reconfigure(store);
         this.getUserAliasGridPagingToolbar().bindStore(store);
 
         // wires up the store for the combobox which shows all users, after which the grid can be filtered.
         var userAliasFilterStore = Ext.getStore("Greyface.store.UserAliasFilterStore");
-        userAliasFilterStore.load();
+        userAliasFilterStore.load(); // Login proccess speed #73 -> improved issue. No need to load all stores on startup!
         this.getAliasFilterCombo().bindStore(userAliasFilterStore);
     },
 
