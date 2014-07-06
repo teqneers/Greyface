@@ -25,6 +25,7 @@
                 click: function(menu, item, e, eOpts) {
                     this.getLanguageSelector().setText(item.text);
                     this.getLanguageSelector().setIcon(item.icon);
+                    document.cookie = 'preferredLanguageKey='+item.languageKey;
                     location.replace("index.php?language="+item.languageKey);
                 }
             },

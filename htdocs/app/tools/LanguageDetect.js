@@ -21,6 +21,19 @@ var LanguageDetect = new function() {
                 scope.language = param[1];
             }
         });
+        if (scope.language == "") {
+            var allCookies = document.cookie.split(';');
+            for(var i=0; i < allCookies.length; i++) {
+                var cookie = allCookies[i];
+                while (cookie.charAt(0)==' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.split()[0].indexOf('preferredLanguage') != -1) {
+                    var preferredLanguageKey = cookie.substring('preferredLanguageKey='.length, cookie.length);
+                    this.language = preferredLanguageKey;
+                }
+            }
+        }
     };
 }
 LanguageDetect.detectLanguage();
