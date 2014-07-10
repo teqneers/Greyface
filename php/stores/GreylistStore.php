@@ -74,7 +74,7 @@ class GreylistStore extends AbstractStore {
                            "LEFT JOIN tq_alias ".
                            "ON tq_alias.alias_name = connect.rcpt ".
                            "LEFT JOIN tq_user ".
-                           "ON tq_alias.user_id = tq_user.user_id";
+                           "ON tq_user.email = connect.rcpt";
 
         // Builds WHERE clause, based on the $filters[] array.
         if(count($filters) > 0) {
@@ -109,9 +109,9 @@ class GreylistStore extends AbstractStore {
         // For non admin users - their user id will be pushed in the WHERE clause
         if(!$this->user->isAdmin()) {
             if(empty($whereStatement)) {
-                $whereStatement .= " WHERE tq_user.user_id = ".$this->user->getUserId();
+                $whereStatement .= " WHERE (tq_user.user_id = ".$this->user->getUserId()." OR tq_alias.user_id = ".$this->user->getUserId().")";
             } else {
-                $whereStatement .= " AND tq_user.user_id = ".$this->user->getUserId();
+                $whereStatement .= " AND (tq_user.user_id = ".$this->user->getUserId()." OR tq_alias.user_id = ".$this->user->getUserId().")";
             }
         }
 
@@ -128,22 +128,16 @@ class GreylistStore extends AbstractStore {
         $query = $selectStatement . $fromStatement . $whereStatement . $orderByStatement . $limitStatement;
         $result = self::$db->queryArray($query);
 
-        ################################################################################################################
-        ## Know we need to complete the result list. The problem is that we know only have looked for alias-names in the
-        ## 'username'-row,  we didn´t look up for real users and their given email! Know we need to look in the empty
-        ## 'username' rows if we can find a user instead an alias for it!
-        ##
-        ## github teqneers/Greyface -> Issue #72 | https://github.com/teqneers/Greyface/issues/72
-        ################################################################################################################
         // First we get all users from table 'tq_user'
-        $userQuery = 'SELECT username, email
-                        FROM tq_user';
+        $userQuery = 'SELECT tq_alias.alias_name, tq_user.username
+                        FROM tq_alias
+                   LEFT JOIN tq_user ON tq_alias.user_id = tq_user.user_id';
         $users = self::$db->queryArray($userQuery);
 
         // For performance reasons we create an key->value (email -> username) array, which we will use to find users in future steps
         $userArray = array();
         foreach($users as $user) {
-            $userArray[ strtolower($user['email']) ] = $user['username'];
+            $userArray[ strtolower($user['alias_name']) ] = $user['username'];
         }
         unset($users);
 
