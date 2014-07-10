@@ -18,7 +18,7 @@ function log_error( $num, $str, $file, $line, $context = null )
  */
 function log_exception( Exception $e )
 {
-    $message = "Type: " . get_class( $e ) . "; Message: {$e->getMessage()}; File: {$e->getFile()}; Line: {$e->getLine()};";
+    $message = date("Y.m.d - G:i:s")." => Type: " . get_class( $e ) . "; Message: {$e->getMessage()}; File: {$e->getFile()}; Line: {$e->getLine()};";
     file_put_contents( "../../log/greyface.log", $message . PHP_EOL, FILE_APPEND );
 
     echo json_encode(array(
