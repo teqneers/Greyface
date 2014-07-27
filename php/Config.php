@@ -61,8 +61,8 @@ class Config {
         }
 
         if( array_key_exists('application',  $ini_array) ) {
-            $this->app_logging       = array_key_exists('logging',  $ini_array["application"]) ? $ini_array["application"]["logging"] : true;
-            $this->app_displayErrors = array_key_exists('displayErrors',  $ini_array["application"]) ? $ini_array["application"]["displayErrors"] : true;
+            $this->app_logging       = array_key_exists('logging',  $ini_array["application"]) ? $ini_array["application"]["logging"] : false;
+            $this->app_displayErrors = array_key_exists('displayErrors',  $ini_array["application"]) ? $ini_array["application"]["displayErrors"] : false;
         }
 
         if ( !$this->isIniSet() ) {

@@ -8,6 +8,9 @@
 
 
     require "../../php/database/DataBase.php";
+    require "../../php/database/DBException.php";
+    require "../../php/ajaxResult/AjaxResult.php";
+    require "../../php/ajaxResult/AjaxRowResult.php";
     require "../../php/Login.php";
     require "../../php/LoginResult.php";
     require "../../php/User.php";
