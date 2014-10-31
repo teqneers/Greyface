@@ -1,9 +1,9 @@
+# Project
 greyface.ini
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/scopes/scope_settings.xml
-.idea/modules.xml
-.idea/misc.xml
-.idea/encodings.xml
-.idea/Greyface.iml
-.idea/.name
+
+# Composer Libs
+composer.lock
+vendor/*
+
+# phpStorm IDE
+.idea/*
