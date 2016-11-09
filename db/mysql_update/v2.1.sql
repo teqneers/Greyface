@@ -1,0 +1,4 @@
+ALTER TABLE `tq_user`
+  MODIFY session VARCHAR(128),
+  MODIFY cookie VARCHAR(32),
+  MODIFY ip VARCHAR(32);
