@@ -74,7 +74,7 @@ class GreylistStore extends AbstractStore {
                            "LEFT JOIN tq_alias ".
                            "ON tq_alias.alias_name = connect.rcpt ".
                            "LEFT JOIN tq_user ".
-                           "ON tq_user.email = connect.rcpt";
+                           "ON tq_user.email = connect.rcpt || tq_user.user_id = tq_alias.user_id";
 
         // Builds WHERE clause, based on the $filters[] array.
         if(count($filters) > 0) {
