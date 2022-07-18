@@ -14,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'users')]
+#[ORM\Table(name: 'tq_users')]
 #[ORM\UniqueConstraint(name: 'uniq_username', columns: ['username', 'deleted_at'])]
 #[Serializer\ExclusionPolicy(Serializer\ExclusionPolicy::ALL)]
 #[Serializer\ReadOnlyProperty]

@@ -65,3 +65,6 @@ services:
 
     App\Security\UserChecker:
 
+    app.migration.password_hasher:
+        alias: 'Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface'
+        public: true
