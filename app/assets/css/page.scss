@@ -1,0 +1,24 @@
+
+html,
+body {
+    height: 100%;
+}
+body {
+    background-color: lightgray;
+}
+.container {
+    height: 100%;
+    max-width: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .row {
+        padding: 20px;
+
+        border-radius: 10px;
+        background-color: var(--bs-body-bg);
+        box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.24);
+    }
+}

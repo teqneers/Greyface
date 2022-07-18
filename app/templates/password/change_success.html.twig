@@ -1,0 +1,20 @@
+{% extends 'page.html.twig' %}
+
+{% block head %}
+    <meta http-equiv="refresh" content="10; url={{ path('app') }}">
+{% endblock %}
+
+{% block subtitle %}Passwort geändert{% endblock %}
+
+{% block content %}
+    <h3>Passwort geändert</h3>
+    <div class="description-wrap">
+        <p> Ihr Passwort wurde erfolgreich geändert. Bitte gehen Sie zurück in den Greyface und melden
+            sich mit dem neuen Passwort wieder an.</p>
+
+            <button class="btn btn-light" onclick="window.location.href='{{ path('app') }}'">
+                <span>Weiter zur Anwendung</span>
+            </button>
+
+    </div>
+{% endblock %}

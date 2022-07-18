@@ -1,0 +1,29 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        failure_transport: failed
+
+        transports:
+            sync: 'sync://'
+            async_normal: '%env(MESSENGER_TRANSPORT_DSN)%'
+            failed: '%env(MESSENGER_TRANSPORT_FAILED_DSN)%'
+
+        default_bus: command.bus
+        buses:
+            command.bus:
+                middleware:
+                    - messenger.middleware.validation
+                    - messenger.middleware.doctrine_ping_connection
+                    - messenger.middleware.doctrine_close_connection
+                    - messenger.middleware.doctrine_transaction
+            event.bus:
+                default_middleware: allow_no_handlers
+                middleware:
+                    - messenger.middleware.validation
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async_normal: 'sync://'
+                failed: 'in-memory://'

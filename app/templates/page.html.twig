@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% set pageId = pageId|default("page") %}
+
+{% block title %}{% block subtitle %}{% endblock %} | greyface{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('page') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+                <div id="{{ pageId }}">
+                    {% block content %}{% endblock %}
+                </div>
+                <div id="copyright" class="mt-2">
+                    <a href="https://www.teqneers.de/" target="_blank">©2022 TEQneers GmbH & Co. KG</a>
+                </div>
+        </div>
+    </div>
+{% endblock %}

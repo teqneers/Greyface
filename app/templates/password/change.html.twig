@@ -1,0 +1,31 @@
+{% extends 'page.html.twig' %}
+
+{% block subtitle %}Passwort ändern{% endblock %}
+
+{% block content %}
+    <h3>Passwort ändern</h3>
+    <div class="description-wrap">
+        <p>Bitte ändern Sie Ihr Passwort.</p>
+    </div>
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    <div class="form-group">
+        <label for="email">E-Mail-Adresse</label>
+        <input class="form-control" type="text" disabled id="email" value="{{ user.username }}"/>
+    </div>
+
+    {{ form_rest(form) }}
+
+    <div class="form-group mt-2">
+        <button type="submit" class="btn btn-success">
+            <span>Passwort ändern</span>
+        </button>
+        <button class="btn btn-light" onclick="window.location.href='{{ path('app') }}'">
+            <span>Abbrechen</span>
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}

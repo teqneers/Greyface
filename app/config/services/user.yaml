@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Domain\Entity\User\UserRepository:
+
+  command_handlers:
+    namespace: App\Domain\User\Command\
+    resource: '%kernel.project_dir%/src/Domain/User/Command/*Handler.php'
+    tags:
+      - { name: messenger.message_handler, bus: command.bus }
+
+  event_subscribers:
+    namespace: App\Domain\User\Command\
+    resource: '%kernel.project_dir%/src/Domain/User/Command/*Subscriber.php'
+    tags:
+      - { name: messenger.message_handler, bus: event.bus }
+
+  App\Domain\User\Validator\UniqueUsernameValidator:
+  App\Domain\User\Validator\RoleValidValidator:
+
+  App\Domain\User\Request\UserParamConverter:
+    tags:
+      - { name: request.param_converter, converter: app.user }
+
+  App\Domain\User\Security\UserVoter:
+  App\Domain\User\Security\ChangePasswordVoter:

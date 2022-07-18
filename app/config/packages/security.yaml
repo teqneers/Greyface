@@ -1,0 +1,67 @@
+security:
+    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        App\Domain\User\UserInterface:
+            algorithm: auto
+            memory_cost: 16384
+            time_cost: 3
+
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        user_provider:
+            id: App\Security\UserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            provider: user_provider
+            user_checker: App\Security\UserChecker
+            lazy: true
+            switch_user: false
+            entry_point: App\Security\LocalLoginAuthenticator
+            custom_authenticators:
+                - App\Security\LocalLoginAuthenticator
+            logout:
+                path: logout
+            remember_me:
+                secret: '%kernel.secret%'
+                name: GREYFACE_REMEMBER_ME
+                lifetime: 604800
+                path: /
+                domain: ~
+                httponly: true
+                secure: true
+                samesite: strict
+                remember_me_parameter: remember_me
+                token_provider:
+                    doctrine: true
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/password/change, roles: ROLE_USER }
+        - { path: ^/app, roles: ROLE_USER }
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Security\LocalLoginAuthenticator:
+
+    App\Security\UserProvider:
+
+    App\Security\UserChecker:
+

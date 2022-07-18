@@ -1,0 +1,12 @@
+doctrine_migrations:
+    migrations_paths:
+        # namespace is arbitrary but should be different from App\Migrations
+        # as migrations classes should NOT be autoloaded
+        'DatabaseUpdates': '%kernel.project_dir%/migrations'
+    enable_profiler: '%kernel.debug%'
+    transactional: false
+    storage:
+        table_storage:
+            table_name: db_updates
+            version_column_name: version
+            executed_at_column_name: executed_at

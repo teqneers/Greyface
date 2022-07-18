@@ -1,0 +1,11 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+logout:
+    path: /logout
+    methods: GET
+
+login_redirect:
+    path: /login-redirect
+    methods: GET

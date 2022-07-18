@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "esModuleInterop": true,
+        "target": "es2019",
+        "jsx": "react"
+    },
+    "include": [
+        "assets/@tq/src/js/**/*",
+        "assets/js/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "exporter"
+    ]
+}

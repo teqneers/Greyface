@@ -1,5 +1,7 @@
 greyface.ini
 log/*
+.idea
+.idea/php.xml
 .idea/workspace.xml
 .idea/vcs.xml
 .idea/scopes/scope_settings.xml
@@ -8,3 +10,6 @@ log/*
 .idea/encodings.xml
 .idea/Greyface.iml
 .idea/.name
+/docker/
+.DS_Store
+/var/
