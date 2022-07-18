@@ -1,18 +1,18 @@
 {% extends 'page.html.twig' %}
 
-{% block subtitle %}Passwort ändern{% endblock %}
+{% block subtitle %}{% trans %}change_password.title{% endtrans %}{% endblock %}
 
 {% block content %}
-    <h3>Passwort ändern</h3>
+    <h3>{% trans %}change_password.header{% endtrans %}</h3>
     <div class="description-wrap">
-        <p>Bitte ändern Sie Ihr Passwort.</p>
+        <p>{% trans %}change_password.intro{% endtrans %}</p>
     </div>
 
     {{ form_start(form) }}
     {{ form_errors(form) }}
 
     <div class="form-group">
-        <label for="email">E-Mail-Adresse</label>
+        <label for="email">{% trans %}change_password.form.email{% endtrans %}</label>
         <input class="form-control" type="text" disabled id="email" value="{{ user.username }}"/>
     </div>
 
@@ -20,10 +20,10 @@
 
     <div class="form-group mt-2">
         <button type="submit" class="btn btn-success">
-            <span>Passwort ändern</span>
+            <span>{% trans %}change_password.submit{% endtrans %}</span>
         </button>
         <button class="btn btn-light" onclick="window.location.href='{{ path('app') }}'">
-            <span>Abbrechen</span>
+            <span>{% trans %}cancel{% endtrans %}</span>
         </button>
     </div>
 

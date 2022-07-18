@@ -1,10 +1,10 @@
 {% extends 'page.html.twig' %}
 
-{% block subtitle %}Anmelden{% endblock %}
+{% block subtitle %}{% trans %}login.title{% endtrans %}{% endblock %}
 
 {% block content %}
 
-    <h3>Welcome to Greyface</h3>
+    <h3>{% trans %}login.header{% endtrans %}</h3>
     {% if error %}
         <div class="alert alert-danger">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -13,14 +13,14 @@
 
     <form name="login" method="post" action="{{ path('login') }}">
         <div class="form-group">
-            <label for="username">E-Mail-Adresse</label>
+            <label for="username">{% trans %}login.form.email{% endtrans %}</label>
             <input class="form-control" type="text" aria-label="Login" id="username" name="username"
                    value="{{ last_username }}"
                    required autocomplete="username" {% if not last_username %}autofocus{% endif %}/>
         </div>
 
         <div class="form-group">
-            <label for="password">Passwort</label>
+            <label for="password">{% trans %}login.form.password{% endtrans %}</label>
             <input class="form-control" type="password" aria-label="Password" id="password" name="password"
                    required autocomplete="current-password" {% if last_username %}autofocus{% endif %}/>
         </div>
@@ -28,7 +28,7 @@
         <div class="form-group mb-3">
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me"/>
-                <label class="form-check-label" for="remember_me">angemeldet bleiben</label>
+                <label class="form-check-label" for="remember_me">{% trans %}login.form.remember_me{% endtrans %}</label>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
         <div class="form-group">
             <button type="submit" class="btn btn-primary">
                 <i class="tq-glyph-enter-right"></i>
-                <span>Anmelden</span>
+                <span>{% trans %}login.submit{% endtrans %}</span>
             </button>
         </div>
     </form>

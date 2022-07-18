@@ -21,7 +21,7 @@ trait UserDomainTrait
     public static function createUser(
         string $username = 'usergreyface',
         string $email = 'user@greyface.test',
-        string $role = User::ROLE_USER
+        string $role = User::ROLE_USER,
     ): User {
         return User::createLocalUser((string)Uuid::uuid4(), $username, $email, $role);
     }

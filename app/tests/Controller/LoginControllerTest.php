@@ -32,7 +32,7 @@ class LoginControllerTest extends WebTestCase
 
         $client->request('GET', '/login');
         $client->submitForm(
-            'Anmelden',
+            'Log In',
             [
                 'username' => $user->getUsername(),
                 'password' => $password,
@@ -53,7 +53,7 @@ class LoginControllerTest extends WebTestCase
 
         $client->request('GET', '/login');
         $client->submitForm(
-            'Anmelden',
+            'Log In',
             [
                 'username' => 'doesnotexist',
                 'password' => $password,
@@ -79,7 +79,7 @@ class LoginControllerTest extends WebTestCase
 
         $client->request('GET', '/login');
         $client->submitForm(
-            'Anmelden',
+            'Log In',
             [
                 'username' => $user->getUsername(),
                 'password' => 'wrongpassword',

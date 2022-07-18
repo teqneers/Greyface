@@ -31,7 +31,7 @@ class PasswordControllerTest extends WebTestCase
         $client->request('GET', '/password/change');
 
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextSame('h3', 'Passwort ändern');
+        self::assertSelectorTextSame('h3', 'Change Password');
     }
 
     public function testChangePassword(): void
@@ -44,10 +44,10 @@ class PasswordControllerTest extends WebTestCase
 
         $client->request('GET', '/password/change');
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextSame('h3', 'Passwort ändern');
+        self::assertSelectorTextSame('h3', 'Change Password');
 
         $client->submitForm(
-            'Passwort ändern',
+            'Change Password',
             [
                 'change_password[currentPassword]'  => 'test',
                 'change_password[password][first]'  => 'Werbung1mBr1efk45ten',
@@ -58,7 +58,7 @@ class PasswordControllerTest extends WebTestCase
         self::assertResponseRedirects('/password/change/success');
         $client->followRedirect();
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextSame('h3', 'Passwort geändert');
+        self::assertSelectorTextSame('h3', 'Password changed');
 
         self::clearEntityManager();
         /** @var User|null $user */

@@ -1,15 +1,29 @@
 greyface.ini
-log/*
-.idea
-.idea/php.xml
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/scopes/scope_settings.xml
-.idea/modules.xml
-.idea/misc.xml
-.idea/encodings.xml
-.idea/Greyface.iml
-.idea/.name
-/docker/
+
+/var
+
+/data
+
+/docker
+
+## PhpStorm ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+/*.iml
+
+## Directory-based project format:
+.idea/
+
+## File-based project format:
+*.ipr
+*.iws
+
+# Mac specific files
 .DS_Store
-/var/
+._.DS_Store
+._*
+
+# Backups
+/*.sql
+
+/.env.local
+/.env.*.local

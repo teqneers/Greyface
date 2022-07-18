@@ -1,0 +1,25 @@
+title: Greyface
+
+cancel: Cancel
+
+login.title: Login
+login.header: Welcome to Greyface
+login.form.email: E-mail address
+login.form.password: Password
+login.form.remember_me: Remember me
+login.submit: Log In
+login.forgot_password: Forgot password?
+
+change_password.title: Change Password
+change_password.header: Change Password
+change_password.intro: Change Password
+change_password.form.email: E-mail address
+change_password.form.current_password: Current Password
+change_password.form.new_password: New Password
+change_password.form.new_password_repeat: Repeat new Password
+change_password.submit: Change Password
+change_password.success.title: Password changed
+change_password.success.header: Password changed
+change_password.success.text: >
+  Your password has been changed successfully. Please log in again with the new password.
+change_password.success.button: Continue to Login

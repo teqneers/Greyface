@@ -4,16 +4,15 @@
     <meta http-equiv="refresh" content="10; url={{ path('app') }}">
 {% endblock %}
 
-{% block subtitle %}Passwort geändert{% endblock %}
+{% block subtitle %}{% trans %}change_password.success.title{% endtrans %}{% endblock %}
 
 {% block content %}
-    <h3>Passwort geändert</h3>
+    <h3>{% trans %}change_password.success.header{% endtrans %}</h3>
     <div class="description-wrap">
-        <p> Ihr Passwort wurde erfolgreich geändert. Bitte gehen Sie zurück in den Greyface und melden
-            sich mit dem neuen Passwort wieder an.</p>
+        <p> {% trans %}change_password.success.text{% endtrans %} </p>
 
             <button class="btn btn-light" onclick="window.location.href='{{ path('app') }}'">
-                <span>Weiter zur Anwendung</span>
+                <span>{% trans %}change_password.success.button{% endtrans %}</span>
             </button>
 
     </div>

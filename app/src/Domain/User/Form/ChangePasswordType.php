@@ -18,7 +18,7 @@ class ChangePasswordType extends AbstractType
                 'currentPassword',
                 PasswordType::class,
                 [
-                    'label'    => 'Aktuelles Passwort',
+                    'label' => 'change_password.form.current_password',
                     'required' => true,
                     'attr'     => ['autocomplete' => 'current-password', 'class' => 'form-control'],
                 ]
@@ -29,12 +29,12 @@ class ChangePasswordType extends AbstractType
                 [
                     'type'           => PasswordType::class,
                     'first_options'  => [
-                        'label'    => 'Neues Passwort',
+                        'label' => 'change_password.form.new_password',
                         'required' => true,
                         'attr'     => ['autocomplete' => 'new-password', 'class' => 'form-control'],
                     ],
                     'second_options' => [
-                        'label'    => 'Passwort wiederholen',
+                        'label' => 'change_password.form.new_password_repeat',
                         'required' => true,
                         'attr'     => ['autocomplete' => 'new-password', 'class' => 'form-control'],
                     ],
