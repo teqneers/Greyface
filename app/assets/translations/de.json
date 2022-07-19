@@ -1,0 +1,80 @@
+{
+    "common": {
+        "emptyHeader": "Nichts ausgewählt",
+        "emptyBody": "Entweder sind keine Einträge vorhanden oder Sie haben noch nichts ausgewählt.",
+        "locale": {
+            "de_DE": "Deutsch",
+            "en_US": "English"
+        },
+        "booleanValue": {
+            "yes": "Ja",
+            "no": "Nein"
+        },
+        "button": {
+            "language": "Sprache",
+            "logout": "Abmelden",
+            "changePassword": "Passwort ändern",
+            "add": "Hinzufügen",
+            "create": "Erstellen",
+            "edit": "Bearbeiten",
+            "delete": "Löschen",
+            "unDelete": "Wiederherstellen",
+            "save": "Speichern",
+            "cancel": "Abbrechen",
+            "close": "Close",
+            "back": "Zurück",
+            "searchAndFilters": "Suchen & Filtern",
+            "createUser": "neuer Benutzer"
+        },
+        "placeholder": {
+            "search": "Suchen",
+            "noData": "Keine Daten gefunden",
+            "sortBy": "Sortieren nach"
+        },
+        "errors": {
+            "required": "Dieses Feld muss ausgefüllt werden!"
+        },
+        "paging": {
+            "previous": "Vorherige",
+            "next": "Nächste",
+            "itemsPerPage": "Pro Seite:"
+        },
+        "menu": {
+            "greylist": "Greylist",
+            "users": "Benutzer"
+        },
+        "greylist": {
+            "header": "Willkommen!",
+            "sender": "Sender",
+            "domain": "Domäne",
+            "source": "Source",
+            "recipient": "Recipient",
+            "firstSeen": "First Seen",
+            "username": "Username"
+        },
+        "user": {
+            "header": "Benutzer",
+            "createHeader": "Neuen Benutzer anlegen",
+            "editHeader": "Benutzer bearbeiten",
+            "deleteHeader": "Benutzer löschen",
+            "deleteMessage": "Möchten Sie diesen Benutzer wirklich löschen? Der Benutzer verbleibt im System, kann aber nicht mehr zugreifen oder ausgewählt werden.",
+            "unDeleteHeader": "Benutzer wiederherstellen",
+            "unDeleteMessage": "Möchten Sie diesen Benutzer wirklich wieder herstellen?",
+            "username": "Username",
+            "email": "E-Mail-Adresse",
+            "role": "Rolle",
+            "password": "Passwort",
+            "createdAt": "Zugewiesen am",
+            "roles": {
+                "admin": "Administrator",
+                "user": "Benutzer"
+            },
+            "userStatus": {
+                "disabled": "Deaktiviert",
+                "locked": "Gesperrt",
+                "enabled": "Aktiviert",
+                "deleted": "Deleted"
+            }
+        }
+    }
+}

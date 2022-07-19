@@ -1,0 +1,204 @@
+/* DEFAULT COLORS */
+$color-brand: #ab7967 !default;
+$color-primary: #ab7967 !default;
+$color-secondary: #00b0ff !default;
+$color-text: #1a2b34 !default;
+$color-note: #c0c5ce !default;
+$color-background: #ffffff !default;
+
+$color-selected: #d4ecf6 !default;
+
+$color-success: #08a742 !default;
+$color-notice: #0084ff !default;
+$color-info: #ffd60a !default;
+$color-warning: #ff9f0a !default;
+$color-error: #ff453a !default;
+
+$color-invert-primary: #ffffff !default;
+$color-invert-secondary: $color-invert-primary !default;
+$color-invert-success: $color-invert-primary !default;
+$color-invert-notice: $color-invert-primary !default;
+$color-invert-info: $color-text !default;
+$color-invert-warning: $color-invert-primary !default;
+$color-invert-error: $color-invert-primary !default;
+
+/* DEFAULT LAYOUT PADDINGS */
+$padding-content: 20px !default;
+$text-spacing: 15px !default;
+
+/* DEFAULT FONT SETTINGS */
+$font-default-light: 400 !default;
+$font-default-normal: 400 !default;
+$font-default-bold: 500 !default;
+$font-default-black: 700 !default;
+
+$font-family: "SourceSansPro", "Roboto", "Open Sans", sans-serif !default;
+$font-size: 15px !default;
+$font-line-height: 22px !default;
+$font-weight: $font-default-normal !default;
+
+$font-h1-size: 32px !default;
+$font-h1-line-height: 40px !default;
+$font-h1-weight: $font-default-bold !default;
+
+$font-h2-size: 25px !default;
+$font-h2-line-height: 32px !default;
+$font-h2-weight: $font-default-bold !default;
+
+$font-h3-size: 18px !default;
+$font-h3-line-height: 25px !default;
+$font-h3-weight: $font-default-bold !default;
+
+$font-small-size: 13px !default;
+$font-small-line-height: 16px !default;
+$font-small-weight: $font-default-light !default;
+
+/* DEFAULT BUTTON SETTINGS */
+$button-font-size: $font-size !default;
+$button-line-height: $font-line-height !default;
+$button-font-weight: $font-default-bold !default;
+$button-color-background: #ffffff !default;
+$button-radius: 2px !default;
+$button-scale-small: 0.85;
+$button-scale-default: 1.0;
+$button-scale-medium: 1.25;
+$button-scale-large: 1.5;
+
+/* DEFAULT FORM SETTINGS */
+$form-color-label: #747678 !default;
+$form-color-border: #cbcccd !default;
+$form-color-disabled: #f7f7f7 !default;
+$form-field-shadow: inset 0 1px 2px #eeeeee !default;
+$form-field-border-radius: 2px !default;
+
+:root {
+  /* DEFAULT COLORS */
+  --color-brand: #{$color-brand};
+  --color-primary: #{$color-primary};
+  --color-secondary: #{$color-secondary};
+  --color-text: #{$color-text};
+  --color-note: #{$color-note};
+  --color-background: #{$color-background};
+
+  --color-selected: #{$color-selected};
+
+  --color-success: #{$color-success};
+  --color-notice: #{$color-notice};
+  --color-info: #{$color-info};
+  --color-warning: #{$color-warning};
+  --color-error: #{$color-error};
+
+  --color-invert-primary: #{$color-invert-primary};
+  --color-invert-secondary: #{$color-invert-secondary};
+  --color-invert-success: #{$color-invert-success};
+  --color-invert-notice: #{$color-invert-notice};
+  --color-invert-info: #{$color-invert-info};
+  --color-invert-warning: #{$color-invert-warning};
+  --color-invert-error: #{$color-invert-error};
+
+  /* DEFAULT LAYOUT PADDINGS */
+  --padding-content: #{$padding-content};
+  --text-spacing: #{$text-spacing};
+
+  /* DEFAULT FONT SETTINGS */
+  --font-default-light: #{$font-default-light};
+  --font-default-normal: #{$font-default-normal};
+  --font-default-bold: #{$font-default-bold};
+  --font-default-black: #{$font-default-black};
+
+  --font-family: #{$font-family};
+  --font-size: #{$font-size};
+  --font-line-height: #{$font-line-height};
+  --font-weight: #{$font-weight};
+
+  --font-h1-size: #{$font-h1-size};
+  --font-h1-line-height: #{$font-h1-line-height};
+  --font-h1-weight: #{$font-h1-weight};
+
+  --font-h2-size: #{$font-h2-size};
+  --font-h2-line-height: #{$font-h2-line-height};
+  --font-h2-weight: #{$font-h2-weight};
+
+  --font-h3-size: #{$font-h3-size};
+  --font-h3-line-height: #{$font-h3-line-height};
+  --font-h3-weight: #{$font-h3-weight};
+
+  --font-small-size: #{$font-small-size};
+  --font-small-line-height: #{$font-small-line-height};
+  --font-small-weight: #{$font-default-light};
+
+  /* DEFAULT BUTTON SETTINGS */
+  --button-font-size: #{$button-font-size};
+  --button-line-height: #{$button-line-height};
+  --button-font-weight: #{$button-font-weight};
+  --button-color-background: #{$button-color-background};
+  --button-radius: #{$button-radius};
+  --button-scale-small: #{$button-scale-small};
+  --button-scale-default: #{$button-scale-default};
+  --button-scale-medium: #{$button-scale-medium};
+  --button-scale-large: #{$button-scale-large};
+
+  /* DEFAULT FORM SETTINGS */
+  --form-color-label: #{$form-color-label};
+  --form-color-border: #{$form-color-border};
+  --form-color-disabled: #{$form-color-disabled};
+  --form-field-shadow: #{$form-field-shadow};
+  --form-field-border-radius: #{$form-field-border-radius};
+}
+
+#app, body {
+  width: 100%;
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
+  background-color: $color-background;
+}
+
+body {
+  font-family: $font-family;
+  font-weight: $font-weight;
+  font-size: $font-size;
+  line-height: $font-line-height;
+  color: $color-text;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.gf-sidebar {
+  width: 60px;
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  background: $color-background;
+  color: $color-text;
+}
+
+.nav-link {
+  color: $color-text;
+
+  &.active {
+    color: $color-brand !important;
+  }
+}
+
+.spinner {
+  width: 100%;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,80 @@
+{
+    "common": {
+        "emptyHeader": "Nothing selected",
+        "emptyBody": "Either there are no entries here or you have not yet selected anything.",
+        "locale": {
+            "de_DE": "Deutsch",
+            "en_US": "English"
+        },
+        "booleanValue": {
+            "yes": "Yes",
+            "no": "No"
+        },
+        "button": {
+            "language": "Language",
+            "logout": "Logout",
+            "changePassword": "Password Change",
+            "add": "Add",
+            "create": "Create",
+            "edit": "Edit",
+            "delete": "Delete",
+            "unDelete": "Un Delete",
+            "save": "Save",
+            "cancel": "Cancel",
+            "close": "Close",
+            "back": "Back",
+            "searchAndFilters": "Search & Filter",
+            "createUser": "New User"
+        },
+        "placeholder": {
+            "search": "Search",
+            "noData": "Keine Daten gefunden",
+            "sortBy": "Sortieren nach"
+        },
+        "errors": {
+            "required": "Dieses Feld muss ausgefüllt werden!"
+        },
+        "paging": {
+            "previous": "Previous",
+            "next": "Next",
+            "itemsPerPage": "Per Page:"
+        },
+        "menu": {
+            "greylist": "Greylist",
+            "users": "Users"
+        },
+        "greylist": {
+            "header": "Willkommen!",
+            "sender": "Sender",
+            "domain": "Domain",
+            "source": "Source",
+            "recipient": "Recipient",
+            "firstSeen": "First Seen",
+            "username": "Username"
+        },
+        "user": {
+            "header": "Users",
+            "createHeader": "Create New User",
+            "editHeader": "Edit User",
+            "deleteHeader": "Delete user",
+            "deleteMessage": "Do you really want to delete this user? The user remains in the system but can no longer access or be selected.",
+            "unDeleteHeader": "Restore User",
+            "unDeleteMessage": "Are you sure you want to restore this user?",
+            "username": "Username",
+            "email": "E-Mail Address",
+            "role": "Role",
+            "password": "Password",
+            "createdAt": "Created At",
+            "roles": {
+                "admin": "Administrator",
+                "user": "User"
+            },
+            "userStatus": {
+                "disabled": "Disabled",
+                "locked": "Locked",
+                "enabled": "Enabled",
+                "deleted": "Deleted"
+            }
+        }
+    }
+}

@@ -1,8 +1,11 @@
-import {useApplication} from './ApplicationContext';
 import {useMemo} from 'react';
+
+import {User} from '../types/user';
+import {useApplication} from './ApplicationContext';
 
 interface UsePermissions {
     isAdministrator(): boolean,
+    isCurrentUser(checkUser: User): boolean,
 }
 
 export function usePermissions(): UsePermissions {
@@ -10,7 +13,10 @@ export function usePermissions(): UsePermissions {
 
     return useMemo<UsePermissions>(() => ({
         isAdministrator(): boolean {
-            return true;
+            return user.is_administrator;
         },
+        isCurrentUser(checkUser: User): boolean {
+            return user.id === checkUser.id;
+        }
     }), [user]);
 }

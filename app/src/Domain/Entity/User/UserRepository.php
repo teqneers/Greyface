@@ -5,7 +5,9 @@ namespace App\Domain\Entity\User;
 use App\Domain\User\UserInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use http\Env\Request;
 
 
 /**
@@ -37,17 +39,19 @@ class UserRepository extends ServiceEntityRepository
         return null;
     }
 
-    /**
-     * @return User[]
-     */
-    public function findAll(bool $allowDeleted = false): array
-    {
-        return $this->createDefaultQueryBuilder($allowDeleted)
-                    ->orderBy('u.username', 'ASC')
-                    ->getQuery()
-                    ->getResult();
-    }
 
+    public function findAll(bool $allowDeleted = false, $start = null, $max = 20): iterable|Paginator
+    {
+        $qb = $this->createDefaultQueryBuilder($allowDeleted)
+            ->orderBy('u.username', 'ASC');
+        if ($start !== null) {
+            $qb = $qb->setMaxResults($max)
+                     ->setFirstResult($start);
+            return new Paginator($qb, false);
+        }
+        return $qb->getQuery()
+            ->getResult();
+    }
 
 
     private function createDefaultQueryBuilder(bool $allowDeleted): QueryBuilder
@@ -62,12 +66,12 @@ class UserRepository extends ServiceEntityRepository
     public function countAdministrators(): int
     {
         return $this->createQueryBuilder('u')
-                    ->select('COUNT(u.id)')
-                    ->where('u.role = :admin')
-                    ->andWhere('u.deletedAt IS NULL')
-                    ->setParameter('admin', User::ROLE_ADMIN)
-                    ->getQuery()
-                    ->getSingleScalarResult();
+            ->select('COUNT(u.id)')
+            ->where('u.role = :admin')
+            ->andWhere('u.deletedAt IS NULL')
+            ->setParameter('admin', User::ROLE_ADMIN)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function save(User $user): User

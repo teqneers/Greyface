@@ -5,6 +5,7 @@ import {User} from '../types/user';
 export interface ApplicationConfigProps {
     user: User
     logoutUrl: string,
+    baseUrl: string,
     changePasswordUrl: string | null
 }
 
