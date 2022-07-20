@@ -1,20 +1,24 @@
 import React, {useState} from 'react';
-import {Table} from 'react-bootstrap';
-import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
+import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import EmptyRoute from '../../application/EmptyRoute';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
-import Paginator from '../../controllers/Paginator';
+import SplitView from '../../controllers/SplitView';
+import UserDetail from './UserDetail';
+import UsersTable from './UsersTable';
 
 const UserModule = () => {
-    const {t} = useTranslation();
+    const history = useHistory();
+    const {path, url} = useRouteMatch();
+
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [currentMaxResults, setCurrentMaxResults] = useState<number>(20);
 
     const query = useQuery(['users', currentIndex, currentMaxResults], () => {
-       return fetch('/api/users?start=' + currentIndex + '&max=' + currentMaxResults)
-           .then((res) => res.json());
+        return fetch('/api/users?start=' + currentIndex + '&max=' + currentMaxResults)
+            .then((res) => res.json());
     }, {keepPreviousData: true});
 
     const {
@@ -31,39 +35,31 @@ const UserModule = () => {
 
     return (
         <ApplicationModuleContainer title="user.header">
-            {isLoading ? (
-                <LoadingIndicator/>
-            ) : isError ? (
-                <div>Error: {error}</div>
-            ) : (
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>{t('user.username')}</th>
-                        <th>{t('user.email')}</th>
-                        <th>{t('user.role')}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {data.results.map(user => (
-                        <tr key={user.id}>
-                            <td>{user.username}</td>
-                            <td>{user.email}</td>
-                            <td>{t(`user.roles.${user.role}`)}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
-            )}
-
-            <Paginator currentIndex={currentIndex}
-                       setCurrentIndex={setCurrentIndex}
-                       currentMaxResults={currentMaxResults}
-                       setCurrentMaxResults={setCurrentMaxResults}
-                       query={query}/>
-
-
-            {isFetching ? <LoadingIndicator/> : null}
+            <SplitView sizes={[70, 30]}>
+                {isError ? (
+                    <div>Error: {error}</div>
+                ) : (
+                    <UsersTable
+                        data={data.results}
+                        isFetching={isFetching}
+                        currentIndex={currentIndex}
+                        setCurrentIndex={setCurrentIndex}
+                        currentMaxResults={currentMaxResults}
+                        setCurrentMaxResults={setCurrentMaxResults}
+                        query={query}
+                        onItemClick={(u) => {
+                            history.push(`${url}/${u.id}`);
+                        }}/>
+                )}
+                <div className="detail-panel">
+                    <Switch>
+                        <Route path={`${path}/:id`}>
+                            <UserDetail onBack={() => history.push(url)}/>
+                        </Route>
+                        <EmptyRoute/>
+                    </Switch>
+                </div>
+            </SplitView>
         </ApplicationModuleContainer>
     );
 };

@@ -9,7 +9,6 @@
         "jsx": "react"
     },
     "include": [
-        "assets/@tq/src/js/**/*",
         "assets/js/**/*"
     ],
     "exclude": [

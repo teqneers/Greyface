@@ -36,7 +36,7 @@ const Paginator: React.VFC<PaginationProps> = (
                     <Pagination.Last onClick={() => setCurrentIndex(lastPageIndex)}/>
                 </Pagination>
             </Col>
-            <Col lg={2}>
+            <Col lg={4}>
                 <Row>
                     <Form.Label column="sm">
                         {t('paging.itemsPerPage')}
