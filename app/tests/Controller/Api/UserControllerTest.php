@@ -68,4 +68,16 @@ class UserControllerTest extends WebTestCase
             )
         );
     }
+
+    public function testShowUser(): void
+    {
+        $admin  = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        $client->request('GET', '/api/users/' . $admin->getId());
+        $result = self::getSuccessfulJsonResponse($client);
+        self::assertEquals('admin@greyface.test', $result['email']);
+    }
 }
