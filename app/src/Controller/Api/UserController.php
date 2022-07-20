@@ -4,11 +4,23 @@ namespace App\Controller\Api;
 
 use App\Domain\Entity\User\User;
 use App\Domain\Entity\User\UserRepository;
+use App\Domain\User\Command\CreateUser;
+use App\Messenger\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\Exception\ValidationFailedException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Throwable;
+
 
 #[Route('/api/users')]
 class UserController
@@ -55,7 +67,8 @@ class UserController
     #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function show(
         User $user
-    ): Response {
+    ): Response
+    {
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
@@ -73,5 +86,54 @@ class UserController
             'updated_by' => $user->getUpdatedBy(),
         ]));
         return $response;
+    }
+
+    #[Route('', methods: ['POST'])]
+    #[IsGranted('USER_CREATE')]
+    public function create(
+        Request               $request,
+        MessageBusInterface   $commandBus,
+        UrlGeneratorInterface $urlGenerator,
+        ValidatorInterface    $validator
+    ): Response
+    {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+        $createUser = CreateUser::create();
+        $createUser->username = $data['username'];
+        $createUser->email = $data['email'];
+        $createUser->role = $data['role'];
+        $createUser->password = $data['password'];
+        $errors = $validator->validate($createUser);
+
+        if (count($errors) > 0) {
+            /*
+             * Uses a __toString method on the $errors variable which is a
+             * ConstraintViolationList object. This gives us a nice string
+             * for debugging.
+             */
+            $violationMessages = [];
+            $formErrors = [];
+            foreach ($errors as $error) {
+                /** @var ConstraintViolationInterface $error */
+                $violationMessages[] = $error->getMessage();
+                $formErrors[$error->getPropertyPath()] = $error->getMessage();
+
+            }
+            return new JsonResponse([
+                "errors" => $formErrors,
+                'error' => 'Validation failed.' . ' (' . implode(', ', $violationMessages) . ')'],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $commandBus->dispatch($createUser);
+
+        $params = ['user' => $createUser->getId()];
+        $url = $urlGenerator->generate(
+            'app_api_user_show',
+            $params,
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        return new JsonResponse($params, Response::HTTP_CREATED, ['Location' => $url]);
     }
 }

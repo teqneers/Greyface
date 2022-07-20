@@ -32,7 +32,7 @@
             "sortBy": "Sortieren nach"
         },
         "errors": {
-            "required": "Dieses Feld muss ausgefüllt werden!"
+            "required": "This field is required!"
         },
         "paging": {
             "previous": "Previous",

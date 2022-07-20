@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api;
 
+use App\Domain\Entity\User\User;
 use App\Test\ApiTestTrait;
 use App\Test\DatabaseTestTrait;
 use App\Test\UserDomainTrait;
@@ -79,5 +80,35 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/api/users/' . $admin->getId());
         $result = self::getSuccessfulJsonResponse($client);
         self::assertEquals('admin@greyface.test', $result['email']);
+    }
+
+    public function testCreateUser(): void
+    {
+        $admin  = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/users',
+            [
+                'username' => 'user',
+                'email'     => 'user@greyface.test',
+                'password' => 'testpassword',
+                'role'     => User::ROLE_USER,
+            ]
+        );
+        $result = self::getSuccessfulJsonResponse($client);
+        self::assertArrayHasKey('user', $result);
+        self::clearEntityManager();
+        /** @var User|null $user */
+        $user = self::loadDatabaseEntity(User::class, $result['user']);
+        self::assertNotNull($user);
+        self::assertSame('user@greyface.test', $user->getEmail());
+        self::assertSame('user', $user->getUsername());
+        self::assertFalse($user->isAdministrator());
+        self::assertUserPasswordEquals('testpassword', $user->getPassword());
     }
 }

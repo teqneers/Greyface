@@ -5,6 +5,7 @@ import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import EmptyRoute from '../../application/EmptyRoute';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import CreateUser from './CreateUser';
 import UserDetail from './UserDetail';
 import UsersTable from './UsersTable';
 
@@ -38,7 +39,7 @@ const UserModule = () => {
                 <div className="col-lg-8">
                     {isError ? (
                         <div>Error: {error}</div>
-                    ) : ( <UsersTable
+                    ) : (<UsersTable
                         data={data.results}
                         isFetching={isFetching}
                         currentIndex={currentIndex}
@@ -52,6 +53,10 @@ const UserModule = () => {
                 </div>
                 <div className="col-lg-4">
                     <Switch>
+                        <Route path={`${path}/create`}>
+                            <CreateUser onCancel={() => history.push(url)}
+                                        onCreate={(id) => history.push(`${url}/${id}`)}/>
+                        </Route>
                         <Route path={`${path}/:id`}>
                             <UserDetail onBack={() => history.push(url)}/>
                         </Route>

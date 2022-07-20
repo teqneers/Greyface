@@ -206,3 +206,12 @@ body {
 .detail-panel {
   padding: 20px;
 }
+.btn-close {
+  width: 15px;
+  height: 15px;
+
+  position: absolute;
+  right: 0;
+  z-index: 2;
+  padding: 0 15px;
+}

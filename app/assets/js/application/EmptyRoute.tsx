@@ -7,13 +7,10 @@ function EmptyRoute(): React.ReactElement {
 
     return (
         <Route>
-            <div className="align-content-center align-items-center">
-                <img src={require('../../images/empty.png')} width={200}/>
-                <br/>
+            <div className="align-content-center text-center">
                 <h4>{t('emptyHeader')}</h4>
                 <p style={{
                     padding: 'var(--text-spacing)',
-                    maxWidth: 300,
                     textAlign: 'center',
                 }}>{t('emptyBody')}</p>
             </div>
