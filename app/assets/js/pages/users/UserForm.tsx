@@ -7,7 +7,7 @@ import {UserRole, USER_ROLES} from '../../types/user';
 import {Formik} from 'formik';
 
 interface UserValues {
-    password: string | number | string[];
+    password?: string | number | string[];
     username: string,
     email: string,
     role: UserRole,

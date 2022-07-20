@@ -111,4 +111,34 @@ class UserControllerTest extends WebTestCase
         self::assertFalse($user->isAdministrator());
         self::assertUserPasswordEquals('testpassword', $user->getPassword());
     }
+
+
+    public function testUpdateUser(): void
+    {
+        $admin  = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $user = self::createUser();
+
+        self::initializeDatabaseWithEntities($admin, $user);
+
+        self::sendApiJsonRequest(
+            $client,
+            'PUT',
+            '/api/users/' . $user->getId(),
+            [
+                'username' => 'user up',
+                'email' => 'user1@greyface.test',
+                'role'     => User::ROLE_ADMIN,
+            ]
+        );
+        self::assertResponseIsSuccessful();
+        self::clearEntityManager();
+        /** @var User|null $user */
+        [$user] = self::reloadDatabaseEntities($user);
+        self::assertNotNull($user);
+        self::assertSame('user1@greyface.test', $user->getEmail());
+        self::assertSame('user up', $user->getUsername());
+        self::assertTrue($user->isAdministrator());
+    }
 }

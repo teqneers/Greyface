@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Domain\Entity\User\User;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\Command\CreateUser;
+use App\Domain\User\Command\UpdateUser;
 use App\Messenger\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -20,6 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Throwable;
+use TQ\Http\Response\ApiResponse;
 
 
 #[Route('/api/users')]
@@ -107,11 +109,6 @@ class UserController
         $errors = $validator->validate($createUser);
 
         if (count($errors) > 0) {
-            /*
-             * Uses a __toString method on the $errors variable which is a
-             * ConstraintViolationList object. This gives us a nice string
-             * for debugging.
-             */
             $violationMessages = [];
             $formErrors = [];
             foreach ($errors as $error) {
@@ -135,5 +132,44 @@ class UserController
             UrlGeneratorInterface::ABSOLUTE_URL
         );
         return new JsonResponse($params, Response::HTTP_CREATED, ['Location' => $url]);
+    }
+
+    #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['PUT'])]
+    #[IsGranted('USER_EDIT', subject: 'user')]
+    #[ParamConverter('user', class: User::class, converter: 'app.user')]
+    public function edit(
+        User                $user,
+        Request             $request,
+        ValidatorInterface  $validator,
+        MessageBusInterface $commandBus
+    ): Response
+    {
+
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+        $updateUser = UpdateUser::update($user);
+        $updateUser->username = $data['username'];
+        $updateUser->email = $data['email'];
+        $updateUser->role = $data['role'];
+        $errors = $validator->validate($updateUser);
+
+        if (count($errors) > 0) {
+            $violationMessages = [];
+            $formErrors = [];
+            foreach ($errors as $error) {
+                /** @var ConstraintViolationInterface $error */
+                $violationMessages[] = $error->getMessage();
+                $formErrors[$error->getPropertyPath()] = $error->getMessage();
+
+            }
+            return new JsonResponse([
+                "errors" => $formErrors,
+                'error' => 'Validation failed.' . ' (' . implode(', ', $violationMessages) . ')'],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $commandBus->dispatch($updateUser);
+        $params = ['user' => $updateUser->getId()];
+        return new JsonResponse($params, Response::HTTP_OK);
     }
 }

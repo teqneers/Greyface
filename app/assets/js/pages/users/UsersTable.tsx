@@ -1,6 +1,7 @@
 import React from 'react';
-import {Table} from 'react-bootstrap';
+import {Button, Table} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
+import {useHistory} from 'react-router-dom';
 import EmptyText from '../../controllers/EmptyText';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Paginator from '../../controllers/Paginator';
@@ -33,6 +34,7 @@ const UsersTable: React.VFC<UsersTableProps> = (
     }) => {
 
     const {t} = useTranslation();
+    const history = useHistory();
 
     if (isFetching) {
         return <LoadingIndicator/>;
@@ -46,6 +48,7 @@ const UsersTable: React.VFC<UsersTableProps> = (
                     <th>{t('user.username')}</th>
                     <th>{t('user.email')}</th>
                     <th>{t('user.role')}</th>
+                    <th/>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,6 +59,10 @@ const UsersTable: React.VFC<UsersTableProps> = (
                         <td>{user.username}</td>
                         <td>{user.email}</td>
                         <td>{t(`user.roles.${user.role}`)}</td>
+                        <td onClick={(e) => e.stopPropagation()}>
+                            <Button size="sm" variant="brand" onClick={() => history.push(`/users/${user.id}/edit`)}>Edit</Button>
+                            <Button size="sm" variant="danger" onClick={() => history.push(`/users/${user.id}/delete`)}>Delete</Button>
+                        </td>
                     </tr>
                 ))}
                 {data.length <= 0 && <tr>
