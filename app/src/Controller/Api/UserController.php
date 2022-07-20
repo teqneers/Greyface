@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Domain\Entity\User\User;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\Command\CreateUser;
+use App\Domain\User\Command\DeleteUser;
 use App\Domain\User\Command\UpdateUser;
 use App\Messenger\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -171,5 +172,17 @@ class UserController
         $commandBus->dispatch($updateUser);
         $params = ['user' => $updateUser->getId()];
         return new JsonResponse($params, Response::HTTP_OK);
+    }
+
+    #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['DELETE'])]
+    #[IsGranted('USER_DELETE', subject: 'user')]
+    #[ParamConverter('user', class: User::class, converter: 'app.user')]
+    public function delete(
+        User $user,
+        MessageBusInterface $commandBus,
+    ): Response {
+        $deleteUser = DeleteUser::softDelete($user);
+        $commandBus->dispatch($deleteUser);
+        return new JsonResponse('User deleted successfully!', Response::HTTP_OK);
     }
 }

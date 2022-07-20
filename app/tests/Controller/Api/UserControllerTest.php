@@ -141,4 +141,24 @@ class UserControllerTest extends WebTestCase
         self::assertSame('user up', $user->getUsername());
         self::assertTrue($user->isAdministrator());
     }
+
+    public function testDeleteUser(): void
+    {
+        $admin  = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $user = self::createUser();
+
+        self::initializeDatabaseWithEntities($admin, $user);
+
+        $client->request('DELETE', '/api/users/' . $user->getId());
+
+        self::assertResponseIsSuccessful();
+
+        self::clearEntityManager();
+        /** @var User|null $user */
+        [$user] = self::reloadDatabaseEntities($user);
+        self::assertNotNull($user);
+        self::assertTrue($user->isDeleted());
+    }
 }

@@ -8,6 +8,7 @@ import ApplicationModuleContainer from '../../application/ApplicationModuleConta
 import EmptyRoute from '../../application/EmptyRoute';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import CreateUser from './CreateUser';
+import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
 import UserDetail from './UserDetail';
 import UsersTable from './UsersTable';
@@ -79,6 +80,9 @@ const UserModule = () => {
                         </Route>
                         <EmptyRoute/>
                     </Switch>
+                    <Route path={`${path}/:id/delete`}>
+                        <DeleteUser onCancel={(id) => history.push(`${url}/${id}`)} onDelete={() => history.push(url)}/>
+                    </Route>
                 </div>
             </div>
         </ApplicationModuleContainer>
