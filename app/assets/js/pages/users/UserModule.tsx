@@ -5,7 +5,6 @@ import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import EmptyRoute from '../../application/EmptyRoute';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
-import SplitView from '../../controllers/SplitView';
 import UserDetail from './UserDetail';
 import UsersTable from './UsersTable';
 
@@ -35,11 +34,11 @@ const UserModule = () => {
 
     return (
         <ApplicationModuleContainer title="user.header">
-            <SplitView sizes={[70, 30]}>
-                {isError ? (
-                    <div>Error: {error}</div>
-                ) : (
-                    <UsersTable
+            <div className="row">
+                <div className="col-lg-8">
+                    {isError ? (
+                        <div>Error: {error}</div>
+                    ) : ( <UsersTable
                         data={data.results}
                         isFetching={isFetching}
                         currentIndex={currentIndex}
@@ -49,9 +48,9 @@ const UserModule = () => {
                         query={query}
                         onItemClick={(u) => {
                             history.push(`${url}/${u.id}`);
-                        }}/>
-                )}
-                <div className="detail-panel">
+                        }}/>)}
+                </div>
+                <div className="col-lg-4">
                     <Switch>
                         <Route path={`${path}/:id`}>
                             <UserDetail onBack={() => history.push(url)}/>
@@ -59,7 +58,7 @@ const UserModule = () => {
                         <EmptyRoute/>
                     </Switch>
                 </div>
-            </SplitView>
+            </div>
         </ApplicationModuleContainer>
     );
 };
