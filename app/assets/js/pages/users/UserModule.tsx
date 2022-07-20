@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {Button} from 'react-bootstrap';
+import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
 
@@ -10,6 +12,7 @@ import UserDetail from './UserDetail';
 import UsersTable from './UsersTable';
 
 const UserModule = () => {
+    const {t} = useTranslation();
     const history = useHistory();
     const {path, url} = useRouteMatch();
 
@@ -35,6 +38,13 @@ const UserModule = () => {
 
     return (
         <ApplicationModuleContainer title="user.header">
+
+            <div className="flex-row mb-2">
+                <Button
+                    variant="brand"
+                    onClick={() => history.push(`${url}/create`)}>{t('button.createUser')}</Button>
+            </div>
+
             <div className="row">
                 <div className="col-lg-8">
                     {isError ? (

@@ -41,7 +41,7 @@ const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
     return (
         <>
             <h4>{t('user.createHeader')}
-                <CloseButton onClick={() => onCancel()} className="small"/>
+                <CloseButton onClick={() => onCancel()}/>
             </h4>
 
             {error && <Alert key="danger" variant="danger">

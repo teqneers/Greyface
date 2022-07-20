@@ -1,0 +1,8 @@
+/* make the customizations */
+$theme-colors: (
+        "brand": $color-brand,
+        "primary": $color-primary
+);
+
+/* import bootstrap to set changes */
+@import "~bootstrap/scss/bootstrap";

@@ -1,4 +1,5 @@
 import React from 'react';
+import {CloseButton} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {useHistory, useRouteMatch} from 'react-router-dom';
@@ -26,6 +27,11 @@ const UserDetail: React.VFC<UserDetailProps> = ({onBack}) => {
     }
 
     return (
+        <>
+            <h4>{data.username}
+                <CloseButton onClick={() => onBack()}/>
+            </h4>
+
             <div className="card mb-4">
                 <div className="card-body">
                     <div className="row">
@@ -56,6 +62,7 @@ const UserDetail: React.VFC<UserDetailProps> = ({onBack}) => {
                     </div>
                 </div>
             </div>
+        </>
     );
 };
 
