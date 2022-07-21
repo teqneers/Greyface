@@ -72,7 +72,7 @@ class UserControllerTest extends WebTestCase
 
     public function testShowUser(): void
     {
-        $admin  = self::createAdmin();
+        $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
         self::initializeDatabaseWithEntities($admin);
@@ -84,7 +84,7 @@ class UserControllerTest extends WebTestCase
 
     public function testCreateUser(): void
     {
-        $admin  = self::createAdmin();
+        $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
         self::initializeDatabaseWithEntities($admin);
@@ -95,9 +95,9 @@ class UserControllerTest extends WebTestCase
             '/api/users',
             [
                 'username' => 'user',
-                'email'     => 'user@greyface.test',
+                'email' => 'user@greyface.test',
                 'password' => 'testpassword',
-                'role'     => User::ROLE_USER,
+                'role' => User::ROLE_USER,
             ]
         );
         $result = self::getSuccessfulJsonResponse($client);
@@ -115,7 +115,7 @@ class UserControllerTest extends WebTestCase
 
     public function testUpdateUser(): void
     {
-        $admin  = self::createAdmin();
+        $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
         $user = self::createUser();
@@ -129,7 +129,7 @@ class UserControllerTest extends WebTestCase
             [
                 'username' => 'user up',
                 'email' => 'user1@greyface.test',
-                'role'     => User::ROLE_ADMIN,
+                'role' => User::ROLE_ADMIN,
             ]
         );
         self::assertResponseIsSuccessful();
@@ -144,7 +144,7 @@ class UserControllerTest extends WebTestCase
 
     public function testDeleteUser(): void
     {
-        $admin  = self::createAdmin();
+        $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
         $user = self::createUser();
