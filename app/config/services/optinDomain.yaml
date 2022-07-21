@@ -5,14 +5,8 @@ services:
 
   App\Domain\Entity\OptInDomain\OptInDomainRepository:
 
-  command_handlers:
-    namespace: App\Domain\User\Command\
-    resource: '%kernel.project_dir%/src/Domain/User/Command/*Handler.php'
+  App\Domain\OptInDomain\Request\OptInDomainParamConverter:
     tags:
-      - { name: messenger.message_handler, bus: command.bus }
+      - { name: request.param_converter, converter: app.optInDomain }
 
-  event_subscribers:
-    namespace: App\Domain\User\Command\
-    resource: '%kernel.project_dir%/src/Domain/User/Command/*Subscriber.php'
-    tags:
-      - { name: messenger.message_handler, bus: event.bus }
+  App\Domain\OptInDomain\Security\OptInDomainVoter:

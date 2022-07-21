@@ -12,7 +12,7 @@ const GreyListModule: React.VFC = () => {
     const [currentMaxResults, setCurrentMaxResults] = useState<number>(20);
 
     const query = useQuery(['optin-domains?', currentIndex, currentMaxResults], () => {
-        return fetch('/api/optin-domains')
+        return fetch('/api/optin-domains?start=' + currentIndex + '&max=' + currentMaxResults)
             .then((res) => res.json());
     }, {keepPreviousData: true});
 console.log(query);

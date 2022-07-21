@@ -4,7 +4,9 @@ namespace App\Domain\Entity\OptInDomain;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use Webmozart\Assert\Assert;
+use Symfony\Component\Validator\Constraints as Assert;
+use Webmozart\Assert\Assert as WebAssert;
+
 
 #[ORM\Entity(repositoryClass: OptInDomainRepository::class)]
 #[ORM\Table(name: 'optin_domain')]
@@ -13,10 +15,20 @@ use Webmozart\Assert\Assert;
 class OptInDomain
 {
     #[ORM\Id]
-    #[ORM\Column(name: 'domain', type: 'string', length: 128)]
+    #[ORM\Column(name: 'domain', type: 'string', length: 128, nullable: false)]
+    #[Assert\Type('string')]
+    #[Assert\Length(max: 128)]
+    #[Assert\NotBlank]
     #[Serializer\Expose]
     #[Serializer\Type('string')]
-    private string $domain = '';
+    public string $domain = '';
+
+    public static function create(
+        string $domain
+    ): self
+    {
+        return new self($domain);
+    }
 
     private function __construct(string $domain)
     {
@@ -30,7 +42,7 @@ class OptInDomain
 
     public function setDomain(string $domain): self
     {
-        Assert::lengthBetween($domain, 1, 128);
+        WebAssert::lengthBetween($domain, 1, 128);
         $this->domain = $domain;
         return $this;
     }

@@ -7,6 +7,7 @@ use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\Command\CreateUser;
 use App\Domain\User\Command\DeleteUser;
 use App\Domain\User\Command\UpdateUser;
+use App\Messenger\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,9 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 #[Route('/api/users')]
 class UserController
@@ -25,14 +24,11 @@ class UserController
 
     #[Route('', methods: ['GET'])]
     #[IsGranted('USER_LIST')]
-    public function list2(
+    public function list(
         Request        $request,
         UserRepository $userRepository
     ): Response
     {
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $users = $userRepository->findAll(false, $start, $max);
@@ -52,11 +48,10 @@ class UserController
                 'updated_by' => $user->getUpdatedBy(),
             ];
         }
-        $response->setContent(json_encode([
+        return new JsonResponse([
             'results' => $data,
             'count' => is_array($users) ? count($users) : $users->count(),
-        ]));
-        return $response;
+        ]);
     }
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['GET'])]
@@ -66,10 +61,7 @@ class UserController
         User $user
     ): Response
     {
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent(json_encode([
+        $data = [
             'id' => $user->getId(),
             'username' => $user->getUsername(),
             'email' => $user->getEmail(),
@@ -81,8 +73,8 @@ class UserController
             'created_by' => $user->getCreatedBy(),
             'updated_at' => $user->getUpdatedAt(),
             'updated_by' => $user->getUpdatedBy(),
-        ]));
-        return $response;
+        ];
+        return new JsonResponse($data);
     }
 
     #[Route('', methods: ['POST'])]
@@ -97,25 +89,14 @@ class UserController
         $body = $request->getContent();
         $data = json_decode($body, true);
         $createUser = CreateUser::create();
-        $createUser->username = $data['username'];
-        $createUser->email = $data['email'];
-        $createUser->role = $data['role'];
-        $createUser->password = $data['password'];
+        $createUser->username = $data['username'] ?? '';
+        $createUser->email = $data['email'] ?? '';
+        $createUser->role = $data['role'] ?? '';
+        $createUser->password = $data['password'] ?? '';
         $errors = $validator->validate($createUser);
 
         if (count($errors) > 0) {
-            $violationMessages = [];
-            $formErrors = [];
-            foreach ($errors as $error) {
-                /** @var ConstraintViolationInterface $error */
-                $violationMessages[] = $error->getMessage();
-                $formErrors[$error->getPropertyPath()] = $error->getMessage();
-
-            }
-            return new JsonResponse([
-                "errors" => $formErrors,
-                'error' => 'Validation failed.' . ' (' . implode(', ', $violationMessages) . ')'],
-                Response::HTTP_UNPROCESSABLE_ENTITY);
+            return Validation::getViolations($errors);
         }
 
         $commandBus->dispatch($createUser);
@@ -139,44 +120,33 @@ class UserController
         MessageBusInterface $commandBus
     ): Response
     {
-
         $body = $request->getContent();
         $data = json_decode($body, true);
         $updateUser = UpdateUser::update($user);
-        $updateUser->username = $data['username'];
-        $updateUser->email = $data['email'];
-        $updateUser->role = $data['role'];
+        $updateUser->username = $data['username'] ?? '';
+        $updateUser->email = $data['email'] ?? '';
+        $updateUser->role = $data['role'] ?? '';
         $errors = $validator->validate($updateUser);
 
         if (count($errors) > 0) {
-            $violationMessages = [];
-            $formErrors = [];
-            foreach ($errors as $error) {
-                /** @var ConstraintViolationInterface $error */
-                $violationMessages[] = $error->getMessage();
-                $formErrors[$error->getPropertyPath()] = $error->getMessage();
-
-            }
-            return new JsonResponse([
-                "errors" => $formErrors,
-                'error' => 'Validation failed.' . ' (' . implode(', ', $violationMessages) . ')'],
-                Response::HTTP_UNPROCESSABLE_ENTITY);
+            return Validation::getViolations($errors);
         }
 
         $commandBus->dispatch($updateUser);
         $params = ['user' => $updateUser->getId()];
-        return new JsonResponse($params, Response::HTTP_OK);
+        return new JsonResponse($params);
     }
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['DELETE'])]
     #[IsGranted('USER_DELETE', subject: 'user')]
     #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function delete(
-        User $user,
+        User                $user,
         MessageBusInterface $commandBus,
-    ): Response {
+    ): Response
+    {
         $deleteUser = DeleteUser::softDelete($user);
         $commandBus->dispatch($deleteUser);
-        return new JsonResponse('User deleted successfully!', Response::HTTP_OK);
+        return new JsonResponse('User deleted successfully!');
     }
 }

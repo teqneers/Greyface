@@ -1,35 +1,38 @@
 <?php
 
-
 namespace App\Messenger;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-/**
- * Class Validation
- *
- */
 final class Validation
 {
-    /**
-     */
+
     private function __construct()
     {
     }
 
     /**
-     * @param ValidationFailedException $e
-     * @return string[]
+     * @param ConstraintViolationListInterface $errors
+     * @return JsonResponse
      */
-    public static function getViolations(ValidationFailedException $e): array
+    public static function getViolations(ConstraintViolationListInterface $errors): JsonResponse
     {
-        return array_map(
-            static function (ConstraintViolationInterface $violation) {
-                return $violation->getPropertyPath() . ': ' . $violation->getMessage();
-            },
-            iterator_to_array($e->getViolations())
-        );
+        $violationMessages = [];
+        $formErrors = [];
+        foreach ($errors as $error) {
+            /** @var ConstraintViolationInterface $error */
+            $violationMessages[] = $error->getMessage();
+            $formErrors[$error->getPropertyPath()] = $error->getMessage();
+
+        }
+        return new JsonResponse([
+            "errors" => $formErrors,
+            'error' => 'Validation failed.' . ' (' . implode(', ', $violationMessages) . ')'],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
 }

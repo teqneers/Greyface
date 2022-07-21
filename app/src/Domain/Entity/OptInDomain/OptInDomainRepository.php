@@ -19,6 +19,15 @@ class OptInDomainRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, OptInDomain::class);
     }
 
+    public function findById(string $id): ?OptInDomain
+    {
+        $optInDomain = $this->find($id);
+        if ($optInDomain) {
+            return $optInDomain;
+        }
+        return null;
+    }
+
     public function findByOptInDomainName(string $optInDomainName): ?OptInDomain
     {
         $optInDomain = $this->findOneBy(['domain' => $optInDomainName]);
@@ -52,12 +61,14 @@ class OptInDomainRepository extends ServiceEntityRepository
     public function save(OptInDomain $optInDomain): OptInDomain
     {
         $this->_em->persist($optInDomain);
+        $this->_em->flush();
         return $optInDomain;
     }
 
     public function delete(OptInDomain $optInDomain): void
     {
         $this->_em->remove($optInDomain);
+        $this->_em->flush();
     }
 
 }
