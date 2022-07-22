@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity\UserAlias;
 
+use App\Domain\Entity\Holiday\Holiday;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -50,6 +51,21 @@ class UserAliasRepository extends ServiceEntityRepository
     {
         $this->_em->persist($user);
         return $user;
+    }
+
+    public function createBatchSaver(int $batchSize = 10): callable
+    {
+        $count = 0;
+        return function (UserAlias $user) use (&$count, $batchSize): bool {
+            $count++;
+            $this->save($user);
+            if (($count % $batchSize) === 0) {
+                $this->_em->flush();
+                $this->_em->clear(); // Detaches all objects from Doctrine!
+                return true;
+            }
+            return false;
+        };
     }
 
     public function delete(UserAlias $user): void

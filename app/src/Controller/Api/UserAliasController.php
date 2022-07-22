@@ -13,6 +13,7 @@ use App\Domain\UserAlias\Command\CreateUserAlias;
 use App\Domain\UserAlias\Command\DeleteUserAlias;
 use App\Domain\UserAlias\Command\UpdateUserAlias;
 use App\Messenger\Validation;
+use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -87,32 +88,26 @@ class UserAliasController
     #[Route('', methods: ['POST'])]
     #[IsGranted('USER_ALIAS_CREATE')]
     public function create(
-        Request               $request,
-        MessageBusInterface   $commandBus,
-        UrlGeneratorInterface $urlGenerator,
-        ValidatorInterface    $validator
+        Request             $request,
+        UserRepository      $userRepository,
+        UserAliasRepository $userAliasRepository
     ): Response
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
-        $createUserAlias = CreateUserAlias::create();
-        $createUserAlias->userId = $data['user_id'] ?? '';
-        $createUserAlias->aliasName = $data['alias_name'] ?? '';
-        $errors = $validator->validate($createUserAlias);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
+        $user = $data['user_id'] ? $userRepository->findById($data['user_id']) : null;
+        $data['alias_name'] = is_array($data['alias_name']) ? $data['alias_name'] : array($data['alias_name']);
+        $batchSaver = $userAliasRepository->createBatchSaver();
+        foreach ($data['alias_name'] as $alias) {
+            $aliasToCreate = new UserAlias(
+                Uuid::uuid4()->toString(),
+                $user,
+                $alias
+            );
+            $batchSaver($aliasToCreate);
         }
 
-        $commandBus->dispatch($createUserAlias);
-
-        $params = ['alias' => $createUserAlias->getId()];
-        $url = $urlGenerator->generate(
-            'app_api_useralias_show',
-            $params,
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        return new JsonResponse($params, Response::HTTP_CREATED, ['Location' => $url]);
+        return new JsonResponse('Alias has been added successfully!');
     }
 
     #[Route('/{alias}', requirements: ['alias' => '%routing.uuid%'], methods: ['PUT'])]

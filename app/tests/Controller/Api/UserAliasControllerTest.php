@@ -107,13 +107,26 @@ class UserAliasControllerTest extends WebTestCase
                 'alias_name' => 'user@greyface.test'
             ]
         );
-        $result = self::getSuccessfulJsonResponse($client);
-        self::assertArrayHasKey('alias', $result);
-        self::clearEntityManager();
-        /** @var UserAlias|null $alias */
-        $alias = self::loadDatabaseEntity(UserAlias::class, $result['alias']);
-        self::assertNotNull($alias);
-        self::assertSame('user@greyface.test', $alias->getAliasName());
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testCreateMultipleUserAlias(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/users-aliases',
+            [
+                'user_id' => $admin->getId(),
+                'alias_name' => ['user@greyface.test', 'alias@greyface.de']
+            ]
+        );
+        self::assertResponseIsSuccessful();
     }
 
 
