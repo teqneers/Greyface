@@ -52,7 +52,6 @@ class OptOutEmailController
         $optinEmail = OptOutEmail::create($data['email'] ?? '');
         $errors = $validator->validate($optinEmail);
         if (count($errors) > 0) {
-            dump($errors);
             return Validation::getViolations($errors);
         }
 

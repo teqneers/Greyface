@@ -58,7 +58,9 @@ class EmailAutoWhiteListController
         $emailAwl = EmailAutoWhiteList::create(
             $data['name'] ?? '',
             $data['domain'] ?? '',
-            $data['source'] ?? '');
+            $data['source'] ?? '',
+            isset($data['first_seen']) ? new DateTimeImmutable($data['first_seen']) : null,
+            isset($data['last_seen']) ?  new DateTimeImmutable($data['last_seen']) : null);
         $errors = $validator->validate($emailAwl);
 
         if (count($errors) > 0) {

@@ -7,6 +7,7 @@ use App\Test\ApiTestTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
 use App\Test\UserDomainTrait;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,11 +105,53 @@ class EmailAutoWhiteListControllerTest extends WebTestCase
                 'domain' => $result['domain'],
                 'source' => $result['source']
             ]);
+        self::assertNotNull($emailAwl);
+        self::assertSame('whitelist@email.de', $emailAwl->getName());
+        self::assertSame('testing.de', $emailAwl->getDomain());
+        self::assertSame('123.123.123', $emailAwl->getSource());
+    }
+
+    public function testCreateEmailAutoWhiteListWithFirstAndLastSeen(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/awl/emails',
+            [
+                'name' => 'whitelist@email.de',
+                'domain' => 'testing.de',
+                'source' => '123.123.123',
+                'first_seen' => '2022-06-01 21:00:00',
+                'last_seen' => '2022-06-01 22:00:00',
+            ]
+        );
+        $result = self::getSuccessfulJsonResponse($client);
+
+        self::assertArrayHasKey('name', $result);
+        self::assertArrayHasKey('domain', $result);
+        self::assertArrayHasKey('source', $result);
+        self::clearEntityManager();
+
+        /** @var EmailAutoWhiteList|null $emailAwl */
+        $emailAwl = self::loadDatabaseEntity(
+            EmailAutoWhiteList::class,
+            [
+                'name' => $result['name'],
+                'domain' => $result['domain'],
+                'source' => $result['source']
+            ]);
 
         self::assertNotNull($emailAwl);
         self::assertSame('whitelist@email.de', $emailAwl->getName());
         self::assertSame('testing.de', $emailAwl->getDomain());
         self::assertSame('123.123.123', $emailAwl->getSource());
+        self::assertEquals(new DateTimeImmutable('2022-06-01 21:00:00'), $emailAwl->getFirstSeen());
+        self::assertEquals(new DateTimeImmutable('2022-06-01 22:00:00'), $emailAwl->getLastSeen());
     }
 
     public function testCreateEmailAutoWhiteListDuplicateFailed(): void

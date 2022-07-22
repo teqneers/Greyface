@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Domain\Entity\Connect\ConnectRepository:
+
+  App\Domain\Connect\Validator\UniqueEntryValidator:
+
+  App\Domain\Connect\Security\ConnectVoter:
