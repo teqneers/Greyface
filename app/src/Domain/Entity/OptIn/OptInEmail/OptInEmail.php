@@ -46,6 +46,7 @@ class OptInEmail
     public function setEmail(string $email): self
     {
         WebAssert::lengthBetween($email, 1, 128);
+        WebAssert::email($email);
         $this->email = $email;
         return $this;
     }
