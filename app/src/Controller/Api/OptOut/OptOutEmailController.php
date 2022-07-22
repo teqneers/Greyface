@@ -5,6 +5,7 @@ namespace App\Controller\Api\OptOut;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmail;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmailRepository;
 use App\Messenger\Validation;
+use IteratorAggregate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,15 +28,16 @@ class OptOutEmailController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $emails = $optOutEmailRepository->findAll($start, $max);
-        $data = [];
-        foreach ($emails as $email) {
-            $data[] = [
-                'email' => $email->getEmail(),
-            ];
+
+        $count = is_array($emails) ? count($emails) : $emails->count();
+
+        if ($emails instanceof IteratorAggregate) {
+            $emails = $emails->getIterator();
         }
+
         return new JsonResponse([
-            'results' => $data,
-            'count' => is_array($emails) ? count($emails) : $emails->count(),
+            'results' => $emails,
+            'count' => $count,
         ]);
     }
 

@@ -6,6 +6,7 @@ use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListRepository;
 use App\Messenger\Validation;
 use DateTimeImmutable;
+use IteratorAggregate;
 use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,19 +29,16 @@ class EmailAutoWhiteListController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $emails = $emailAutoWhiteListRepository->findAll($start, $max);
-        $data = [];
-        foreach ($emails as $emailAwl) {
-            $data[] = [
-                'name' => $emailAwl->getName(),
-                'domain' => $emailAwl->getDomain(),
-                'source' => $emailAwl->getSource(),
-                'first_seen' => $emailAwl->getFirstSeen(),
-                'last_seen' => $emailAwl->getLastSeen(),
-            ];
+
+        $count = is_array($emails) ? count($emails) : $emails->count();
+
+        if ($emails instanceof IteratorAggregate) {
+            $emails = $emails->getIterator();
         }
+
         return new JsonResponse([
-            'results' => $data,
-            'count' => is_array($emails) ? count($emails) : $emails->count(),
+            'results' => $emails,
+            'count' => $count,
         ]);
     }
 

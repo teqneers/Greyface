@@ -37,6 +37,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         $client->request('GET', '/api/awl/domains');
         $result = self::getSuccessfulJsonResponse($client);
         self::assertArrayHasKey('results', $result);
+        dump($result);
         self::assertEquals(1, $result['count']);
         self::assertCount(1, $result['results']);
         self::assertEquals(
@@ -61,6 +62,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         $client->request('GET', '/api/awl/domains?start=0&max=1');
         $result = self::getSuccessfulJsonResponse($client);
         self::assertArrayHasKey('results', $result);
+        dump($result);
         self::assertEquals(2, $result['count']);
         self::assertCount(1, $result['results']);
         self::assertEquals(

@@ -6,6 +6,7 @@ use App\Domain\Entity\AutoWhiteList\DomainAutoWhiteList\DomainAutoWhiteList;
 use App\Domain\Entity\AutoWhiteList\DomainAutoWhiteList\DomainAutoWhiteListRepository;
 use App\Messenger\Validation;
 use DateTimeImmutable;
+use IteratorAggregate;
 use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,18 +29,16 @@ class DomainAutoWhiteListController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $domains = $domainAutoWhiteListRepository->findAll($start, $max);
-        $data = [];
-        foreach ($domains as $domainAwl) {
-            $data[] = [
-                'domain' => $domainAwl->getDomain(),
-                'source' => $domainAwl->getSource(),
-                'first_seen' => $domainAwl->getFirstSeen(),
-                'last_seen' => $domainAwl->getLastSeen(),
-            ];
+
+        $count = is_array($domains) ? count($domains) : $domains->count();
+
+        if ($domains instanceof IteratorAggregate) {
+            $domains = $domains->getIterator();
         }
+
         return new JsonResponse([
-            'results' => $data,
-            'count' => is_array($domains) ? count($domains) : $domains->count(),
+            'results' => $domains,
+            'count' => $count,
         ]);
     }
 

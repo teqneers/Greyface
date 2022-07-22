@@ -5,6 +5,7 @@ namespace App\Controller\Api\OptOut;
 use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomain;
 use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomainRepository;
 use App\Messenger\Validation;
+use IteratorAggregate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,15 +28,16 @@ class OptOutDomainController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $domains = $optOutDomainRepository->findAll($start, $max);
-        $data = [];
-        foreach ($domains as $domain) {
-            $data[] = [
-                'domain' => $domain->getDomain(),
-            ];
+
+        $count = is_array($domains) ? count($domains) : $domains->count();
+
+        if ($domains instanceof IteratorAggregate) {
+            $domains = $domains->getIterator();
         }
+
         return new JsonResponse([
-            'results' => $data,
-            'count' => is_array($domains) ? count($domains) : $domains->count(),
+            'results' => $domains,
+            'count' => $count,
         ]);
     }
 

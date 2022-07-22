@@ -7,6 +7,7 @@ use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListReposit
 use App\Domain\Entity\Connect\ConnectRepository;
 use App\Messenger\Validation;
 use DateTimeImmutable;
+use IteratorAggregate;
 use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,19 +30,16 @@ class ConnectController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $list = $connectRepository->findAll($start, $max);
-        $data = [];
-        foreach ($list as $entry) {
-            $data[] = [
-                'name' => $entry->getName(),
-                'domain' => $entry->getDomain(),
-                'source' => $entry->getSource(),
-                'rcpt' => $entry->getRcpt(),
-                'first_seen' => $entry->getFirstSeen(),
-            ];
+
+        $count = is_array($list) ? count($list) : $list->count();
+
+        if ($list instanceof IteratorAggregate) {
+            $list = $list->getIterator();
         }
+
         return new JsonResponse([
-            'results' => $data,
-            'count' => is_array($list) ? count($list) : $list->count(),
+            'results' => $list,
+            'count' => $count,
         ]);
     }
 

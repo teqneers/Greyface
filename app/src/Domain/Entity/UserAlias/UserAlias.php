@@ -20,14 +20,13 @@ class UserAlias implements Identifiable
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     #[Serializer\Expose]
-    #[Serializer\Groups(['with_user'])]
     #[Serializer\Type(User::class)]
-    private User $user;
+    public User $user;
 
     #[ORM\Column(name: 'alias_name', type: 'string', length: 128)]
     #[Serializer\Expose]
     #[Serializer\Type('string')]
-    private string $aliasName;
+    public string $aliasName;
 
     public function __construct(
         string $id,
