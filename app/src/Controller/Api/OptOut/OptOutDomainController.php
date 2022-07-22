@@ -5,7 +5,6 @@ namespace App\Controller\Api\OptOut;
 use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomain;
 use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomainRepository;
 use App\Messenger\Validation;
-use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 #[Route('/api/opt-out/domains')]
 class OptOutDomainController
@@ -72,20 +70,17 @@ class OptOutDomainController
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
-        $domain = $optOutDomainRepository->findById($optOutDomain->getDomain());
-        if (!$domain) {
-            throw new OutOfBoundsException('No OptOut Domain found for id ' . $optOutDomain->getDomain());
-        }
+
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $domain->domain = $data['domain'] ?? '';
-        $errors = $validator->validate($domain);
+        $optOutDomain->domain = $data['domain'] ?? '';
+        $errors = $validator->validate($optOutDomain);
 
         if (count($errors) > 0) {
             return Validation::getViolations($errors);
         }
-        $domain = $optOutDomainRepository->save($domain);
+        $domain = $optOutDomainRepository->save($optOutDomain);
 
         $params = ['domain' => $domain->getDomain()];
         return new JsonResponse($params);
@@ -99,11 +94,7 @@ class OptOutDomainController
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
-        $domain = $optOutDomainRepository->findById($optOutDomain->getDomain());
-        if (!$domain) {
-            throw new OutOfBoundsException('No OptOut Domain found for id ' . $optOutDomain->getDomain());
-        }
-        $optOutDomainRepository->delete($domain);
+        $optOutDomainRepository->delete($optOutDomain);
         return new JsonResponse('Domain deleted successfully!');
     }
 }

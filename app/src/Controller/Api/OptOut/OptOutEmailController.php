@@ -5,7 +5,6 @@ namespace App\Controller\Api\OptOut;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmail;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmailRepository;
 use App\Messenger\Validation;
-use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 #[Route('/api/opt-out/emails')]
 class OptOutEmailController
@@ -73,20 +71,16 @@ class OptOutEmailController
         OptOutEmailRepository $optOutEmailRepository
     ): Response
     {
-        $email = $optOutEmailRepository->findById($optOutEmail->getEmail());
-        if (!$email) {
-            throw new OutOfBoundsException('No OptOut Email found for id ' . $optOutEmail->getEmail());
-        }
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $email->email = $data['email'] ?? '';
-        $errors = $validator->validate($email);
+        $optOutEmail->email = $data['email'] ?? '';
+        $errors = $validator->validate($optOutEmail);
 
         if (count($errors) > 0) {
             return Validation::getViolations($errors);
         }
-        $email = $optOutEmailRepository->save($email);
+        $email = $optOutEmailRepository->save($optOutEmail);
 
         $params = ['email' => $email->getEmail()];
         return new JsonResponse($params);
@@ -100,11 +94,7 @@ class OptOutEmailController
         OptOutEmailRepository $optOutEmailRepository
     ): Response
     {
-        $email = $optOutEmailRepository->findById($optOutEmail->getEmail());
-        if (!$email) {
-            throw new OutOfBoundsException('No OptOut Email found for id ' . $optOutEmail->getEmail());
-        }
-        $optOutEmailRepository->delete($email);
+        $optOutEmailRepository->delete($optOutEmail);
         return new JsonResponse('Email deleted successfully!');
     }
 }

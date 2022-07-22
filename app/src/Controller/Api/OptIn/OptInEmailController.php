@@ -5,7 +5,6 @@ namespace App\Controller\Api\OptIn;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmail;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmailRepository;
 use App\Messenger\Validation;
-use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 #[Route('/api/opt-in/emails')]
 class OptInEmailController
@@ -72,20 +70,16 @@ class OptInEmailController
         OptInEmailRepository $optInEmailRepository
     ): Response
     {
-        $email = $optInEmailRepository->findById($optInEmail->getEmail());
-        if (!$email) {
-            throw new OutOfBoundsException('No OptIn Email found for id ' . $optInEmail->getEmail());
-        }
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $email->email = $data['email'] ?? '';
-        $errors = $validator->validate($email);
+        $optInEmail->email = $data['email'] ?? '';
+        $errors = $validator->validate($optInEmail);
 
         if (count($errors) > 0) {
             return Validation::getViolations($errors);
         }
-        $email = $optInEmailRepository->save($email);
+        $email = $optInEmailRepository->save($optInEmail);
 
         $params = ['email' => $email->getEmail()];
         return new JsonResponse($params);
@@ -99,11 +93,7 @@ class OptInEmailController
         OptInEmailRepository $optInEmailRepository
     ): Response
     {
-        $email = $optInEmailRepository->findById($optInEmail->getEmail());
-        if (!$email) {
-            throw new OutOfBoundsException('No OptIn Email found for id ' . $optInEmail->getEmail());
-        }
-        $optInEmailRepository->delete($email);
+        $optInEmailRepository->delete($optInEmail);
         return new JsonResponse('Email deleted successfully!');
     }
 }

@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Domain\Entity\AutoWhiteList\DomainAutoWhiteList\DomainAutoWhiteListRepository:
+
+  App\Domain\AutoWhiteList\DomainAutoWhiteList\Validator\UniqueEntryValidator:
+
+  App\Domain\AutoWhiteList\DomainAutoWhiteList\Security\DomainAutoWhiteListVoter:

@@ -5,7 +5,6 @@ namespace App\Controller\Api\OptIn;
 use App\Domain\Entity\OptIn\OptInDomain\OptInDomain;
 use App\Domain\Entity\OptIn\OptInDomain\OptInDomainRepository;
 use App\Messenger\Validation;
-use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 #[Route('/api/opt-in/domains')]
 class OptInDomainController
@@ -72,20 +70,16 @@ class OptInDomainController
         OptInDomainRepository $optInDomainRepository
     ): Response
     {
-        $domain = $optInDomainRepository->findById($optInDomain->getDomain());
-        if (!$domain) {
-            throw new OutOfBoundsException('No OptIn Domain found for id ' . $optInDomain->getDomain());
-        }
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $domain->domain = $data['domain'] ?? '';
-        $errors = $validator->validate($domain);
+        $optInDomain->domain = $data['domain'] ?? '';
+        $errors = $validator->validate($optInDomain);
 
         if (count($errors) > 0) {
             return Validation::getViolations($errors);
         }
-        $domain = $optInDomainRepository->save($domain);
+        $domain = $optInDomainRepository->save($optInDomain);
 
         $params = ['domain' => $domain->getDomain()];
         return new JsonResponse($params);
@@ -99,11 +93,7 @@ class OptInDomainController
         OptInDomainRepository $optInDomainRepository
     ): Response
     {
-        $domain = $optInDomainRepository->findById($optInDomain->getDomain());
-        if (!$domain) {
-            throw new OutOfBoundsException('No OptIn Domain found for id ' . $optInDomain->getDomain());
-        }
-        $optInDomainRepository->delete($domain);
+        $optInDomainRepository->delete($optInDomain);
         return new JsonResponse('Domain deleted successfully!');
     }
 }
