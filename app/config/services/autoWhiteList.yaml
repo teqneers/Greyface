@@ -4,7 +4,10 @@ services:
     autoconfigure: true
 
   App\Domain\Entity\AutoWhiteList\DomainAutoWhiteList\DomainAutoWhiteListRepository:
+  App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListRepository:
 
   App\Domain\AutoWhiteList\DomainAutoWhiteList\Validator\UniqueEntryValidator:
+  App\Domain\AutoWhiteList\EmailAutoWhiteList\Validator\UniqueEntryValidator:
 
   App\Domain\AutoWhiteList\DomainAutoWhiteList\Security\DomainAutoWhiteListVoter:
+  App\Domain\AutoWhiteList\EmailAutoWhiteList\Security\EmailAutoWhiteListVoter:

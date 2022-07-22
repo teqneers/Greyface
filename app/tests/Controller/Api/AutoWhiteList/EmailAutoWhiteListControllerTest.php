@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Api\AutoWhiteList;
 
-use App\Domain\Entity\AutoWhiteList\DomainAutoWhiteList\DomainAutoWhiteList;
+use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Test\ApiTestTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
@@ -10,7 +10,7 @@ use App\Test\UserDomainTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class DomainAutoWhiteListControllerTest extends WebTestCase
+class EmailAutoWhiteListControllerTest extends WebTestCase
 {
     use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait;
 
@@ -21,7 +21,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
 
         self::initializeDatabaseWithEntities($user);
 
-        $client->request('GET', '/api/awl/domains');
+        $client->request('GET', '/api/awl/emails');
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
@@ -30,11 +30,11 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
+        $emailAwl = self::createAutoWhiteListEmail();
 
-        self::initializeDatabaseWithEntities($admin, $domain);
+        self::initializeDatabaseWithEntities($admin, $emailAwl);
 
-        $client->request('GET', '/api/awl/domains');
+        $client->request('GET', '/api/awl/emails');
         $result = self::getSuccessfulJsonResponse($client);
         self::assertArrayHasKey('results', $result);
         self::assertEquals(1, $result['count']);
@@ -53,12 +53,12 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
-        $domain2 = self::createAutoWhiteListDomain('second.greyface.de', '123.123.123');
+        $emailAwl = self::createAutoWhiteListEmail();
+        $emailAwl2 = self::createAutoWhiteListEmail('second-name@email.com','second.greyface.de', '123.123.123');
 
-        self::initializeDatabaseWithEntities($admin, $domain, $domain2);
+        self::initializeDatabaseWithEntities($admin, $emailAwl, $emailAwl2);
 
-        $client->request('GET', '/api/awl/domains?start=0&max=1');
+        $client->request('GET', '/api/awl/emails?start=0&max=1');
         $result = self::getSuccessfulJsonResponse($client);
         self::assertArrayHasKey('results', $result);
         self::assertEquals(2, $result['count']);
@@ -72,7 +72,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         );
     }
 
-    public function testCreateDomainAutoWhiteList(): void
+    public function testCreateEmailAutoWhiteList(): void
     {
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
@@ -82,42 +82,50 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         self::sendApiJsonRequest(
             $client,
             'POST',
-            '/api/awl/domains',
+            '/api/awl/emails',
             [
+                'name' => 'whitelist@email.de',
                 'domain' => 'testing.de',
                 'source' => '123.123.123'
             ]
         );
         $result = self::getSuccessfulJsonResponse($client);
 
+        self::assertArrayHasKey('name', $result);
         self::assertArrayHasKey('domain', $result);
         self::assertArrayHasKey('source', $result);
         self::clearEntityManager();
 
-        /** @var DomainAutoWhiteList|null $domain */
-        $domain = self::loadDatabaseEntity(
-            DomainAutoWhiteList::class,
-            ['domain' => $result['domain'], 'source' => $result['source']]);
+        /** @var EmailAutoWhiteList|null $emailAwl */
+        $emailAwl = self::loadDatabaseEntity(
+            EmailAutoWhiteList::class,
+            [
+                'name' => $result['name'],
+                'domain' => $result['domain'],
+                'source' => $result['source']
+            ]);
 
-        self::assertNotNull($domain);
-        self::assertSame('testing.de', $domain->getDomain());
-        self::assertSame('123.123.123', $domain->getSource());
+        self::assertNotNull($emailAwl);
+        self::assertSame('whitelist@email.de', $emailAwl->getName());
+        self::assertSame('testing.de', $emailAwl->getDomain());
+        self::assertSame('123.123.123', $emailAwl->getSource());
     }
 
-    public function testCreateDomainAutoWhiteListDuplicateFailed(): void
+    public function testCreateEmailAutoWhiteListDuplicateFailed(): void
     {
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
+        $emailAwl = self::createAutoWhiteListEmail();
 
-        self::initializeDatabaseWithEntities($admin, $domain);
+        self::initializeDatabaseWithEntities($admin, $emailAwl);
 
         self::sendApiJsonRequest(
             $client,
             'POST',
-            '/api/awl/domains',
+            '/api/awl/emails',
             [
+                'name' => 'whitelist@email.de',
                 'domain' => 'greyface.de',
                 'source' => '121.121.121.121'
             ]
@@ -125,24 +133,26 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUpdateDomainAutoWhiteList(): void
+    public function testUpdateEmailAutoWhiteList(): void
     {
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
+        $emailAwl = self::createAutoWhiteListEmail();
 
-        self::initializeDatabaseWithEntities($admin, $domain);
+        self::initializeDatabaseWithEntities($admin, $emailAwl);
 
         self::sendApiJsonRequest(
             $client,
             'PUT',
-            '/api/awl/domains/edit',
+            '/api/awl/emails/edit',
             [
                 'dynamicId' => [
-                    'domain' => $domain->getDomain(),
-                    'source' => $domain->getSource()
+                    'name' => $emailAwl->getName(),
+                    'domain' => $emailAwl->getDomain(),
+                    'source' => $emailAwl->getSource()
                 ],
+                'name' => 'whitelist@email.de',
                 'domain' => 'teqneers-testing.de',
                 'source' => '123.123.123'
             ]
@@ -151,32 +161,38 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         self::assertArrayHasKey('domain', $result);
         self::assertArrayHasKey('source', $result);
         self::clearEntityManager();
-        /** @var DomainAutoWhiteList|null $domain */
-        $domain = self::loadDatabaseEntity(
-            DomainAutoWhiteList::class,
-            ['domain' => $result['domain'], 'source' => $result['source']]);
-        self::assertNotNull($domain);
-        self::assertSame('teqneers-testing.de', $domain->getDomain());
-        self::assertSame('123.123.123', $domain->getSource());
+        /** @var EmailAutoWhiteList|null $emailAwl */
+        $emailAwl = self::loadDatabaseEntity(
+            EmailAutoWhiteList::class,
+            [
+                'name' => $result['name'],
+                'domain' => $result['domain'],
+                'source' => $result['source']
+            ]);
+        self::assertNotNull($emailAwl);
+        self::assertSame('whitelist@email.de', $emailAwl->getName());
+        self::assertSame('teqneers-testing.de', $emailAwl->getDomain());
+        self::assertSame('123.123.123', $emailAwl->getSource());
     }
 
-    public function testUpdateLastSeenDomainAutoWhiteList(): void
+    public function testUpdateLastSeenEmailAutoWhiteList(): void
     {
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
+        $emailAwl = self::createAutoWhiteListEmail();
 
-        self::initializeDatabaseWithEntities($admin, $domain);
+        self::initializeDatabaseWithEntities($admin, $emailAwl);
 
         self::sendApiJsonRequest(
             $client,
             'PUT',
-            '/api/awl/domains/last-seen',
+            '/api/awl/emails/last-seen',
             [
                 'dynamicId' => [
-                    'domain' => $domain->getDomain(),
-                    'source' => $domain->getSource()
+                    'name' => $emailAwl->getName(),
+                    'domain' => $emailAwl->getDomain(),
+                    'source' => $emailAwl->getSource()
                 ]
             ]
         );
@@ -185,40 +201,45 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
         self::assertArrayHasKey('source', $result);
         self::clearEntityManager();
 
-        /** @var DomainAutoWhiteList|null $domain */
-        $domain = self::loadDatabaseEntity(
-            DomainAutoWhiteList::class,
-            ['domain' => $result['domain'], 'source' => $result['source']]);
+        /** @var EmailAutoWhiteList|null $emailAwl */
+        $emailAwl = self::loadDatabaseEntity(
+            EmailAutoWhiteList::class,
+            [
+                'name' => $result['name'],
+                'domain' => $result['domain'],
+                'source' => $result['source']
+            ]);
 
-        self::assertNotNull($domain);
-        self::assertNotNull($domain->getLastSeen());
+        self::assertNotNull($emailAwl);
+        self::assertNotNull($emailAwl->getLastSeen());
     }
 
-    public function testDeleteDomainAutoWhiteList(): void
+    public function testDeleteEmailAutoWhiteList(): void
     {
         $admin = self::createAdmin();
         $client = self::createApiClient($admin);
 
-        $domain = self::createAutoWhiteListDomain();
+        $emailAwl = self::createAutoWhiteListEmail();
 
-        self::initializeDatabaseWithEntities($admin, $domain);
+        self::initializeDatabaseWithEntities($admin, $emailAwl);
 
         self::sendApiJsonRequest(
             $client,
             'DELETE',
-            '/api/awl/domains/delete',
+            '/api/awl/emails/delete',
             [
                 'dynamicId' => [
-                    'domain' => $domain->getDomain(),
-                    'source' => $domain->getSource()
+                    'name' => $emailAwl->getName(),
+                    'domain' => $emailAwl->getDomain(),
+                    'source' => $emailAwl->getSource()
                 ]
             ]);
 
         self::assertResponseIsSuccessful();
 
         self::clearEntityManager();
-        /** @var DomainAutoWhiteList|null $domain */
-        [$domain] = self::reloadDatabaseEntities($domain);
-        self::assertNull($domain);
+        /** @var EmailAutoWhiteList|null $emailAwl */
+        [$emailAwl] = self::reloadDatabaseEntities($emailAwl);
+        self::assertNull($emailAwl);
     }
 }

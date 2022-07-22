@@ -68,16 +68,20 @@ class DomainAutoWhiteListController
         return new JsonResponse($params, Response::HTTP_CREATED);
     }
 
-    #[Route('/{domain}/{source}', methods: ['PUT'])]
+    #[Route('/edit', methods: ['PUT'])]
     #[IsGranted('DOMAIN_AUTOWHITE_EDIT')]
     public function edit(
-        string                        $domain,
-        string                        $source,
         Request                       $request,
         ValidatorInterface            $validator,
         DomainAutoWhiteListRepository $domainAutoWhiteListRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $domain = $data['dynamicId']['domain'];
+        $source = $data['dynamicId']['source'];
+
         $domainAwl = $domainAutoWhiteListRepository->find([
             'domain' => $domain,
             'source' => $source
@@ -87,8 +91,6 @@ class DomainAutoWhiteListController
                 'No White List Domain found for Domain ' . $domain . ' and Source ' . $source
             );
         }
-        $body = $request->getContent();
-        $data = json_decode($body, true);
 
         $domainAwl->domain = $data['domain'] ?? '';
         $domainAwl->source = $data['source'] ?? '';
@@ -103,14 +105,20 @@ class DomainAutoWhiteListController
         return new JsonResponse($params);
     }
 
-    #[Route('/{domain}/{source}/last-seen', methods: ['PUT'])]
+    #[Route('/last-seen', methods: ['PUT'])]
     #[IsGranted('DOMAIN_AUTOWHITE_EDIT')]
     public function setLastSeen(
-        string                        $domain,
-        string                        $source,
+        Request $request,
         DomainAutoWhiteListRepository $domainAutoWhiteListRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $domain = $data['dynamicId']['domain'];
+        $source = $data['dynamicId']['source'];
+
+
         $domainAwl = $domainAutoWhiteListRepository->find([
             'domain' => $domain,
             'source' => $source
@@ -129,14 +137,19 @@ class DomainAutoWhiteListController
         return new JsonResponse($params);
     }
 
-    #[Route('/{domain}/{source}', methods: ['DELETE'])]
+    #[Route('/delete', methods: ['DELETE'])]
     #[IsGranted('DOMAIN_AUTOWHITE_DELETE')]
     public function delete(
-        string                        $domain,
-        string                        $source,
+        Request                       $request,
         DomainAutoWhiteListRepository $domainAutoWhiteListRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $domain = $data['dynamicId']['domain'];
+        $source = $data['dynamicId']['source'];
+
         $domainAwl = $domainAutoWhiteListRepository->find([
             'domain' => $domain,
             'source' => $source
