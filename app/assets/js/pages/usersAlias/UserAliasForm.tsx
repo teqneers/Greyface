@@ -56,10 +56,6 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
             .then((res) => res.json());
     }, {keepPreviousData: true});
 
-    // const usersList = useMemo(() => {
-    //     return users.results.map((u) => u);
-    // }, [users.results]);
-
     if (usersLoading) {
         return <LoadingIndicator/>;
     }
@@ -120,23 +116,25 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                             <Form.Group key={index} as={Col} md="12"
                                                         className="mt-2">
                                                 <Form.Label>{t('alias.aliasName')}</Form.Label>
+
                                                 <InputGroup>
                                                     <Form.Control
                                                         type="email"
                                                         name={`alias_name[${index}]`}
                                                         value={values.alias_name[index]}
                                                         onChange={handleChange}
-                                                        isInvalid={!!errors.alias_name?.[index]}
-                                                    >
+                                                        isInvalid={!!errors.alias_name?.[index]}>
                                                     </Form.Control>
 
                                                     <Button variant="outline-warning"
                                                             onClick={() => arrayHelpers.remove(index)}>X
                                                     </Button>
+
+                                                    <Form.Control.Feedback type="invalid">
+                                                        {errors.alias_name?.[index]}
+                                                    </Form.Control.Feedback>
                                                 </InputGroup>
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.alias_name?.[index]}
-                                                </Form.Control.Feedback>
+
                                             </Form.Group>
                                         ))}
                                         <Button variant="outline-primary" className="mt-2"
@@ -144,9 +142,9 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                         </Button>
                                     </>
                                 );
-                            }}
-                        />
+                            }}/>
                     </Row>
+
                     <Button variant="brand" type="submit"
                             disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                 </Form>

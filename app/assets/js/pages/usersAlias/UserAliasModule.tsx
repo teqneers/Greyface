@@ -29,6 +29,7 @@ const UserAliasModule: React.VFC = () => {
         error,
         data,
         isFetching,
+        refetch
     } = query;
 
     if (isLoading) {
@@ -59,7 +60,10 @@ const UserAliasModule: React.VFC = () => {
 
             <Route path={`${path}/create`}>
                 <CreateUserAlias onCancel={() => history.push(url)}
-                            onCreate={(id) => history.push(`${url}/${id}`)}/>
+                                 onCreate={(id) => {
+                                     history.push(`${url}/${id}`);
+                                     refetch();
+                                 }}/>
             </Route>
 
         </ApplicationModuleContainer>
