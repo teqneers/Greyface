@@ -7,12 +7,11 @@ import DisplayDate from '../../controllers/DisplayDate';
 import EmptyText from '../../controllers/EmptyText';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Paginator from '../../controllers/Paginator';
-import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
-import {Greylist} from '../../types/greylist';
+import {UserAlias} from '../../types/user';
 
 
-interface GreyListTableProps {
-    data: Greylist[],
+interface UserAliasTableProps {
+    data: UserAlias[],
     isFetching: boolean,
     query: any,
     currentIndex: number,
@@ -21,7 +20,7 @@ interface GreyListTableProps {
     setCurrentMaxResults: (value: number) => void,
 }
 
-const GreyListTable: React.VFC<GreyListTableProps> = (
+const UserAliasTable: React.VFC<UserAliasTableProps> = (
     {
         data,
         isFetching,
@@ -44,32 +43,23 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>{t('greylist.sender')}</th>
-                    <th>{t('greylist.domain')}</th>
-                    <th>{t('greylist.source')}</th>
-                    <th>{t('greylist.recipient')}</th>
-                    <th>{t('greylist.firstSeen')}</th>
-                    <th>{t('greylist.username')}</th>
+                    <th>{t('alias.aliasName')}</th>
+                    <th>{t('user.username')}</th>
                     <th/>
                 </tr>
                 </thead>
                 <tbody>
                 {data.length > 0 && data.map((d, index) => {
-                   console.log(d);
                     return (
                         <tr key={index}>
-                            <td>{d.connect.name}</td>
-                            <td>{d.connect.domain}</td>
-                            <td>{d.connect.source}</td>
-                            <td>{d.connect.rcpt}</td>
-                            <td> <DisplayDate date={d.connect.firstSeen} format={DATE_TIME_SECONDS_FORMAT}/></td>
-                            <td>{d.username}</td>
+                            <td>{d.alias_name}</td>
+                            <td>{d.user.username}</td>
                             <td>-</td>
                         </tr>
                     );
                 })}
                 {data.length <= 0 && <tr>
-                    <td colSpan={7}><EmptyText/></td>
+                    <td colSpan={3}><EmptyText/></td>
                 </tr>}
                 </tbody>
             </Table>
@@ -82,4 +72,4 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
     );
 };
 
-export default GreyListTable;
+export default UserAliasTable;

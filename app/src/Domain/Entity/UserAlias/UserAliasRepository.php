@@ -49,6 +49,7 @@ class UserAliasRepository extends ServiceEntityRepository
     public function save(UserAlias $user): UserAlias
     {
         $this->_em->persist($user);
+        $this->_em->flush();
         return $user;
     }
 

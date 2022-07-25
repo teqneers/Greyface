@@ -14,6 +14,8 @@ function ApplicationMenu(): React.ReactElement {
             <NavLink className="nav-link" to="/greylist">{t('menu.greylist')}</NavLink>
             {isAdministrator() && (<>
                 <NavLink className="nav-link" to="/users">{t('menu.users')}</NavLink>
+                <NavLink className="nav-link" to="/users-aliases">{t('menu.alias')}</NavLink>
+
             </>)}
         </Nav>
     );

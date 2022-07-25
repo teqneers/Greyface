@@ -24,7 +24,8 @@
             "close": "Close",
             "back": "Zurück",
             "searchAndFilters": "Suchen & Filtern",
-            "createUser": "neuer Benutzer"
+            "createUser": "neuer Benutzer",
+            "createUserAlias": "New Alias"
         },
         "placeholder": {
             "search": "Suchen",
@@ -41,7 +42,8 @@
         },
         "menu": {
             "greylist": "Greylist",
-            "users": "Benutzer"
+            "users": "Benutzer",
+            "alias": "Alias"
         },
         "greylist": {
             "header": "Willkommen!",
@@ -75,6 +77,14 @@
                 "enabled": "Aktiviert",
                 "deleted": "Deleted"
             }
+        },
+        "alias": {
+            "header": "User Aliases",
+            "createHeader": "Create New Alias",
+            "editHeader": "Edit Alias",
+            "deleteHeader": "Delete Alias",
+            "deleteMessage": "Do you really want to delete this Alias?",
+            "aliasName": "Alias"
         }
     }
 }

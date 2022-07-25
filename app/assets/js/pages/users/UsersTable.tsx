@@ -66,7 +66,7 @@ console.log(data);
                     </tr>
                 ))}
                 {data.length <= 0 && <tr>
-                    <td><EmptyText/></td>
+                    <td colSpan={4}><EmptyText/></td>
                 </tr>}
                 </tbody>
             </Table>

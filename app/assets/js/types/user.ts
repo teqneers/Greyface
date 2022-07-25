@@ -12,3 +12,8 @@ export interface User extends HasId, AuditTracking {
     is_administrator: boolean,
     is_deleted: boolean,
 }
+
+export interface UserAlias {
+    alias_name: string,
+    user: User
+}

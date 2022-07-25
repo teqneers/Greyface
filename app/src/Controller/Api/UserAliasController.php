@@ -91,14 +91,13 @@ class UserAliasController
         $data = json_decode($body, true);
         $user = $data['user_id'] ? $userRepository->findById($data['user_id']) : null;
         $data['alias_name'] = is_array($data['alias_name']) ? $data['alias_name'] : array($data['alias_name']);
-        $batchSaver = $userAliasRepository->createBatchSaver();
         foreach ($data['alias_name'] as $alias) {
             $aliasToCreate = new UserAlias(
                 Uuid::uuid4()->toString(),
                 $user,
                 $alias
             );
-            $batchSaver($aliasToCreate);
+            $userAliasRepository->save($aliasToCreate);
         }
 
         return new JsonResponse('Alias has been added successfully!');
