@@ -36,7 +36,7 @@ class ConnectController
         $isAdmin = $currentUser instanceof UserInterface && $currentUser->isAdministrator();
 
         $user = $userRepository->findById($currentUser->getId());
-        if (!$isAdmin) {
+        if ($isAdmin) {
             $user = null;
         }
         $start = $request->query->get('start');
@@ -45,7 +45,7 @@ class ConnectController
         $count = is_array($list) ? count($list) : $list->count();
 
         if ($list instanceof IteratorAggregate) {
-            $list = $list->getIterator();
+            $list = (array)$list->getIterator();
         }
 
         return new JsonResponse([

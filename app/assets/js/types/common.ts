@@ -1,3 +1,7 @@
+export const DATE_FORMAT = 'dd.MM.yyyy';
+export const DATE_TIME_FORMAT = 'dd.MM.yyyy HH:mm';
+export const DATE_TIME_SECONDS_FORMAT = 'dd.MM.yyyy HH:mm:ss';
+
 export interface HasId {
     id: string,
 }
@@ -13,4 +17,10 @@ export interface UpdateTracking {
 }
 
 export interface AuditTracking extends CreateTracking, UpdateTracking {
+}
+
+export interface DateObject {
+    date: string,
+    timezone: string,
+    timezone_type: number
 }

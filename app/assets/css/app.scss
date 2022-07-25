@@ -33,8 +33,8 @@ $font-default-bold: 500 !default;
 $font-default-black: 700 !default;
 
 $font-family: "SourceSansPro", "Roboto", "Open Sans", sans-serif !default;
-$font-size: 15px !default;
-$font-line-height: 22px !default;
+$font-size: 13px !default;
+$font-line-height: 18px !default;
 $font-weight: $font-default-normal !default;
 
 $font-h1-size: 32px !default;
@@ -220,4 +220,8 @@ body {
 
 .btn-brand, .btn-brand:hover, .btn-brand:focus {
   color: $color-invert-primary;
+}
+
+.table>:not(caption)>*>* {
+  padding: 0.3rem 0.3rem;
 }

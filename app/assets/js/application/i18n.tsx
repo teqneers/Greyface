@@ -1,4 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import * as DateFns from 'date-fns';
+import dateFns_de from 'date-fns/locale/de';
+import dateFns_en from 'date-fns/locale/en-US';
 
 import {EventDispatcher, useSubscription} from '../utils/event';
 
@@ -90,6 +93,38 @@ export function useLanguage(): string {
 interface Localization {
     locale: string,
     timezone: string,
+}
+const dateLocales = {
+    en: dateFns_en,
+    de: dateFns_de,
+};
+
+export function useLocalizedDate() {
+    const language = useLanguage();
+
+    const optionsForLanguage = useCallback((options) => (
+        Object.assign({}, options, {
+            locale: dateLocales[language],
+        })
+    ), [language]);
+
+    return useMemo(() => ({
+        format: (date, format, options = {}) => {
+            return DateFns.format(date, format, optionsForLanguage(options));
+        },
+        parse: (dateString, format, backup, options = {}) => {
+            return DateFns.parse(dateString, format, backup, optionsForLanguage(options));
+        },
+        formatDistance: (date, dateToCompare, options = {}) => {
+            return DateFns.formatDistance(date, dateToCompare, optionsForLanguage(options));
+        },
+        formatDistanceToNow: (date, options = {}) => {
+            return DateFns.formatDistanceToNow(date, optionsForLanguage(options));
+        },
+        formatDistanceStrict: (date, dateToCompare, options = {}) => {
+            return DateFns.formatDistanceStrict(date, dateToCompare, optionsForLanguage(options));
+        }
+    }), [optionsForLanguage]);
 }
 
 const systemLocalization: Localization = {

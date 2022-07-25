@@ -58,7 +58,7 @@ class ConnectRepository extends ServiceEntityRepository
     private function createDefaultQueryBuilder(?User $user = null): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder()
-            ->select('c.name', 'c.domain', 'c.source', 'c.rcpt', 'c.firstSeen', 'ua.aliasName', 'u.username', 'u.id as userID')
+            ->select('c as connect', 'ua.aliasName', 'u.username', 'u.id as userID')
             ->from(Connect::class, 'c')
             ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
             ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');

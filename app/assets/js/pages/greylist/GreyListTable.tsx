@@ -2,17 +2,18 @@ import React from 'react';
 import {Button, Table} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
+import DisplayDate from '../../controllers/DisplayDate';
+
 import EmptyText from '../../controllers/EmptyText';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Paginator from '../../controllers/Paginator';
-import {User} from '../../types/user';
+import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
+import {Greylist} from '../../types/greylist';
 
 
-interface UsersTableProps {
-    data: User[],
+interface GreyListTableProps {
+    data: Greylist[],
     isFetching: boolean,
-    selectedItemId?: string
-    onItemClick?: (item: User) => void,
     query: any,
     currentIndex: number,
     setCurrentIndex: (value: number) => void,
@@ -20,12 +21,10 @@ interface UsersTableProps {
     setCurrentMaxResults: (value: number) => void,
 }
 
-const UsersTable: React.VFC<UsersTableProps> = (
+const GreyListTable: React.VFC<GreyListTableProps> = (
     {
         data,
         isFetching,
-        selectedItemId,
-        onItemClick,
         query,
         currentIndex,
         setCurrentIndex,
@@ -39,32 +38,36 @@ const UsersTable: React.VFC<UsersTableProps> = (
     if (isFetching) {
         return <LoadingIndicator/>;
     }
-console.log(data);
+    console.log(data);
     return (
         <div>
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>{t('user.username')}</th>
-                    <th>{t('user.email')}</th>
-                    <th>{t('user.role')}</th>
+                    <th>{t('greylist.sender')}</th>
+                    <th>{t('greylist.domain')}</th>
+                    <th>{t('greylist.source')}</th>
+                    <th>{t('greylist.recipient')}</th>
+                    <th>{t('greylist.firstSeen')}</th>
+                    <th>{t('greylist.username')}</th>
                     <th/>
                 </tr>
                 </thead>
                 <tbody>
-                {data.map(user => (
-                    <tr key={user.id}
-                        onClick={() => onItemClick ? onItemClick(user) : null}
-                        className={`clickable${selectedItemId === user.id ? ' selected' : ''}`}>
-                        <td>{user.username}</td>
-                        <td>{user.email}</td>
-                        <td>{t(`user.roles.${user.role}`)}</td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                            <Button size="sm" variant="brand" onClick={() => history.push(`/users/${user.id}/edit`)}>Edit</Button>
-                            <Button size="sm" variant="danger" onClick={() => history.push(`/users/${user.id}/delete`)}>Delete</Button>
-                        </td>
-                    </tr>
-                ))}
+                {data.length > 0 && data.map((d, index) => {
+                   console.log(d);
+                    return (
+                        <tr key={index}>
+                            <td>{d.connect.name}</td>
+                            <td>{d.connect.domain}</td>
+                            <td>{d.connect.source}</td>
+                            <td>{d.connect.rcpt}</td>
+                            <td> <DisplayDate date={d.connect.firstSeen} format={DATE_TIME_SECONDS_FORMAT}/></td>
+                            <td>{d.username}</td>
+                            <td>-</td>
+                        </tr>
+                    );
+                })}
                 {data.length <= 0 && <tr>
                     <td><EmptyText/></td>
                 </tr>}
@@ -79,4 +82,4 @@ console.log(data);
     );
 };
 
-export default UsersTable;
+export default GreyListTable;

@@ -12,13 +12,13 @@ const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({
 
 
     return (
-        <Container className="mt-4">
+        <div className="mt-4 container-fluid">
             {/* @ts-ignore */}
             <Helmet>
                 <title>{t(title)}</title>
             </Helmet>
             {children}
-        </Container>
+        </div>
     );
 };
 

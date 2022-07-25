@@ -33,6 +33,24 @@ class ConnectControllerTest extends WebTestCase
         self::getSuccessfulJsonResponse($client);
     }
 
+    public function testListWithPagination(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $user = self::createUser();
+
+        $alias1 = self::createUserAlias($user, 'alias1@example.de');
+        $alias2 = self::createUserAlias($user, 'alias2@example.de');
+
+        self::initializeDatabaseWithEntities($admin, $user, $alias1, $alias2);
+
+        $client->request('GET', '/api/greylist?start=0&max=2');
+        $result = self::getSuccessfulJsonResponse($client);
+        self::assertEquals(5, $result['count']);
+        self::assertCount(2, $result['results']);
+    }
+
     public function testMoveToWhiteList(): void
     {
         $admin = self::createAdmin();
