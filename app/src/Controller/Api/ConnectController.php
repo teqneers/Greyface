@@ -56,18 +56,39 @@ class ConnectController
         $name = $data['dynamicId']['name'];
         $domain = $data['dynamicId']['domain'];
         $source = $data['dynamicId']['source'];
+        $rcpt = $data['dynamicId']['rcpt'];
 
         $greylist = $connectRepository->find([
             'name' => $name,
             'domain' => $domain,
-            'source' => $source
+            'source' => $source,
+            'rcpt' => $rcpt
         ]);
         if (!$greylist) {
             throw new OutOfBoundsException(
-                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source
+                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source. ' and Rcpt ' . $rcpt
             );
         }
         $connectRepository->delete($greylist);
         return new JsonResponse('Domain deleted successfully!');
+    }
+
+    #[Route('/delete-to-date', methods: ['DELETE'])]
+    #[IsGranted('CONNECT_DELETE')]
+    public function deleteByTime(
+        Request           $request,
+        ConnectRepository $connectRepository
+    ): Response
+    {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        if (isset($data['date'])) {
+            $date = $data['date'];
+
+            $connectRepository->deleteByDate($date);
+            return new JsonResponse('Domain deleted successfully!');
+        }
+        return new JsonResponse('Date is missing!', 500);
     }
 }

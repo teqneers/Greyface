@@ -39,7 +39,6 @@ class UserAliasControllerTest extends WebTestCase
 
         $client->request('GET', '/api/users-aliases');
         $result = self::getSuccessfulJsonResponse($client);
-        dump($result);
         self::assertEquals(2, $result['count']);
         self::assertCount(2, $result['results']);
         self::assertEquals(

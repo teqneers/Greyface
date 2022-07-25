@@ -48,6 +48,16 @@ class ConnectRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function deleteByDate(string $date): int
+    {
+        return $this->_em->createQueryBuilder()
+            ->delete(Connect::class, 'c')
+            ->where('DATE(c.firstSeen) <= :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->execute();
+    }
+
     public function save(Connect $domain): Connect
     {
         $this->_em->persist($domain);

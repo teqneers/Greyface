@@ -45,6 +45,7 @@ class Connect
     #[Serializer\Type('string')]
     public string $source = '';
 
+    #[ORM\Id]
     #[ORM\Column(name: 'rcpt', type: 'string', length: 128, nullable: false)]
     #[Assert\Type('string')]
     #[Assert\Length(max: 128)]
