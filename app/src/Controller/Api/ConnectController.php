@@ -5,6 +5,8 @@ namespace App\Controller\Api;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListRepository;
 use App\Domain\Entity\Connect\ConnectRepository;
+use App\Domain\Entity\User\UserRepository;
+use App\Domain\User\UserInterface;
 use App\Messenger\Validation;
 use DateTimeImmutable;
 use IteratorAggregate;
@@ -14,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/greylist')]
@@ -23,13 +26,22 @@ class ConnectController
     #[Route('', methods: ['GET'])]
     #[IsGranted('CONNECT_LIST')]
     public function list(
+        Security          $security,
         Request           $request,
+        UserRepository    $userRepository,
         ConnectRepository $connectRepository
     ): Response
     {
+        $currentUser = $security->getUser();
+        $isAdmin = $currentUser instanceof UserInterface && $currentUser->isAdministrator();
+
+        $user = $userRepository->findById($currentUser->getId());
+        if (!$isAdmin) {
+            $user = null;
+        }
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $list = $connectRepository->findAll($start, $max);
+        $list = $connectRepository->findAll($user, $start, $max);
         $count = is_array($list) ? count($list) : $list->count();
 
         if ($list instanceof IteratorAggregate) {

@@ -32,7 +32,7 @@ class ConnectRepository extends ServiceEntityRepository
 
     public function findOneByNDSR(string $name, string $domain, string $source, string $rcpt)
     {
-        return $this->createDefaultQueryBuilder('c')
+        return $this->createDefaultQueryBuilder()
             ->andWhere('c.name = :name')
             ->andWhere('c.domain = :domain')
             ->andWhere('c.source = :source')
@@ -42,9 +42,9 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAll($start = null, $max = 20): iterable|Paginator
+    public function findAll(User $user = null,$start = null, $max = 20): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder()
+        $qb = $this->createDefaultQueryBuilder($user)
             ->orderBy('c.domain', 'ASC');
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
@@ -55,13 +55,19 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    private function createDefaultQueryBuilder(): QueryBuilder
+    private function createDefaultQueryBuilder(?User $user = null): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder()
             ->select('c.name', 'c.domain', 'c.source', 'c.rcpt', 'c.firstSeen', 'ua.aliasName', 'u.username', 'u.id as userID')
             ->from(Connect::class, 'c')
             ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
             ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
+
+        if ($user) {
+            $qb = $qb->where('ua.user = :user')
+                ->setParameter('user', $user);
+        }
+
         return $qb;
     }
 
