@@ -3,6 +3,8 @@
 namespace App\Domain\Entity\Connect;
 
 use App\Domain\Connect\Validator\UniqueEntry;
+use App\Domain\Entity\User\User;
+use App\Domain\Entity\UserAlias\UserAlias;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;

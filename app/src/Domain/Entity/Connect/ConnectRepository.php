@@ -2,7 +2,10 @@
 
 namespace App\Domain\Entity\Connect;
 
+use App\Domain\Entity\User\User;
+use App\Domain\Entity\UserAlias\UserAlias;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,7 +47,11 @@ class ConnectRepository extends ServiceEntityRepository
 
     private function createDefaultQueryBuilder(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('c');
+        $qb = $this->_em->createQueryBuilder()
+            ->select('c.name', 'c.domain', 'c.source', 'c.rcpt', 'c.firstSeen', 'ua.aliasName', 'u.username', 'u.id as userID')
+            ->from(Connect::class, 'c')
+            ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
+            ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
         return $qb;
     }
 

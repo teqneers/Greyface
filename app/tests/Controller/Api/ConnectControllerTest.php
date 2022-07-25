@@ -2,10 +2,10 @@
 
 namespace App\Tests\Controller\Api;
 
-use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Test\ApiTestTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
+use App\Test\UserAliasTrait;
 use App\Test\UserDomainTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -16,7 +16,22 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ConnectControllerTest extends WebTestCase
 {
-    use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait;
+    use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait, UserAliasTrait;
+
+    public function testList(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+        $user = self::createUser();
+
+        $alias1 = self::createUserAlias($user, 'jobs@greyface.de');
+        $alias2 = self::createUserAlias($user, 'contact@greyface.de');
+
+        self::initializeDatabaseWithEntities($admin, $user, $alias1, $alias2);
+
+        $client->request('GET', '/api/greylist');
+        self::getSuccessfulJsonResponse($client);
+    }
 
     public function testMoveToWhiteList(): void
     {

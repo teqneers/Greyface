@@ -30,7 +30,6 @@ class ConnectController
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $list = $connectRepository->findAll($start, $max);
-
         $count = is_array($list) ? count($list) : $list->count();
 
         if ($list instanceof IteratorAggregate) {
