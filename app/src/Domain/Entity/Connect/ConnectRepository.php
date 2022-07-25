@@ -30,7 +30,7 @@ class ConnectRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findOneByNDSR(string $name, string $domain, string $source, string $rcpt): ?Connect
+    public function findOneByNDSR(string $name, string $domain, string $source, string $rcpt)
     {
         return $this->createDefaultQueryBuilder('c')
             ->andWhere('c.name = :name')
@@ -39,7 +39,7 @@ class ConnectRepository extends ServiceEntityRepository
             ->andWhere('c.rcpt = :rcpt')
             ->setParameters(['name' => $name, 'domain' => $domain, 'source' => $source, 'rcpt' => $rcpt])
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 
     public function findAll($start = null, $max = 20): iterable|Paginator
@@ -55,25 +55,16 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
-//    private function createDefaultQueryBuilder(): QueryBuilder
-//    {
-//        $qb = $this->_em->createQueryBuilder()
-//            ->select('c.name', 'c.domain', 'c.source', 'c.rcpt', 'c.firstSeen', 'ua.aliasName', 'u.username', 'u.id as userID')
-//            ->from(Connect::class, 'c')
-//            ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
-//            ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
-//        return $qb;
-//    }
-
     private function createDefaultQueryBuilder(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('c')
-            ->addSelect('ua', 'u')
-            ->leftJoin('c.rcpt', 'ua')
-            ->leftJoin('ua.user', 'u');
+        $qb = $this->_em->createQueryBuilder()
+            ->select('c.name', 'c.domain', 'c.source', 'c.rcpt', 'c.firstSeen', 'ua.aliasName', 'u.username', 'u.id as userID')
+            ->from(Connect::class, 'c')
+            ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
+            ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
         return $qb;
     }
+
 
     public function deleteByDate(string $date): int
     {

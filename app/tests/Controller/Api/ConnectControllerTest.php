@@ -30,8 +30,7 @@ class ConnectControllerTest extends WebTestCase
         self::initializeDatabaseWithEntities($admin, $user, $alias1, $alias2);
 
         $client->request('GET', '/api/greylist');
-        $result =  self::getSuccessfulJsonResponse($client);
-        dump($result);
+        self::getSuccessfulJsonResponse($client);
     }
 
     public function testMoveToWhiteList(): void

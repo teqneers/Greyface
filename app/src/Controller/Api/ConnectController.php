@@ -65,8 +65,13 @@ class ConnectController
             'source' => $source
         ]);
 
-        if(!$isAlreadyInWhitelist) {
-            $greylist = $connectRepository->findOneByNDSR($name, $domain, $source, $rcpt);
+        if (!$isAlreadyInWhitelist) {
+            $greylist = $connectRepository->find([
+                'name' => $name,
+                'domain' => $domain,
+                'source' => $source,
+                'rcpt' => $rcpt
+            ]);
             if (!$greylist) {
                 throw new OutOfBoundsException(
                     'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
@@ -106,7 +111,12 @@ class ConnectController
         $source = $data['dynamicId']['source'];
         $rcpt = $data['dynamicId']['rcpt'];
 
-        $greylist = $connectRepository->findOneByNDSR($name, $domain, $source, $rcpt);
+        $greylist = $connectRepository->find([
+            'name' => $name,
+            'domain' => $domain,
+            'source' => $source,
+            'rcpt' => $rcpt
+        ]);
         if (!$greylist) {
             throw new OutOfBoundsException(
                 'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
