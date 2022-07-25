@@ -3,9 +3,11 @@
 namespace App\Domain\Entity\Connect;
 
 use App\Domain\Connect\Validator\UniqueEntry;
+use App\Domain\Entity\Project\ProjectUser;
 use App\Domain\Entity\User\User;
 use App\Domain\Entity\UserAlias\UserAlias;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,32 +49,38 @@ class Connect
     #[Serializer\Type('string')]
     public string $source = '';
 
-    #[ORM\Id]
-    #[ORM\Column(name: 'rcpt', type: 'string', length: 128, nullable: false)]
-    #[Assert\Type('string')]
-    #[Assert\Length(max: 128)]
-    #[Assert\NotBlank]
-    #[Assert\Email(mode: 'strict')]
+//    #[ORM\Id]
+//    #[ORM\Column(name: 'rcpt', type: 'string', length: 128, nullable: false)]
+//    #[Assert\Type('string')]
+//    #[Assert\Length(max: 128)]
+//    #[Assert\NotBlank]
+//    #[Assert\Email(mode: 'strict')]
+//    #[Serializer\Expose]
+//    #[Serializer\Type('string')]
+//    public string $rcpt = '';
+
+    #[ORM\ManyToOne(targetEntity: UserAlias::class)]
+    #[ORM\JoinColumn(name: 'rcpt', referencedColumnName: 'alias_name', nullable: false)]
     #[Serializer\Expose]
-    #[Serializer\Type('string')]
-    public string $rcpt = '';
+    #[Serializer\Type(UserAlias::class)]
+    public UserAlias $rcpt;
 
     #[ORM\Column(name: "first_seen", type: "datetime_immutable")]
     #[Serializer\Expose]
     #[Serializer\Type(DateTimeImmutable::class)]
-    private ?DateTimeImmutable $firstSeen = null;
+    public ?DateTimeImmutable $firstSeen = null;
 
     public static function create(
         string $name,
         string $domain,
         string $source,
-        string $rcpt
+        UserAlias $rcpt
     ): self
     {
         return new self($name, $domain, $source, $rcpt);
     }
 
-    private function __construct(string $name, string $domain, string $source, string $rcpt)
+    private function __construct(string $name, string $domain, string $source, UserAlias $rcpt)
     {
         $this->setName($name)
             ->setDomain($domain)
@@ -117,15 +125,13 @@ class Connect
         return $this;
     }
 
-    public function getRcpt(): string
+    public function getRcpt(): UserAlias
     {
         return $this->rcpt;
     }
 
-    public function setRcpt(string $rcpt): self
+    public function setRcpt(UserAlias $rcpt): self
     {
-        WebAssert::lengthBetween($rcpt, 1, 128);
-        WebAssert::email($rcpt);
         $this->rcpt = $rcpt;
         return $this;
     }

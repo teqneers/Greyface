@@ -2,14 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Domain\Entity\User\User;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\Entity\UserAlias\UserAlias;
 use App\Domain\Entity\UserAlias\UserAliasRepository;
-use App\Domain\User\Command\CreateUser;
-use App\Domain\User\Command\DeleteUser;
-use App\Domain\User\Command\UpdateUser;
-use App\Domain\UserAlias\Command\CreateUserAlias;
 use App\Domain\UserAlias\Command\DeleteUserAlias;
 use App\Domain\UserAlias\Command\UpdateUserAlias;
 use App\Messenger\Validation;
@@ -21,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/users-aliases')]

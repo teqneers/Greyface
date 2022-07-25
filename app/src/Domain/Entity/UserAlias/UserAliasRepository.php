@@ -2,7 +2,6 @@
 
 namespace App\Domain\Entity\UserAlias;
 
-use App\Domain\Entity\Holiday\Holiday;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
