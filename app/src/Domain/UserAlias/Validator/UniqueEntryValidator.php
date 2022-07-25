@@ -32,6 +32,7 @@ class UniqueEntryValidator extends ConstraintValidator
         }
 
         $this->context->buildViolation($constraint->message)
+            ->setParameter('{{ value }}', $value->aliasName)
             ->setCause($try)
             ->setInvalidValue($value)
             ->addViolation();

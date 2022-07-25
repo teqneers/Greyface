@@ -92,6 +92,8 @@ class UserAliasController
         $data = json_decode($body, true);
         $user = $data['user_id'] ? $userRepository->findById($data['user_id']) : null;
         $data['alias_name'] = is_array($data['alias_name']) ? $data['alias_name'] : array($data['alias_name']);
+
+        $aliases = [];
         foreach ($data['alias_name'] as $alias) {
             $aliasToCreate = new UserAlias(
                 Uuid::uuid4()->toString(),
@@ -99,12 +101,15 @@ class UserAliasController
                 $alias
             );
             $errors = $validator->validate($aliasToCreate);
-dump($errors);
+
             if (count($errors) > 0) {
                 return Validation::getViolations($errors);
             }
+            $aliases[] = $aliasToCreate;
+        }
 
-            $userAliasRepository->save($aliasToCreate);
+        foreach ($aliases as $alias) {
+            $userAliasRepository->save($alias);
         }
 
         return new JsonResponse('Alias has been added successfully!');

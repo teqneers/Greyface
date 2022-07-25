@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute(Attribute::TARGET_CLASS)]
 class UniqueEntry extends Constraint
 {
-    public string $message = 'Duplicate Entry - this data is already exists.';
+    public string $message = 'Duplicate Entry - {{ value }}';
 
     public function getTargets(): string
     {
