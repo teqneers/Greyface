@@ -5,14 +5,17 @@ namespace App\Domain\Entity\UserAlias;
 use App\Domain\Entity\HasId;
 use App\Domain\Entity\User\User;
 use App\Domain\Identifiable;
+use App\Domain\UserAlias\Validator\UniqueEntry;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Webmozart\Assert\Assert;
 
 #[ORM\Entity(repositoryClass: UserAliasRepository::class)]
 #[ORM\Table(name: 'tq_aliases')]
+#[ORM\UniqueConstraint(name: 'uniq_alias', columns: ['user_id', 'alias_name'])]
 #[Serializer\ExclusionPolicy(Serializer\ExclusionPolicy::ALL)]
 #[Serializer\ReadOnlyProperty]
+#[UniqueEntry]
 class UserAlias implements Identifiable
 {
     use HasId;

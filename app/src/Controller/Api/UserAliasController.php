@@ -84,7 +84,8 @@ class UserAliasController
     public function create(
         Request             $request,
         UserRepository      $userRepository,
-        UserAliasRepository $userAliasRepository
+        UserAliasRepository $userAliasRepository,
+        ValidatorInterface    $validator
     ): Response
     {
         $body = $request->getContent();
@@ -97,6 +98,12 @@ class UserAliasController
                 $user,
                 $alias
             );
+            $errors = $validator->validate($aliasToCreate);
+dump($errors);
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+
             $userAliasRepository->save($aliasToCreate);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity\UserAlias;
 
+use App\Domain\Entity\User\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -21,6 +22,15 @@ class UserAliasRepository extends ServiceEntityRepository
     public function findById(string $id): ?UserAlias
     {
         $user = $this->find($id);
+        if ($user) {
+            return $user;
+        }
+        return null;
+    }
+
+    public function findByAliasNameForUser(User $user, string $aliasName): ?UserAlias
+    {
+        $user = $this->findOneBy(['user' => $user, 'aliasName' => $aliasName]);
         if ($user) {
             return $user;
         }
