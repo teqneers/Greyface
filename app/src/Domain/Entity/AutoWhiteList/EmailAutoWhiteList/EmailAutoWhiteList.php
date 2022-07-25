@@ -22,7 +22,6 @@ class EmailAutoWhiteList
     #[Assert\Type('string')]
     #[Assert\Length(max: 128)]
     #[Assert\NotBlank]
-    #[Assert\Email(mode: 'strict')]
     #[Serializer\Expose]
     #[Serializer\Type('string')]
     public string $name = '';

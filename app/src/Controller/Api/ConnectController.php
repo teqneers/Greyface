@@ -43,6 +43,60 @@ class ConnectController
         ]);
     }
 
+    #[Route('/toWhiteList', methods: ['POST'])]
+    #[IsGranted('EMAIL_AUTOWHITE_CREATE')]
+    public function toWhiteList(
+        Request                      $request,
+        ValidatorInterface           $validator,
+        ConnectRepository            $connectRepository,
+        EmailAutoWhiteListRepository $emailAutoWhiteListRepository
+    ): Response
+    {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $name = $data['name'] ?? '';
+        $domain = $data['domain'] ?? '';
+        $source = $data['source'] ?? '';
+        $rcpt = $data['rcpt'] ?? '';
+
+        $isAlreadyInWhitelist = $emailAutoWhiteListRepository->find([
+            'name' => $name,
+            'domain' => $domain,
+            'source' => $source
+        ]);
+
+        if(!$isAlreadyInWhitelist) {
+            $greylist = $connectRepository->find([
+                'name' => $name,
+                'domain' => $domain,
+                'source' => $source,
+                'rcpt' => $rcpt
+            ]);
+            if (!$greylist) {
+                throw new OutOfBoundsException(
+                    'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
+                );
+            }
+
+            $emailAwl = EmailAutoWhiteList::create(
+                $greylist->getName(),
+                $greylist->getDomain(),
+                $greylist->getSource(),
+                $greylist->getFirstSeen(),
+                $greylist->getFirstSeen());
+            $errors = $validator->validate($emailAwl);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+
+            $emailAutoWhiteListRepository->save($emailAwl);
+            $connectRepository->delete($greylist);
+        }
+        return new JsonResponse('Data have been moved to whitelist!');
+    }
+
     #[Route('/delete', methods: ['DELETE'])]
     #[IsGranted('CONNECT_DELETE')]
     public function delete(
@@ -66,7 +120,7 @@ class ConnectController
         ]);
         if (!$greylist) {
             throw new OutOfBoundsException(
-                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source. ' and Rcpt ' . $rcpt
+                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
             );
         }
         $connectRepository->delete($greylist);

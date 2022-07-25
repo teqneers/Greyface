@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api;
 
+use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Test\ApiTestTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
@@ -16,6 +17,27 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class ConnectControllerTest extends WebTestCase
 {
     use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait;
+
+    public function testMoveToWhiteList(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/greylist/toWhiteList',
+            [
+                'name' => 'greyface',
+                'domain' => 'recruit-greyface.de',
+                'source' => '15.215.255',
+                'rcpt' => 'jobs@greyface.de'
+            ]
+        );
+        self::getSuccessfulJsonResponse($client);
+    }
 
     public function testDeleteToDate(): void
     {
