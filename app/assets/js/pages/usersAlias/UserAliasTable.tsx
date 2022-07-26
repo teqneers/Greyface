@@ -1,34 +1,25 @@
-import React from 'react';
-import {Button, Table} from 'react-bootstrap';
+import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
-import DisplayDate from '../../controllers/DisplayDate';
-
-import EmptyText from '../../controllers/EmptyText';
+import {CellProps, Column, TableState} from 'react-table';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
-import Paginator from '../../controllers/Paginator';
+import Table from '../../controllers/Table/Table';
 import {UserAlias} from '../../types/user';
 
 
 interface UserAliasTableProps {
     data: UserAlias[],
     isFetching: boolean,
-    query: any,
-    currentIndex: number,
-    setCurrentIndex: (value: number) => void,
-    currentMaxResults: number,
-    setCurrentMaxResults: (value: number) => void,
+    initialState?: Partial<TableState<UserAlias>>,
+    onStateChange?: (state: TableState<UserAlias>) => void,
 }
 
 const UserAliasTable: React.VFC<UserAliasTableProps> = (
     {
         data,
         isFetching,
-        query,
-        currentIndex,
-        setCurrentIndex,
-        currentMaxResults,
-        setCurrentMaxResults
+        initialState,
+        onStateChange
     }) => {
 
     const {t} = useTranslation();
@@ -37,37 +28,33 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
     if (isFetching) {
         return <LoadingIndicator/>;
     }
+
+    const columns = useMemo<Column<UserAlias>[]>(() => [{
+        Header: t('alias.aliasName'),
+        id: 'aliasName',
+        width: 300,
+        accessor: (originalRow) => originalRow.alias_name,
+        disableSortBy: true,
+        disableResizing: true
+    }, {
+        Header: t('user.username'),
+        id: 'username',
+        accessor: (originalRow) => originalRow.user.username,
+        width: 700,
+        disableSortBy: true,
+        disableResizing: true
+    }], [history, t]);
+
     console.log(data);
     return (
         <div>
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>{t('alias.aliasName')}</th>
-                    <th>{t('user.username')}</th>
-                    <th/>
-                </tr>
-                </thead>
-                <tbody>
-                {data.length > 0 && data.map((d, index) => {
-                    return (
-                        <tr key={index}>
-                            <td>{d.alias_name}</td>
-                            <td>{d.user.username}</td>
-                            <td>-</td>
-                        </tr>
-                    );
-                })}
-                {data.length <= 0 && <tr>
-                    <td colSpan={3}><EmptyText/></td>
-                </tr>}
-                </tbody>
-            </Table>
-            <Paginator currentIndex={currentIndex}
-                       setCurrentIndex={setCurrentIndex}
-                       currentMaxResults={currentMaxResults}
-                       setCurrentMaxResults={setCurrentMaxResults}
-                       query={query}/>
+            <Table<UserAlias>
+                idColumn="aliasName"
+                data={data}
+                columns={columns}
+                disableSortRemove={true}
+                onStateChange={onStateChange}
+                initialState={initialState}/>
         </div>
     );
 };
