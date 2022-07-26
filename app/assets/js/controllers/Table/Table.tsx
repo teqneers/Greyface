@@ -18,6 +18,7 @@ import {
     UseResizeColumnsState,
     usePagination, UsePaginationOptions, UsePaginationInstanceProps, UsePaginationState
 } from 'react-table';
+import SortMarker from './SortMarker';
 import TableBody, {TableBodyProps} from './TableBody';
 import {DOTS, useCustomPagination} from './useCustomPagination';
 
@@ -60,8 +61,6 @@ declare module 'react-table' {
 }
 
 export interface TableProps<D extends object> extends Pick<TableBodyProps<D>, 'onRowClick' | 'onRowDoubleClick' | 'rowClassName'> {
-    showHeader?: boolean,
-    showFooter?: boolean,
     className?: string,
     idColumn?: string,
     onStateChange?: (state: TableState<D>) => void,
@@ -70,8 +69,6 @@ export interface TableProps<D extends object> extends Pick<TableBodyProps<D>, 'o
 
 function Table<D extends object>(
     {
-        showHeader,
-        showFooter,
         className,
         idColumn,
         onRowClick,
@@ -124,6 +121,7 @@ function Table<D extends object>(
     // table state change
     useDeepCompareEffect(() => {
         if (onStateChange) {
+            console.log(state);
             onStateChange(state);
         }
     }, [onStateChange, state]);
@@ -136,14 +134,15 @@ function Table<D extends object>(
                     <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
                             <th key={column.id} {...column.getHeaderProps()}>
-                                {column.render('Header')}
-                                <span>
-                    {column.isSorted
-                        ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                        : ''}
-                  </span>
+
+                                <SortMarker
+                                    canSort={column.canSort}
+                                    sortDescFirst={column.sortDescFirst}
+                                    isSorted={column.isSorted}
+                                    isSortedDesc={column.isSortedDesc}
+                                    {...column.getSortByToggleProps()}>
+                                    {column.render('Header')}
+                                </SortMarker>
                             </th>
                         ))}
                     </tr>
@@ -211,8 +210,6 @@ function Table<D extends object>(
 }
 
 Table.defaultProps = {
-    showHeader: true,
-    showFooter: false,
     idColumn: 'id',
 };
 

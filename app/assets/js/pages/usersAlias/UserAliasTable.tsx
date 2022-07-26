@@ -32,14 +32,14 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
         id: 'aliasName',
         width: 300,
         accessor: (originalRow) => originalRow.alias_name,
-        disableSortBy: true,
+        canSort: true,
         disableResizing: true
     }, {
         Header: t('user.username'),
         id: 'username',
         accessor: (originalRow) => originalRow.user.username,
         width: 700,
-        disableSortBy: true,
+        canSort: true,
         disableResizing: true
     }], [t]);
 

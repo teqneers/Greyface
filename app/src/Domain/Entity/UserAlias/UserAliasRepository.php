@@ -37,10 +37,20 @@ class UserAliasRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findAll($start = null, $max = 20): iterable|Paginator
+    public function findAll(string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder()
-            ->orderBy('ua.aliasName', 'ASC');
+        $qb = $this->createDefaultQueryBuilder();
+
+        if ($sortBy !== null) {
+            $mapping = [
+                'username' => 'u.username',
+                'aliasName' => 'ua.aliasName'
+            ];
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('ua.aliasName', 'ASC');
+        }
+
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
                 ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
@@ -53,7 +63,8 @@ class UserAliasRepository extends ServiceEntityRepository
 
     private function createDefaultQueryBuilder(): QueryBuilder
     {
-        return $this->createQueryBuilder('ua');
+        return $this->createQueryBuilder('ua')
+            ->leftJoin('ua.user', 'u');
     }
 
     public function save(UserAlias $user): UserAlias

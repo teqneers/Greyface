@@ -31,23 +31,27 @@ class UserAliasController
     {
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $userAliases = $userAliasRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sort_by');
+        $desc = $request->query->get('desc');
+        $userAliases = $userAliasRepository->findAll($start, $max, $sortBy, boolval($desc));
         $data = [];
-        foreach ($userAliases as $alias) {
-            $user = $alias->getUser();
-            $data[] = [
-                'id' => $alias->getId(),
-                'user' => [
-                    'id' => $user->getId(),
-                    'username' => $user->getUsername(),
-                    'email' => $user->getEmail(),
-                    'role' => $user->getRole(),
-                    'all_roles' => $user->getAllRoles(),
-                    'is_administrator' => $user->isAdministrator(),
-                    'is_deleted' => $user->isDeleted(),
-                ],
-                'alias_name' => $alias->getAliasName(),
-            ];
+        if ($userAliases) {
+            foreach ($userAliases as $alias) {
+                $user = $alias->getUser();
+                $data[] = [
+                    'id' => $alias->getId(),
+                    'user' => [
+                        'id' => $user->getId(),
+                        'username' => $user->getUsername(),
+                        'email' => $user->getEmail(),
+                        'role' => $user->getRole(),
+                        'all_roles' => $user->getAllRoles(),
+                        'is_administrator' => $user->isAdministrator(),
+                        'is_deleted' => $user->isDeleted(),
+                    ],
+                    'alias_name' => $alias->getAliasName(),
+                ];
+            }
         }
         return new JsonResponse([
             'results' => $data,
@@ -85,7 +89,7 @@ class UserAliasController
         Request             $request,
         UserRepository      $userRepository,
         UserAliasRepository $userAliasRepository,
-        ValidatorInterface    $validator
+        ValidatorInterface  $validator
     ): Response
     {
         $body = $request->getContent();
