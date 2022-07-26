@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {Pagination, Table as BTable} from 'react-bootstrap';
+import {Col, Form, Pagination, Row, Table as BTable} from 'react-bootstrap';
 import {useSticky} from 'react-table-sticky';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
@@ -157,49 +157,55 @@ function Table<D extends object>(
 
             {/* Pagination */}
             {paginationRange.length > 0 &&
-                <Pagination>
-                    <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage}/>
-                    <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage}/>
+                <Row>
+                    <Col>
+                        <Pagination>
+                            <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage}/>
+                            <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage}/>
 
-                    {paginationRange.map((pageNumber, index) => {
-                        if (pageNumber === DOTS) {
-                            return (
-                                <Pagination.Ellipsis/>
-                            );
-                        }
+                            {paginationRange.map((pageNumber, index) => {
+                                if (pageNumber === DOTS) {
+                                    return (
+                                        <Pagination.Ellipsis/>
+                                    );
+                                }
 
-                        if ((pageNumber - 1) === pageIndex) {
-                            return (
-                                <Pagination.Item
-                                    key={index}
-                                    active
-                                    onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
-                            );
-                        }
+                                if ((pageNumber - 1) === pageIndex) {
+                                    return (
+                                        <Pagination.Item
+                                            key={index}
+                                            active
+                                            onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
+                                    );
+                                }
 
-                        return (
-                            <Pagination.Item
-                                key={index}
-                                onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
-                        );
-                    })}
+                                return (
+                                    <Pagination.Item
+                                        key={index}
+                                        onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
+                                );
+                            })}
 
-                    <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage}/>
-                    <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}/>
-
-                    <select
-                        className=""
-                        value={pageSize}
-                        onChange={e => {
-                            setPageSize(Number(e.target.value));
-                        }}>
-                        {[5, 10, 15, 20, 25, 30, 40, 50].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
-                            </option>
-                        ))}
-                    </select>
-                </Pagination>}
+                            <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage}/>
+                            <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}/>
+                        </Pagination>
+                    </Col>
+                    <Col md={4}>
+                        <Form.Select
+                            size="sm"
+                            className="w-25"
+                            value={pageSize}
+                            onChange={e => {
+                                setPageSize(Number(e.target.value));
+                            }}>
+                            {[5, 10, 15, 20, 25, 30, 40, 50].map(pageSize => (
+                                <option key={pageSize} value={pageSize}>
+                                    Show {pageSize}
+                                </option>
+                            ))}
+                        </Form.Select>
+                    </Col>
+                </Row>}
         </>
     );
 }
