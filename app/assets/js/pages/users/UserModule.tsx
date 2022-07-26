@@ -43,7 +43,7 @@ const UserModule = () => {
 
             <div className="flex-row mb-2">
                 <Button
-                    variant="brand"
+                    variant="outline-primary"
                     onClick={() => history.push(`${url}/create`)}>{t('button.createUser')}</Button>
             </div>
 

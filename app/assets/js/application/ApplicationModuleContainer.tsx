@@ -12,7 +12,7 @@ const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({
 
 
     return (
-        <div className="mt-4 container-fluid">
+        <div className="container-fluid mt-4">
             {/* @ts-ignore */}
             <Helmet>
                 <title>{t(title)}</title>

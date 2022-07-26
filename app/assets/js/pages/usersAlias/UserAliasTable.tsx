@@ -1,7 +1,8 @@
 import React, {useMemo} from 'react';
+import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
-import {Column, TableState} from 'react-table';
+import {CellProps, Column, TableState} from 'react-table';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
 import {UserAlias} from '../../types/user';
@@ -30,7 +31,6 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
     const columns = useMemo<Column<UserAlias>[]>(() => [{
         Header: t('alias.aliasName'),
         id: 'aliasName',
-        width: 300,
         accessor: (originalRow) => originalRow.alias_name,
         canSort: true,
         disableResizing: true
@@ -38,10 +38,21 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
         Header: t('user.username'),
         id: 'username',
         accessor: (originalRow) => originalRow.user.username,
-        width: 700,
         canSort: true,
         disableResizing: true
-    }], [t]);
+    }, {
+        Header: '',
+        id: 'actions',
+        accessor: (originalRow) => originalRow.user.username,
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({row: {original: row}}: CellProps<UserAlias, string>) => {
+            return <>
+                <Button className="m-1" variant="outline-primary" size="sm" onClick={() => history.push(`/users-aliases/${row.alias_name}/edit`)}>Edit</Button>
+                <Button size="sm" variant="outline-danger" onClick={() => history.push(`/users-aliases/${row.user.username}/delete`)}>Delete</Button>
+            </>;
+        }
+    }], [t, history]);
 
     if (isFetching) {
         return <LoadingIndicator/>;

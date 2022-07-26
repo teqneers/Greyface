@@ -1,11 +1,9 @@
 import React, {useCallback} from 'react';
 import {Col, Form, Pagination, Row, Table as BTable} from 'react-bootstrap';
-import {useSticky} from 'react-table-sticky';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
     TableOptions,
     TableState, useColumnOrder,
-    useFlexLayout,
     UseRowStateInstanceProps,
     useSortBy,
     useTable,
@@ -104,8 +102,6 @@ function Table<D extends object>(
             getRowId: useCallback(createGetRowId(idColumn), [idColumn])
         },
         useSortBy,
-        useSticky,
-        useFlexLayout,
         useColumnOrder,
         useResizeColumns,
         usePagination
@@ -128,7 +124,7 @@ function Table<D extends object>(
 
     return (
         <>
-            <BTable size="sm" {...getTableProps()}>
+            <BTable bordered size="sm" {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
@@ -192,7 +188,7 @@ function Table<D extends object>(
                     <Col md={4}>
                         <Form.Select
                             size="sm"
-                            className="w-25"
+                            className="w-25 float-end"
                             value={pageSize}
                             onChange={e => {
                                 setPageSize(Number(e.target.value));

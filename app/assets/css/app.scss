@@ -158,6 +158,7 @@ $form-field-border-radius: 2px !default;
 
 html, body {
   height: 100%;
+  overflow: hidden;
   background-color: $color-background;
 }
 
@@ -222,18 +223,29 @@ body {
   padding: 0 15px;
 }
 
-.btn-brand, .btn-brand:hover, .btn-brand:focus {
-  color: $color-invert-primary;
+.table {
+  & > :not(caption) > * > * {
+    padding: 0.3rem 0.3rem;
+  }
+
+  .th .sort-icon {
+    opacity: 0;
+  }
+
+  .th:hover .sort-icon, .th .sort-icon.active {
+    opacity: 1;
+  }
 }
 
-.table > :not(caption) > * > * {
-  padding: 0.3rem 0.3rem;
+
+.container-fluid {
+  max-height: 80%;
+  overflow: scroll;
+
+  padding-bottom: 1.5rem;
 }
 
-.th .sort-icon {
-  opacity: 0;
-}
-
-.th:hover .sort-icon, .th .sort-icon.active {
-  opacity: 1;
+.footer {
+  background-color: black;
+  color: white;
 }

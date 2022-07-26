@@ -60,20 +60,18 @@ const UserAliasModule: React.VFC = () => {
 
             <div className="flex-row mb-2">
                 <Button
-                    variant="brand"
+                    variant="outline-primary"
                     onClick={() => history.push(`${url}/create`)}>{t('button.createUserAlias')}</Button>
             </div>
 
-            <div className="row">
-                {isError ? (
-                    <div>Error: {error}</div>
-                ) : (<UserAliasTable
-                    data={data.results}
-                    pageCount={Math.ceil(data.count / tableState.pageSize)}
-                    isFetching={isFetching || isLoading}
-                    initialState={tableState}
-                    onStateChange={onStateChange}/>)}
-            </div>
+            {isError ? (
+                <div>Error: {error}</div>
+            ) : (<UserAliasTable
+                data={data.results}
+                pageCount={Math.ceil(data.count / tableState.pageSize)}
+                isFetching={isFetching || isLoading}
+                initialState={tableState}
+                onStateChange={onStateChange}/>)}
 
             <Route path={`${path}/create`}>
                 <CreateUserAlias onCancel={() => history.push(url)}

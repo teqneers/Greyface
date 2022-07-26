@@ -67,7 +67,7 @@ const ApplicationContainer: React.FC = ({children}) => {
             {React.Children.only(children)}
 
             {/* Footer */}
-            <Navbar fixed="bottom" className="justify-content-center">
+            <Navbar fixed="bottom" className="justify-content-center footer">
                 Greyface by TEQneers GmbH & Co. KG
             </Navbar>
         </>
