@@ -44,7 +44,7 @@ const UserAliasModule: React.VFC = () => {
 
         let url = `/api/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}`;
         if (tableState.sortBy[0]) {
-            url += `&sort_by=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
+            url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
 
         return fetch(url).then((res) => res.json());
