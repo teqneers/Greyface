@@ -19,29 +19,19 @@ const UserAliasModule: React.VFC = () => {
     const {path, url} = useRouteMatch();
 
     const storage = window.localStorage;
-    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY)) ?? [];
-    const tableState = storage_table_state_key ?? {
-        sortBy: [{id: 'aliasName', desc: false}],
+    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
+    const [tableState, setTableState] = useState(storage_table_state_key ?? {
+        sortBy: [{id: 'username', desc: false}],
         filters: [],
         pageSize: 10,
         pageIndex: 0
-    };
-    const [currentMaxResults, setCurrentMaxResults] = useState(tableState.pageSize);
-    const [currentIndex, setCurrentIndex] = useState(tableState.pageIndex);
-
+    });
+    
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        console.log('onstate', state);
         storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
-        setCurrentMaxResults(state.pageSize);
-        setCurrentIndex(state.pageIndex);
-        console.log('after set max', state);
-    }, []);
-
-    const query = useQuery(['users-aliases', currentIndex, currentMaxResults], () => {
-        return fetch('/api/users-aliases?start=' + currentIndex + '&max=' + currentMaxResults)
-            .then((res) => res.json());
-    }, {keepPreviousData: true});
+        setTableState(state);
+    }, [storage]);
 
     const {
         isLoading,
@@ -50,7 +40,10 @@ const UserAliasModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = query;
+    } = useQuery(['users-aliases', tableState], () => {
+        return fetch('/api/users-aliases?start=' + tableState.pageIndex + '&max=' + tableState.pageSize)
+            .then((res) => res.json());
+    }, {keepPreviousData: true});
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -70,6 +63,7 @@ const UserAliasModule: React.VFC = () => {
                     <div>Error: {error}</div>
                 ) : (<UserAliasTable
                     data={data.results}
+                    pageCount={Math.ceil(data.count / tableState.pageSize)}
                     isFetching={isFetching || isLoading}
                     initialState={tableState}
                     onStateChange={onStateChange}/>)}

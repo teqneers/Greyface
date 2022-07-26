@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
-import {CellProps, Column, TableState} from 'react-table';
+import {Column, TableState} from 'react-table';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
 import {UserAlias} from '../../types/user';
@@ -9,6 +9,7 @@ import {UserAlias} from '../../types/user';
 
 interface UserAliasTableProps {
     data: UserAlias[],
+    pageCount: number,
     isFetching: boolean,
     initialState?: Partial<TableState<UserAlias>>,
     onStateChange?: (state: TableState<UserAlias>) => void,
@@ -17,6 +18,7 @@ interface UserAliasTableProps {
 const UserAliasTable: React.VFC<UserAliasTableProps> = (
     {
         data,
+        pageCount,
         isFetching,
         initialState,
         onStateChange
@@ -24,10 +26,6 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
 
     const {t} = useTranslation();
     const history = useHistory();
-
-    if (isFetching) {
-        return <LoadingIndicator/>;
-    }
 
     const columns = useMemo<Column<UserAlias>[]>(() => [{
         Header: t('alias.aliasName'),
@@ -43,14 +41,18 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
         width: 700,
         disableSortBy: true,
         disableResizing: true
-    }], [history, t]);
+    }], [t]);
 
-    console.log(data);
+    if (isFetching) {
+        return <LoadingIndicator/>;
+    }
+
     return (
         <div>
             <Table<UserAlias>
                 idColumn="aliasName"
                 data={data}
+                pageCount={pageCount}
                 columns={columns}
                 disableSortRemove={true}
                 onStateChange={onStateChange}

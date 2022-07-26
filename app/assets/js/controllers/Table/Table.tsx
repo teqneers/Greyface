@@ -131,9 +131,9 @@ function Table<D extends object>(
             <BTable striped bordered hover size="sm" {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
+                    <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>
+                            <th key={column.id} {...column.getHeaderProps()}>
                                 {column.render('Header')}
                                 <span>
                     {column.isSorted
@@ -186,8 +186,8 @@ function Table<D extends object>(
                         type="number"
                         defaultValue={pageIndex + 1}
                         onChange={e => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0
-                            gotoPage(page)
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                            gotoPage(page);
                         }}
                         style={{width: '100px'}}
                     />
@@ -195,7 +195,7 @@ function Table<D extends object>(
                 <select
                     value={pageSize}
                     onChange={e => {
-                        setPageSize(Number(e.target.value))
+                        setPageSize(Number(e.target.value));
                     }}
                 >
                     {[5, 10, 20, 30, 40, 50].map(pageSize => (
