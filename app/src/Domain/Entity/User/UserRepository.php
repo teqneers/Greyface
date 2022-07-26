@@ -2,12 +2,10 @@
 
 namespace App\Domain\Entity\User;
 
-use App\Domain\User\UserInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
-use http\Env\Request;
 
 
 /**
@@ -40,13 +38,24 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(bool $allowDeleted = false, $start = null, $max = 20): iterable|Paginator
+    public function findAll(bool $allowDeleted = false, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder($allowDeleted)
-            ->orderBy('u.username', 'ASC');
+        $qb = $this->createDefaultQueryBuilder($allowDeleted);
+
+        if ($sortBy !== null) {
+            $mapping = [
+                'username' => 'u.username',
+                'email' => 'u.email',
+                'role' => 'u.role'
+            ];
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('u.username', 'ASC');
+        }
+
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
-                     ->setFirstResult($start);
+                ->setFirstResult($start);
             return new Paginator($qb, false);
         }
         return $qb->getQuery()

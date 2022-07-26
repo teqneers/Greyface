@@ -166,7 +166,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                         </Form.Group>)}
 
                     </Row>
-                    <Button variant="brand" type="submit" disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                    <Button variant="outline-primary" type="submit" disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                 </Form>
             )}
         </Formik>

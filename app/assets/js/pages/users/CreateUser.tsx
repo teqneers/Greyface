@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, CloseButton} from 'react-bootstrap';
+import {Alert, CloseButton, Modal} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 
@@ -39,27 +39,29 @@ const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
     });
 
     return (
-        <>
-            <h4>{t('user.createHeader')}
-                <CloseButton onClick={() => onCancel()}/>
-            </h4>
+        <Modal show={true} onHide={() => onCancel()}>
+            <Modal.Header closeButton>
+                <Modal.Title>{t('user.createHeader')}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
 
-            {error && <Alert key="danger" variant="danger">
-                {error}
-            </Alert>}
+                {error && <Alert key="danger" variant="danger">
+                    {error}
+                </Alert>}
 
-            <UserForm<CreateUserValues, CreateUserRequest>
-                initialValues={{
-                    username: '',
-                    email: '',
-                    role: 'user',
-                    password: ''
-                }}
-                onSubmit={createUser}
-                onCancel={onCancel}
-                createUser={true}
-                submitBtn={t('button.save')}/>
-        </>
+                <UserForm<CreateUserValues, CreateUserRequest>
+                    initialValues={{
+                        username: '',
+                        email: '',
+                        role: 'user',
+                        password: ''
+                    }}
+                    onSubmit={createUser}
+                    onCancel={onCancel}
+                    createUser={true}
+                    submitBtn={t('button.save')}/>
+            </Modal.Body>
+        </Modal>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, CloseButton} from 'react-bootstrap';
+import {Alert, CloseButton, Modal} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useRouteMatch} from 'react-router-dom';
@@ -57,26 +57,29 @@ const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
     }
 
     return (
-        <>
-            <h4>{t('user.editHeader')}
-                <CloseButton onClick={() => onCancel()}/>
-            </h4>
+        <Modal show={true} onHide={() => onCancel()}>
+            <Modal.Header closeButton>
+                <Modal.Title>{t('user.editHeader')}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
 
-            {error && <Alert key="danger" variant="danger">
-                {error}
-            </Alert>}
 
-            <UserForm<UpdateUserValues, UpdateUserRequest>
-                initialValues={{
-                    username: data.username,
-                    email: data.email,
-                    role: data.role
-                }}
-                onSubmit={updateUser}
-                onCancel={onCancel}
-                createUser={false}
-                submitBtn={t('button.save')}/>
-        </>
+                {error && <Alert key="danger" variant="danger">
+                    {error}
+                </Alert>}
+
+                <UserForm<UpdateUserValues, UpdateUserRequest>
+                    initialValues={{
+                        username: data.username,
+                        email: data.email,
+                        role: data.role
+                    }}
+                    onSubmit={updateUser}
+                    onCancel={onCancel}
+                    createUser={false}
+                    submitBtn={t('button.save')}/>
+            </Modal.Body>
+        </Modal>
     );
 };
 

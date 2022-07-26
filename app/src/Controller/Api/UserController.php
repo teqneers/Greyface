@@ -31,7 +31,9 @@ class UserController
     {
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $users = $userRepository->findAll(false, $start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $users = $userRepository->findAll(false, $start, $max, $sortBy, boolval($desc));
         $data = [];
         foreach ($users as $user) {
             $data[] = [

@@ -1,80 +1,85 @@
-import React from 'react';
-import {Button, Table} from 'react-bootstrap';
+import React, {useMemo} from 'react';
+import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
-import EmptyText from '../../controllers/EmptyText';
+import {CellProps, Column, TableState} from 'react-table';
+import {usePermissions} from '../../application/usePermissions';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
-import Paginator from '../../controllers/Paginator';
-import {User} from '../../types/user';
+import Table from '../../controllers/Table/Table';
+import {User, UserAlias} from '../../types/user';
 
 
 interface UsersTableProps {
     data: User[],
+    pageCount: number,
     isFetching: boolean,
-    selectedItemId?: string
-    onItemClick?: (item: User) => void,
-    query: any,
-    currentIndex: number,
-    setCurrentIndex: (value: number) => void,
-    currentMaxResults: number,
-    setCurrentMaxResults: (value: number) => void,
+    initialState?: Partial<TableState<UserAlias>>,
+    onStateChange?: (state: TableState<UserAlias>) => void,
 }
 
 const UsersTable: React.VFC<UsersTableProps> = (
     {
         data,
         isFetching,
-        selectedItemId,
-        onItemClick,
-        query,
-        currentIndex,
-        setCurrentIndex,
-        currentMaxResults,
-        setCurrentMaxResults
+        pageCount,
+        initialState,
+        onStateChange
     }) => {
 
     const {t} = useTranslation();
     const history = useHistory();
 
+    const {isCurrentUser} = usePermissions();
+
+    const columns = useMemo<Column<User>[]>(() => [{
+        Header: t('user.username'),
+        id: 'username',
+        accessor: (originalRow) => originalRow.username,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('user.email'),
+        id: 'email',
+        accessor: (originalRow) => originalRow.email,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('user.role'),
+        id: 'role',
+        accessor: (originalRow) => t(`user.roles.${originalRow.role}`),
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: '',
+        id: 'actions',
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({row: {original: row}}: CellProps<User, string>) => {
+            return <>
+                <Button className="m-1" variant="outline-primary" size="sm"
+                        onClick={() => history.push(`/users/${row.id}/edit`)}>Edit</Button>
+                {!isCurrentUser(row) && <Button size="sm" variant="outline-danger"
+                        onClick={() => history.push(`/users/${row.id}/delete`)}>Delete</Button>}
+            </>;
+        }
+    }], [t, history]);
+
     if (isFetching) {
         return <LoadingIndicator/>;
     }
-console.log(data);
+    console.log(data);
     return (
+
         <div>
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>{t('user.username')}</th>
-                    <th>{t('user.email')}</th>
-                    <th>{t('user.role')}</th>
-                    <th/>
-                </tr>
-                </thead>
-                <tbody>
-                {data.map(user => (
-                    <tr key={user.id}
-                        onClick={() => onItemClick ? onItemClick(user) : null}
-                        className={`clickable${selectedItemId === user.id ? ' selected' : ''}`}>
-                        <td>{user.username}</td>
-                        <td>{user.email}</td>
-                        <td>{t(`user.roles.${user.role}`)}</td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                            <Button size="sm" variant="brand" onClick={() => history.push(`/users/${user.id}/edit`)}>Edit</Button>
-                            <Button size="sm" variant="danger" onClick={() => history.push(`/users/${user.id}/delete`)}>Delete</Button>
-                        </td>
-                    </tr>
-                ))}
-                {data.length <= 0 && <tr>
-                    <td colSpan={4}><EmptyText/></td>
-                </tr>}
-                </tbody>
-            </Table>
-            <Paginator currentIndex={currentIndex}
-                       setCurrentIndex={setCurrentIndex}
-                       currentMaxResults={currentMaxResults}
-                       setCurrentMaxResults={setCurrentMaxResults}
-                       query={query}/>
+            <Table<User>
+                idColumn="id"
+                data={data}
+                pageCount={pageCount}
+                columns={columns}
+                disableSortRemove={true}
+                onStateChange={onStateChange}
+                initialState={initialState}
+            />
         </div>
     );
 };

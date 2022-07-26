@@ -145,7 +145,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                             }}/>
                     </Row>
 
-                    <Button variant="brand" type="submit"
+                    <Button variant="outline-primary" type="submit"
                             disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                 </Form>
             )}
