@@ -26,7 +26,7 @@ const UserAliasModule: React.VFC = () => {
         pageSize: 10,
         pageIndex: 0
     });
-    
+
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
         storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));

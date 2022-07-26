@@ -7,9 +7,8 @@ const range = (start, end) => {
     return Array.from({length}, (_, idx) => idx + start);
 };
 
-export const useCustomPagination = ({totalCount, pageSize, siblingCount = 1, currentPage, type = ''}) => {
+export const useCustomPagination = ({totalPageCount, siblingCount = 1, currentPage}) => {
     return useMemo(() => {
-        const totalPageCount = (type == 'paging') ? totalCount : Math.ceil(totalCount / pageSize);
 
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
         const totalPageNumbers = siblingCount + 5;
@@ -59,5 +58,5 @@ export const useCustomPagination = ({totalCount, pageSize, siblingCount = 1, cur
             const middleRange = range(leftSiblingIndex, rightSiblingIndex);
             return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
         }
-    }, [totalCount, pageSize, siblingCount, currentPage, type]);
+    }, [totalPageCount, siblingCount, currentPage]);
 };

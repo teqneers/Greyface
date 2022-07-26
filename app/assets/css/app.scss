@@ -1,4 +1,5 @@
 /* DEFAULT COLORS */
+
 $color-brand: #ab7967 !default;
 $color-primary: #ab7967 !default;
 $color-secondary: #00b0ff !default;
@@ -21,6 +22,8 @@ $color-invert-notice: $color-invert-primary !default;
 $color-invert-info: $color-text !default;
 $color-invert-warning: $color-invert-primary !default;
 $color-invert-error: $color-invert-primary !default;
+
+$primary: $color-primary;
 
 /* DEFAULT LAYOUT PADDINGS */
 $padding-content: 20px !default;
@@ -208,6 +211,7 @@ body {
 .detail-panel {
   padding: 20px;
 }
+
 .btn-close {
   width: 15px;
   height: 15px;
@@ -222,6 +226,6 @@ body {
   color: $color-invert-primary;
 }
 
-.table>:not(caption)>*>* {
+.table > :not(caption) > * > * {
   padding: 0.3rem 0.3rem;
 }

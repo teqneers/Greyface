@@ -25,7 +25,7 @@ function TableBody<D extends object>(
     }: TableBodyProps<D>
 ): React.ReactElement {
     return (
-        <tbody {...rest} className="tbody">
+        <tbody {...rest}>
             {data.length > 0
                 ? data.map((row, index) => {
                     prepareRow(row);
@@ -40,7 +40,7 @@ function TableBody<D extends object>(
                              onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row.original, row.id, index, row) : null}>
                             {row.cells.map((cell) => (
                                 // eslint-disable-next-line react/jsx-key
-                                <td {...cell.getCellProps()} className="td"
+                                <td {...cell.getCellProps()}
                                      onClick={(onRowClick && cell.column.rowClick) ? () => onRowClick(row.original, row.id, index, row) : null}>
                                     {cell.render('Cell')}
                                 </td>

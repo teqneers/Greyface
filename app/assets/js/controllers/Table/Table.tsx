@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
-import {Table as BTable} from 'react-bootstrap';
+import React, {useCallback} from 'react';
+import {Pagination, Table as BTable} from 'react-bootstrap';
 import {useSticky} from 'react-table-sticky';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
@@ -19,6 +19,7 @@ import {
     usePagination, UsePaginationOptions, UsePaginationInstanceProps, UsePaginationState
 } from 'react-table';
 import TableBody, {TableBodyProps} from './TableBody';
+import {DOTS, useCustomPagination} from './useCustomPagination';
 
 import {createGetRowId} from './utils';
 
@@ -95,16 +96,12 @@ function Table<D extends object>(
         nextPage,
         previousPage,
         setPageSize,
-        // Get the state from the instance
         columns,
         state,
     } = useTable<D>(
         {
             ...rest,
-            manualPagination: true, // Tell the usePagination
-            // hook that we'll handle our own data fetching
-            // This means we'll also have to provide our own
-            // pageCount.
+            manualPagination: true,
             pageCount: controlledPageCount,
             // eslint-disable-next-line react-hooks/exhaustive-deps
             getRowId: useCallback(createGetRowId(idColumn), [idColumn])
@@ -118,17 +115,22 @@ function Table<D extends object>(
     );
     const {pageIndex, pageSize} = state;
 
+    // custom pagination numbers with ...
+    const paginationRange = useCustomPagination({
+        totalPageCount: pageCount,
+        currentPage: pageIndex
+    });
+
     // table state change
     useDeepCompareEffect(() => {
         if (onStateChange) {
-            console.log(state);
             onStateChange(state);
         }
     }, [onStateChange, state]);
 
     return (
         <>
-            <BTable striped bordered hover size="sm" {...getTableProps()}>
+            <BTable size="sm" {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
                     <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
@@ -151,61 +153,53 @@ function Table<D extends object>(
                 <TableBody data={page} prepareRow={prepareRow} {...getTableBodyProps()}
                            onRowClick={onRowClick} onRowDoubleClick={onRowDoubleClick} rowClassName={rowClassName}/>
 
-           </BTable>
+            </BTable>
 
-            {/*
-        Pagination can be built however you'd like.
-        This is just a very basic UI implementation:
-      */}
-            <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {'<<'}
-                </button>
-                {' '}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {'<'}
-                </button>
-                {' '}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {'>'}
-                </button>
-                {' '}
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {'>>'}
-                </button>
-                {' '}
-                <span>
-          Page{' '}
-                    <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-                <span>
-          | Go to page:{' '}
-                    <input
-                        type="number"
-                        defaultValue={pageIndex + 1}
+            {/* Pagination */}
+            {paginationRange.length > 0 &&
+                <Pagination>
+                    <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage}/>
+                    <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage}/>
+
+                    {paginationRange.map((pageNumber, index) => {
+                        if (pageNumber === DOTS) {
+                            return (
+                                <Pagination.Ellipsis/>
+                            );
+                        }
+
+                        if ((pageNumber - 1) === pageIndex) {
+                            return (
+                                <Pagination.Item
+                                    key={index}
+                                    active
+                                    onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
+                            );
+                        }
+
+                        return (
+                            <Pagination.Item
+                                key={index}
+                                onClick={() => gotoPage(pageNumber - 1)}>{pageNumber}</Pagination.Item>
+                        );
+                    })}
+
+                    <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage}/>
+                    <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}/>
+
+                    <select
+                        className=""
+                        value={pageSize}
                         onChange={e => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            gotoPage(page);
-                        }}
-                        style={{width: '100px'}}
-                    />
-        </span>{' '}
-                <select
-                    value={pageSize}
-                    onChange={e => {
-                        setPageSize(Number(e.target.value));
-                    }}
-                >
-                    {[5, 10, 20, 30, 40, 50].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
+                            setPageSize(Number(e.target.value));
+                        }}>
+                        {[5, 10, 15, 20, 25, 30, 40, 50].map(pageSize => (
+                            <option key={pageSize} value={pageSize}>
+                                Show {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </Pagination>}
         </>
     );
 }
