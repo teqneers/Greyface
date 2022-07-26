@@ -78,8 +78,7 @@ const UsersTable: React.VFC<UsersTableProps> = (
                 columns={columns}
                 disableSortRemove={true}
                 onStateChange={onStateChange}
-                initialState={initialState}
-            />
+                initialState={initialState}/>
         </div>
     );
 };

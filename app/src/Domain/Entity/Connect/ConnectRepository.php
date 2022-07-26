@@ -42,10 +42,23 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAll(User $user = null,$start = null, $max = 20): iterable|Paginator
+    public function findAll(User $user = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder($user)
-            ->orderBy('c.domain', 'ASC');
+        $qb = $this->createDefaultQueryBuilder();
+
+        if ($sortBy !== null) {
+            $mapping = [
+                'name' => 'c.name',
+                'domain' => 'c.domain',
+                'source' => 'c.source',
+                'rcpt' => 'c.rcpt',
+                'username' => 'u.username',
+                'firstSeen' => 'c.firstSeen'
+            ];
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('c.domain', 'ASC');
+        }
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
                 ->setFirstResult($start);
@@ -55,7 +68,8 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    private function createDefaultQueryBuilder(?User $user = null): QueryBuilder
+    private
+    function createDefaultQueryBuilder(?User $user = null): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder()
             ->select('c as connect', 'ua.aliasName', 'u.username', 'u.id as userID')
@@ -72,7 +86,8 @@ class ConnectRepository extends ServiceEntityRepository
     }
 
 
-    public function deleteByDate(string $date): int
+    public
+    function deleteByDate(string $date): int
     {
         return $this->_em->createQueryBuilder()
             ->delete(Connect::class, 'c')
@@ -82,14 +97,16 @@ class ConnectRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function save(Connect $domain): Connect
+    public
+    function save(Connect $domain): Connect
     {
         $this->_em->persist($domain);
         $this->_em->flush();
         return $domain;
     }
 
-    public function delete(Connect $domain): void
+    public
+    function delete(Connect $domain): void
     {
         $this->_em->remove($domain);
         $this->_em->flush();

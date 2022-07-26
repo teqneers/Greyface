@@ -1,84 +1,96 @@
-import React from 'react';
-import {Button, Table} from 'react-bootstrap';
+import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
-import DisplayDate from '../../controllers/DisplayDate';
+import {CellProps, Column, TableState} from 'react-table';
 
-import EmptyText from '../../controllers/EmptyText';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
-import Paginator from '../../controllers/Paginator';
+import Table from '../../controllers/Table/Table';
+import DisplayDate from '../../controllers/DisplayDate';
 import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
 import {Greylist} from '../../types/greylist';
-
+import {UserAlias} from '../../types/user';
 
 interface GreyListTableProps {
     data: Greylist[],
+    pageCount: number,
     isFetching: boolean,
-    query: any,
-    currentIndex: number,
-    setCurrentIndex: (value: number) => void,
-    currentMaxResults: number,
-    setCurrentMaxResults: (value: number) => void,
+    initialState?: Partial<TableState<UserAlias>>,
+    onStateChange?: (state: TableState<UserAlias>) => void,
 }
 
 const GreyListTable: React.VFC<GreyListTableProps> = (
     {
         data,
         isFetching,
-        query,
-        currentIndex,
-        setCurrentIndex,
-        currentMaxResults,
-        setCurrentMaxResults
+        pageCount,
+        initialState,
+        onStateChange
     }) => {
 
     const {t} = useTranslation();
     const history = useHistory();
 
+    const columns = useMemo<Column<Greylist>[]>(() => [{
+        Header: t('greylist.sender'),
+        id: 'name',
+        accessor: (originalRow) => originalRow.connect.name,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('greylist.domain'),
+        id: 'domain',
+        accessor: (originalRow) => originalRow.connect.domain,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('greylist.source'),
+        id: 'source',
+        accessor: (originalRow) => originalRow.connect.source,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('greylist.recipient'),
+        id: 'rcpt',
+        accessor: (originalRow) => originalRow.connect.rcpt,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('greylist.firstSeen'),
+        id: 'firstSeen',
+        accessor: (originalRow) => <DisplayDate date={originalRow.connect.firstSeen}
+                                                format={DATE_TIME_SECONDS_FORMAT}/>,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: t('greylist.username'),
+        id: 'username',
+        accessor: (originalRow) => originalRow.username,
+        canSort: true,
+        disableResizing: true
+    }, {
+        Header: '',
+        id: 'actions',
+        disableSortBy: true,
+        disableResizing: true,
+        Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
+            return <>
+            </>;
+        }
+    }], [t, history]);
+
     if (isFetching) {
         return <LoadingIndicator/>;
     }
-    console.log(data);
+
     return (
-        <div>
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>{t('greylist.sender')}</th>
-                    <th>{t('greylist.domain')}</th>
-                    <th>{t('greylist.source')}</th>
-                    <th>{t('greylist.recipient')}</th>
-                    <th>{t('greylist.firstSeen')}</th>
-                    <th>{t('greylist.username')}</th>
-                    <th/>
-                </tr>
-                </thead>
-                <tbody>
-                {data.length > 0 && data.map((d, index) => {
-                   console.log(d);
-                    return (
-                        <tr key={index}>
-                            <td>{d.connect.name}</td>
-                            <td>{d.connect.domain}</td>
-                            <td>{d.connect.source}</td>
-                            <td>{d.connect.rcpt}</td>
-                            <td> <DisplayDate date={d.connect.firstSeen} format={DATE_TIME_SECONDS_FORMAT}/></td>
-                            <td>{d.username}</td>
-                            <td>-</td>
-                        </tr>
-                    );
-                })}
-                {data.length <= 0 && <tr>
-                    <td colSpan={7}><EmptyText/></td>
-                </tr>}
-                </tbody>
-            </Table>
-            <Paginator currentIndex={currentIndex}
-                       setCurrentIndex={setCurrentIndex}
-                       currentMaxResults={currentMaxResults}
-                       setCurrentMaxResults={setCurrentMaxResults}
-                       query={query}/>
-        </div>
+        <Table<Greylist>
+            idColumn="id"
+            data={data}
+            pageCount={pageCount}
+            columns={columns}
+            disableSortRemove={true}
+            onStateChange={onStateChange}
+            initialState={initialState}/>
     );
 };
 
