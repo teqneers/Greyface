@@ -43,7 +43,7 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
 
     return (
         <>
-            <Button variant="primary" onClick={() => setShow(true)}>
+            <Button variant="outline-danger" onClick={() => setShow(true)}>
                 {t('button.delete')}
             </Button>
 
