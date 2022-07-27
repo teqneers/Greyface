@@ -34,7 +34,7 @@ SQL
                 'role' => $user['is_admin'] === 1 ? User::ROLE_ADMIN : User::ROLE_USER,
                 'password' => $hashedPass,
                 'now' => new DateTimeImmutable('now'),
-                'deleted_at' => $user['is_deleted'] ? new DateTimeImmutable('now') : null,
+                'deleted_at' => isset($user['is_deleted']) ? new DateTimeImmutable('now') : null,
             ],
             [
                 'id' => 'string',

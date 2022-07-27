@@ -39,8 +39,7 @@ final class Version20220718125037 extends AbstractMigration implements Container
             'username' => 'admin',
             'email' => 'root@localhost',
             'password' => 'admin',
-            'is_admin' => 1,
-            'is_deleted' => 0
+            'is_admin' => 1
         ];
         $this->addUser($user, $passHasher);
     }
