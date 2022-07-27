@@ -45,7 +45,6 @@ class ConnectController
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
         $response = $connectRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
-       dump($response);
         return new JsonResponse($response);
     }
 

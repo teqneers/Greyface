@@ -69,15 +69,17 @@ class ConnectRepository extends ServiceEntityRepository
         }
 
         if ($start !== null) {
-          $count  = count($qb->getQuery()->getArrayResult());
-          $qb = $qb->setMaxResults($max)
+            $countQb = clone $qb;
+            $countQb->select('COUNT(c.domain)');
+            $count = $countQb->getQuery()->getSingleScalarResult();
+            $qb = $qb->setMaxResults($max)
                 ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
         }
 
         $result = $qb->getQuery()->getArrayResult();
 
-        if($count === null) {
-           $count  = count($result);
+        if ($count === null) {
+            $count = count($result);
         }
 
         return [
