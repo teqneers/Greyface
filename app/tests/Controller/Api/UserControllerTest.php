@@ -158,8 +158,7 @@ class UserControllerTest extends WebTestCase
         self::clearEntityManager();
         /** @var User|null $user */
         [$user] = self::reloadDatabaseEntities($user);
-        self::assertNotNull($user);
-        self::assertTrue($user->isDeleted());
+        self::assertNull($user);
     }
 
     public function testSetUserPassword(): void

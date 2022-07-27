@@ -172,7 +172,7 @@ class UserController
         MessageBusInterface $commandBus,
     ): Response
     {
-        $deleteUser = DeleteUser::softDelete($user);
+        $deleteUser = DeleteUser::delete($user);
         $commandBus->dispatch($deleteUser);
         return new JsonResponse('User deleted successfully!');
     }

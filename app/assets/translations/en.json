@@ -60,7 +60,7 @@
             "editHeader": "Edit User",
             "setPassword": "Set New Password",
             "deleteHeader": "Delete user",
-            "deleteMessage": "Do you really want to delete this user? The user remains in the system but can no longer access or be selected.",
+            "deleteMessage": "Do you really want to delete this user?",
             "unDeleteHeader": "Restore User",
             "unDeleteMessage": "Are you sure you want to restore this user?",
             "username": "Username",

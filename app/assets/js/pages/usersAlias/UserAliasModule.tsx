@@ -10,6 +10,7 @@ import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
+import DeleteUserAlias from './DeleteUserAlias';
 import EditUserAlias from './EditUserAlias';
 import UserAliasTable from './UserAliasTable';
 
@@ -92,6 +93,15 @@ const UserAliasModule: React.VFC = () => {
                                    history.push(`${url}/${id}`);
                                    refetch();
                                }}/>
+            </Route>
+
+            <Route path={`${path}/:id/delete`}>
+                <DeleteUserAlias
+                    onCancel={(id) => history.push(`${url}/${id}`)}
+                    onDelete={() => {
+                        history.push(url);
+                        refetch();
+                    }}/>
             </Route>
 
 </ApplicationModuleContainer>
