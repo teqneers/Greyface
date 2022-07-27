@@ -40,10 +40,10 @@ const DeleteUser: React.VFC<DeleteUserProps> = ({onCancel, onDelete}) => {
                 </Modal.Header>
                 <Modal.Body>{t('user.deleteMessage')}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => onCancel(id)}>
+                    <Button variant="outline-secondary" onClick={() => onCancel(id)}>
                         {t('button.cancel')}
                     </Button>
-                    <Button variant="primary" onClick={() => deleteUser.mutateAsync()}>
+                    <Button variant="outline-danger" onClick={() => deleteUser.mutateAsync()}>
                         {t('button.delete')}
                     </Button>
                 </Modal.Footer>

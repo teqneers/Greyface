@@ -30,9 +30,7 @@ const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
             method: 'PUT',
             body: JSON.stringify(values)
         }).then(function (response) {
-            console.log(response);
             if (!response.ok) {
-                console.log(response);
                 throw response;
             }
             setError(null);
@@ -46,7 +44,6 @@ const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
             });
     }, {
         onSuccess: async ({user: id}) => {
-            console.log('success');
             await queryClient.invalidateQueries('users');
             onUpdate(id);
         }
