@@ -2,17 +2,15 @@ import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
-import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
+import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
-import EmptyRoute from '../../application/EmptyRoute';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import {UserAlias} from '../../types/user';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
-import UserDetail from './UserDetail';
 import UsersTable from './UsersTable';
 
 const TABLE_STATE_STORAGE_KEY = 'users.table.state';
@@ -80,7 +78,7 @@ const UserModule = () => {
 
             <Route path={`${path}/create`}>
                 <CreateUser onCancel={() => history.push(url)}
-                            onCreate={(id) => {
+                            onCreate={() => {
                                 history.push(url);
                                 refetch();
                             }}/>
@@ -88,7 +86,7 @@ const UserModule = () => {
 
             <Route path={`${path}/:id/edit`}>
                 <EditUser onCancel={() => history.push(url)}
-                          onUpdate={(id) => {
+                          onUpdate={() => {
                               history.push(url);
                               refetch();
                           }}/>

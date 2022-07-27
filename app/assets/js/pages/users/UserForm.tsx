@@ -83,7 +83,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
     return (
         <Formik
             validationSchema={createUser ? CreateSchema : UpdateSchema}
-            onSubmit={((values, {setSubmitting}) => {
+            onSubmit={((values) => {
                // @ts-ignore
                 onSubmit.mutate(values);
             })}
@@ -92,16 +92,12 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
             {({
                   handleSubmit,
                   handleChange,
-                  handleBlur,
                   values,
-                  touched,
-                  isValid,
                   errors,
                   isSubmitting
               }) => (
                 <Form noValidate onSubmit={handleSubmit}>
 
-                    {console.log(errors)}
                     <Row className="mb-3">
 
                         <Form.Group as={Col} md="12" controlId="validationFormik01">

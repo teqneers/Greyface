@@ -19,7 +19,7 @@ const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
 
-    const {url, params: {id}} = useRouteMatch<{ id: string }>();
+    const {params: {id}} = useRouteMatch<{ id: string }>();
 
     const {data, isLoading} = useQuery(['users', id], () => {
         return fetch(`/api/users/${id}`)

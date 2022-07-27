@@ -65,7 +65,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
     return (
         <Formik
             validationSchema={Schema}
-            onSubmit={((values, {setSubmitting}) => {
+            onSubmit={((values) => {
                 // @ts-ignore
                 onSubmit.mutate(values);
             })}

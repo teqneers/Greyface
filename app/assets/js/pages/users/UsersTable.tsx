@@ -62,7 +62,7 @@ const UsersTable: React.VFC<UsersTableProps> = (
                         onClick={() => history.push(`/users/${row.id}/delete`)}>Delete</Button>}
             </>;
         }
-    }], [t, history]);
+    }], [t, history, isCurrentUser]);
 
     if (isFetching) {
         return <LoadingIndicator/>;

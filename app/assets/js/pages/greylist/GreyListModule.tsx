@@ -1,8 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Button} from 'react-bootstrap';
-import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
-import {useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
@@ -12,11 +9,6 @@ import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
 const GreyListModule: React.VFC = () => {
-
-
-    const {t} = useTranslation();
-    const history = useHistory();
-    const {path, url} = useRouteMatch();
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -38,8 +30,7 @@ const GreyListModule: React.VFC = () => {
         isError,
         error,
         data,
-        isFetching,
-        refetch
+        isFetching
     } = useQuery(['greylist', tableState], () => {
 
         let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}`;

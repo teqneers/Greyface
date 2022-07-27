@@ -67,7 +67,6 @@ export interface TableProps<D extends object> extends Pick<TableBodyProps<D>, 'o
 
 function Table<D extends object>(
     {
-        className,
         idColumn,
         onRowClick,
         onRowDoubleClick,
@@ -85,13 +84,11 @@ function Table<D extends object>(
         page,
         canPreviousPage,
         canNextPage,
-        pageOptions,
         pageCount,
         gotoPage,
         nextPage,
         previousPage,
         setPageSize,
-        columns,
         state,
     } = useTable<D>(
         {

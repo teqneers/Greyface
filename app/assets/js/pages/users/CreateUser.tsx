@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Alert, CloseButton, Modal} from 'react-bootstrap';
+import {Alert, Modal} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 

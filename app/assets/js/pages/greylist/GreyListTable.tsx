@@ -1,7 +1,6 @@
 import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useHistory} from 'react-router-dom';
-import {CellProps, Column, TableState} from 'react-table';
+import { Column, TableState} from 'react-table';
 
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
@@ -28,7 +27,6 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
     }) => {
 
     const {t} = useTranslation();
-    const history = useHistory();
 
     const columns = useMemo<Column<Greylist>[]>(() => [{
         Header: t('greylist.sender'),
@@ -72,11 +70,8 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
         id: 'actions',
         disableSortBy: true,
         disableResizing: true,
-        Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
-            return <>
-            </>;
-        }
-    }], [t, history]);
+        accessor: null
+    }], [t]);
 
     if (isFetching) {
         return <LoadingIndicator/>;

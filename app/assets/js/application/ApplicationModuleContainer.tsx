@@ -1,5 +1,4 @@
 import React from 'react';
-import {Container} from 'react-bootstrap';
 import {Helmet} from 'react-helmet-async';
 import {useTranslation} from 'react-i18next';
 
