@@ -42,9 +42,14 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAll(User $user = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findAll(User $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
+
+        if ($query) {
+            $qb = $qb->andWhere('c.name LIKE :query OR c.domain LIKE :query OR c.source LIKE :query OR c.rcpt LIKE :query OR u.username LIKE :query OR c.firstSeen LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
 
         if ($sortBy !== null) {
             $mapping = [

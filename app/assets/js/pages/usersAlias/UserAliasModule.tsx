@@ -7,6 +7,7 @@ import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
 import UserAliasTable from './UserAliasTable';
@@ -17,6 +18,8 @@ const UserAliasModule: React.VFC = () => {
     const {t} = useTranslation();
     const history = useHistory();
     const {path, url} = useRouteMatch();
+
+    const [searchQuery, setSearchQuery] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -40,9 +43,9 @@ const UserAliasModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['users-aliases', tableState], () => {
+    } = useQuery(['users-aliases', tableState, searchQuery], () => {
 
-        let url = `/api/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}`;
+        let url = `/api/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
@@ -58,11 +61,13 @@ const UserAliasModule: React.VFC = () => {
     return (
         <ApplicationModuleContainer title="alias.header">
 
-            <div className="flex-row mb-2">
-                <Button
-                    variant="outline-primary"
-                    onClick={() => history.push(`${url}/create`)}>{t('button.createUserAlias')}</Button>
-            </div>
+
+
+            <ModuleTopBar title="alias.header"
+                          buttons={<Button
+                              variant="outline-primary"
+                              onClick={() => history.push(`${url}/create`)}>{t('button.createUserAlias')}</Button>}
+                          setSearchQuery={setSearchQuery}/>
 
             {isError ? (
                 <div>Error: {error}</div>

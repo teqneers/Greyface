@@ -38,9 +38,14 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(bool $allowDeleted = false, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findAll(bool $allowDeleted = false, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder($allowDeleted);
+
+        if ($query) {
+            $qb = $qb->andWhere('u.email LIKE :query OR u.username LIKE :query')
+                ->setParameter('query', '%'.$query.'%');
+        }
 
         if ($sortBy !== null) {
             $mapping = [

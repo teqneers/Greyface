@@ -7,6 +7,7 @@ import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
@@ -21,6 +22,7 @@ const UserModule = () => {
     const history = useHistory();
     const {path, url} = useRouteMatch();
 
+    const [searchQuery, setSearchQuery] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -44,9 +46,9 @@ const UserModule = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['users', tableState], () => {
+    } = useQuery(['users', tableState, searchQuery], () => {
 
-        let url = `/api/users?start=${tableState.pageIndex}&max=${tableState.pageSize}`;
+        let url = `/api/users?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
@@ -61,11 +63,11 @@ const UserModule = () => {
     return (
         <ApplicationModuleContainer title="user.header">
 
-            <div className="flex-row mb-2">
-                <Button
-                    variant="outline-primary"
-                    onClick={() => history.push(`${url}/create`)}>{t('button.createUser')}</Button>
-            </div>
+            <ModuleTopBar title="user.header"
+                          buttons={<Button
+                              variant="outline-primary"
+                              onClick={() => history.push(`${url}/create`)}>{t('button.createUser')}</Button>}
+                          setSearchQuery={setSearchQuery}/>
 
             {isError ? (
                 <div>Error: {error}</div>
@@ -95,10 +97,10 @@ const UserModule = () => {
 
             <Route path={`${path}/:id/password`}>
                 <SetPassword onCancel={() => history.push(url)}
-                          onUpdate={() => {
-                              history.push(url);
-                              refetch();
-                          }}/>
+                             onUpdate={() => {
+                                 history.push(url);
+                                 refetch();
+                             }}/>
             </Route>
 
             <Route path={`${path}/:id/delete`}>

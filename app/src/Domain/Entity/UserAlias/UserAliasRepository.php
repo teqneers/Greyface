@@ -37,9 +37,14 @@ class UserAliasRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findAll(string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
+
+        if ($query) {
+            $qb = $qb->andWhere('u.username LIKE :query OR ua.aliasName LIKE :query')
+                ->setParameter('query', '%'.$query.'%');
+        }
 
         if ($sortBy !== null) {
             $mapping = [

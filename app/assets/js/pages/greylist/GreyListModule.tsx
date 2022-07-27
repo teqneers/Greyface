@@ -4,11 +4,14 @@ import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
 import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
 const GreyListModule: React.VFC = () => {
+
+    const [searchQuery, setSearchQuery] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -31,9 +34,9 @@ const GreyListModule: React.VFC = () => {
         error,
         data,
         isFetching
-    } = useQuery(['greylist', tableState], () => {
+    } = useQuery(['greylist', tableState, searchQuery], () => {
 
-        let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}`;
+        let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
@@ -48,6 +51,9 @@ const GreyListModule: React.VFC = () => {
 
     return (
         <ApplicationModuleContainer title="greylist.header">
+
+            <ModuleTopBar title="greylist.header"
+                          setSearchQuery={setSearchQuery}/>
 
                 {isError ? (
                     <div>Error: {error}</div>

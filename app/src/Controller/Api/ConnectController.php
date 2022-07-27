@@ -39,11 +39,12 @@ class ConnectController
         if ($isAdmin) {
             $user = null;
         }
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $list = $connectRepository->findAll($user, $start, $max, $sortBy, boolval($desc));
+        $list = $connectRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
         $count = is_array($list) ? count($list) : $list->count();
 
         if ($list instanceof IteratorAggregate) {

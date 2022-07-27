@@ -1,4 +1,5 @@
 import React from 'react';
+import {Container} from 'react-bootstrap';
 import {Helmet} from 'react-helmet-async';
 import {useTranslation} from 'react-i18next';
 
@@ -11,13 +12,13 @@ const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({
 
 
     return (
-        <div className="container-fluid mt-4">
+        <Container fluid className="module-container mt-4">
             {/* @ts-ignore */}
             <Helmet>
                 <title>{t(title)}</title>
             </Helmet>
             {children}
-        </div>
+        </Container>
     );
 };
 

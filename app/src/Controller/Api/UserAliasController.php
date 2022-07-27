@@ -29,11 +29,12 @@ class UserAliasController
         UserAliasRepository $userAliasRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $userAliases = $userAliasRepository->findAll($start, $max, $sortBy, boolval($desc));
+        $userAliases = $userAliasRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
         $data = [];
         if ($userAliases) {
             foreach ($userAliases as $alias) {
