@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
@@ -76,6 +76,8 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
         createUser,
         onSubmit,
         submitBtn,
+        cancelBtn,
+        onCancel,
         ...rest
     }: UserFromProps<TValues, TData, any, any>
 ): React.ReactElement {
@@ -84,7 +86,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
         <Formik
             validationSchema={createUser ? CreateSchema : UpdateSchema}
             onSubmit={((values) => {
-               // @ts-ignore
+                // @ts-ignore
                 onSubmit.mutate(values);
             })}
             {...rest}>
@@ -96,72 +98,79 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                   isSubmitting
               }) => (
                 <Form noValidate onSubmit={handleSubmit}>
+                    <Modal.Body>
+                        <Row className="mb-3">
 
-                    <Row className="mb-3">
+                            <Form.Group as={Col} md="12" controlId="validationFormik01">
+                                <Form.Label>{t('user.username')}</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="username"
+                                    value={values.username}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.username}/>
 
-                        <Form.Group as={Col} md="12" controlId="validationFormik01">
-                            <Form.Label>{t('user.username')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="username"
-                                value={values.username}
-                                onChange={handleChange}
-                                isInvalid={!!errors.username}/>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.username}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                            <Form.Control.Feedback type="invalid">
-                                {errors.username}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            <Form.Group as={Col} md="12" controlId="validationFormik02">
+                                <Form.Label>{t('user.email')}</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    name="email"
+                                    value={values.email}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.email}/>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.email}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                        <Form.Group as={Col} md="12" controlId="validationFormik02">
-                            <Form.Label>{t('user.email')}</Form.Label>
-                            <Form.Control
-                                type="email"
-                                name="email"
-                                value={values.email}
-                                onChange={handleChange}
-                                isInvalid={!!errors.email}/>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.email}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            <Form.Group as={Col} md="12" controlId="validationFormik03">
+                                <Form.Label>{t('user.role')}</Form.Label>
+                                <Form.Select
+                                    name="role"
+                                    value={values.role}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.role}>
+                                    {USER_ROLES.map((r) => {
+                                        return (
+                                            <option key={r} value={r}>{t(`user.roles.${r}`)}</option>
+                                        );
+                                    })}
+                                </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.role}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                        <Form.Group as={Col} md="12" controlId="validationFormik03">
-                            <Form.Label>{t('user.role')}</Form.Label>
-                            <Form.Select
-                                name="role"
-                                value={values.role}
-                                onChange={handleChange}
-                                isInvalid={!!errors.role}>
-                                {USER_ROLES.map((r) => {
-                                    return (
-                                        <option key={r} value={r}>{t(`user.roles.${r}`)}</option>
-                                    );
-                                })}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.role}
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            {createUser && (<Form.Group as={Col} md="12" controlId="validationFormik04">
+                                <Form.Label>{t('user.password')}</Form.Label>
 
-                        {createUser && (<Form.Group as={Col} md="12" controlId="validationFormik04">
-                            <Form.Label>{t('user.password')}</Form.Label>
+                                {/* @ts-ignore */}
+                                <Form.Control
+                                    type="text"
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.password}/>
 
-                            {/* @ts-ignore */}
-                            <Form.Control
-                                type="text"
-                                name="password"
-                                value={values.password}
-                                onChange={handleChange}
-                                isInvalid={!!errors.password}/>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.password}
+                                </Form.Control.Feedback>
+                            </Form.Group>)}
 
-                            <Form.Control.Feedback type="invalid">
-                                {errors.password}
-                            </Form.Control.Feedback>
-                        </Form.Group>)}
-
-                    </Row>
-                    <Button variant="outline-primary" type="submit" disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-secondary" onClick={() => onCancel()}>
+                            {cancelBtn ? cancelBtn : t('button.cancel')}
+                        </Button>
+                        <Button variant="outline-primary" type="submit"
+                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                    </Modal.Footer>
                 </Form>
             )}
         </Formik>

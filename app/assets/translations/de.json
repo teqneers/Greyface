@@ -85,7 +85,9 @@
             "editHeader": "Edit Alias",
             "deleteHeader": "Delete Alias",
             "deleteMessage": "Do you really want to delete this Alias?",
-            "aliasName": "Alias"
+            "aliasName": "Alias",
+            "user": "Benutzer",
+            "addMore": "Add More Field"
         }
     }
 }

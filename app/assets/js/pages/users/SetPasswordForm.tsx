@@ -1,7 +1,7 @@
 import React from 'react';
 import {UseMutationResult} from 'react-query';
 import {useTranslation} from 'react-i18next';
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
@@ -24,7 +24,6 @@ const Schema: yup.SchemaOf<SetPasswordValues> = yup.object()
     );
 
 
-
 interface UserFromProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     cancelBtn?: string | null,
@@ -38,6 +37,8 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
     {
         onSubmit,
         submitBtn,
+        onCancel,
+        cancelBtn,
         ...rest
     }: UserFromProps<TValues, TData, any, any>
 ): React.ReactElement {
@@ -47,7 +48,7 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
             validationSchema={Schema}
             onSubmit={((values, {setFieldError}) => {
                 const submitData = {password: values.password.trim()};
-                if(submitData.password.length > 0) {
+                if (submitData.password.length > 0) {
                     // @ts-ignore
                     onSubmit.mutate(submitData);
                 } else {
@@ -63,25 +64,32 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                   isSubmitting
               }) => (
                 <Form noValidate onSubmit={handleSubmit}>
+                    <Modal.Body>
+                        <Row className="mb-3">
+                            <Form.Group as={Col} md="12" controlId="validationFormik04">
+                                <Form.Label>{t('user.password')}</Form.Label>
 
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="12" controlId="validationFormik04">
-                            <Form.Label>{t('user.password')}</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.password}/>
 
-                            <Form.Control
-                                type="text"
-                                name="password"
-                                value={values.password}
-                                onChange={handleChange}
-                                isInvalid={!!errors.password}/>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.password}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                            <Form.Control.Feedback type="invalid">
-                                {errors.password}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-
-                    </Row>
-                    <Button variant="outline-primary" type="submit" disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-secondary" onClick={() => onCancel()}>
+                            {cancelBtn ? cancelBtn : t('button.cancel')}
+                        </Button>
+                        <Button variant="outline-primary" type="submit"
+                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                    </Modal.Footer>
                 </Form>
             )}
         </Formik>

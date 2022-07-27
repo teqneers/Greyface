@@ -150,6 +150,8 @@ $form-field-border-radius: 2px !default;
 }
 
 @import "custom";
+@import "table";
+@import "modal";
 
 #app, body {
   width: 100%;
@@ -222,21 +224,6 @@ body {
   z-index: 2;
   padding: 0 15px;
 }
-
-.table {
-  & > :not(caption) > * > * {
-    padding: 0.3rem 0.3rem;
-  }
-
-  .th .sort-icon {
-    opacity: 0;
-  }
-
-  .th:hover .sort-icon, .th .sort-icon.active {
-    opacity: 1;
-  }
-}
-
 
 .container-fluid.module-container {
   max-height: 80%;

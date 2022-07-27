@@ -16,9 +16,8 @@ const ModalForm: React.FC<ModalProps> = ({title, onHide, children}) => {
             <Modal.Header closeButton>
                 <Modal.Title>{t(title)}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+
                 {children}
-            </Modal.Body>
         </Modal>
     );
 };

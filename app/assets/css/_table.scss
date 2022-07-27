@@ -1,0 +1,27 @@
+.table {
+  border-collapse: collapse;
+
+  & > :not(:first-child) {
+    border-top: unset;
+  }
+
+  & > :not(caption) > * > * {
+    padding: 0.3rem 0.3rem;
+  }
+
+  th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: $color-primary;
+    color: white;
+  }
+
+  .th .sort-icon {
+    opacity: 0;
+  }
+
+  .th:hover .sort-icon, .th .sort-icon.active {
+    opacity: 1;
+  }
+}

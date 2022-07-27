@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, Form, InputGroup, Row} from 'react-bootstrap';
+import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult, useQuery} from 'react-query';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
@@ -47,6 +47,8 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
     {
         onSubmit,
         submitBtn,
+        cancelBtn,
+        onCancel,
         ...rest
     }: UserAliasFromProps<TValues, TData, any, any>
 ): React.ReactElement {
@@ -69,8 +71,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                 // @ts-ignore
                 onSubmit.mutate(values);
             })}
-            {...rest}
-        >
+            {...rest}>
             {({
                   handleSubmit,
                   handleChange,
@@ -78,72 +79,79 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                   errors,
                   isSubmitting
               }) => (
+
                 <Form noValidate onSubmit={handleSubmit}>
 
-                    <Row className="mb-3">
+                    <Modal.Body>
+                        <Row className="mb-3">
 
-                        <Form.Group as={Col} md="12">
-                            <Form.Label>{t('alias.user')}</Form.Label>
-                            <Form.Select
-                                name="user_id"
-                                value={values.user_id}
-                                onChange={handleChange}
-                                isInvalid={!!errors.user_id}>
-                                {users.results.map((u) => {
+                            <Form.Group as={Col} md="12">
+                                <Form.Label>{t('alias.user')}</Form.Label>
+                                <Form.Select
+                                    name="user_id"
+                                    value={values.user_id}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.user_id}>
+                                    {users.results.map((u) => {
+                                        return (
+                                            <option key={u.id} value={u.id}>{u.username}</option>
+                                        );
+                                    })}
+                                </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.user_id}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+
+                            {/* @ts-ignore */}
+                            <FieldArray
+                                name="alias_name"
+                                render={arrayHelpers => {
+                                    if (!values.alias_name || values.alias_name.length === 0) {
+                                        values.alias_name = [''];
+                                    }
                                     return (
-                                        <option key={u.id} value={u.id}>{u.username}</option>
+                                        <>
+                                            {values.alias_name.map((option, index) => (
+                                                <Form.Group key={index} as={Col} md="12"
+                                                            className="mt-2">
+                                                    <Form.Label>{t('alias.aliasName')}</Form.Label>
+
+                                                    <InputGroup>
+                                                        <Form.Control
+                                                            type="email"
+                                                            name={`alias_name[${index}]`}
+                                                            value={values.alias_name[index]}
+                                                            onChange={handleChange}
+                                                            isInvalid={!!errors.alias_name?.[index]}>
+                                                        </Form.Control>
+
+                                                        <Button variant="outline-warning"
+                                                                onClick={() => arrayHelpers.remove(index)}>X
+                                                        </Button>
+
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {errors.alias_name?.[index]}
+                                                        </Form.Control.Feedback>
+                                                    </InputGroup>
+
+                                                </Form.Group>
+                                            ))}
+                                            <Button variant="link" className="mt-2 m-auto w-75"
+                                                    onClick={() => arrayHelpers.push('')}>{t('alias.addMore')}
+                                            </Button>
+                                        </>
                                     );
-                                })}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.user_id}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-
-                        {/* @ts-ignore */}
-                        <FieldArray
-                            name="alias_name"
-                            render={arrayHelpers => {
-                                if (!values.alias_name || values.alias_name.length === 0) {
-                                    values.alias_name = [''];
-                                }
-                                return (
-                                    <>
-                                        {values.alias_name.map((option, index) => (
-                                            <Form.Group key={index} as={Col} md="12"
-                                                        className="mt-2">
-                                                <Form.Label>{t('alias.aliasName')}</Form.Label>
-
-                                                <InputGroup>
-                                                    <Form.Control
-                                                        type="email"
-                                                        name={`alias_name[${index}]`}
-                                                        value={values.alias_name[index]}
-                                                        onChange={handleChange}
-                                                        isInvalid={!!errors.alias_name?.[index]}>
-                                                    </Form.Control>
-
-                                                    <Button variant="outline-warning"
-                                                            onClick={() => arrayHelpers.remove(index)}>X
-                                                    </Button>
-
-                                                    <Form.Control.Feedback type="invalid">
-                                                        {errors.alias_name?.[index]}
-                                                    </Form.Control.Feedback>
-                                                </InputGroup>
-
-                                            </Form.Group>
-                                        ))}
-                                        <Button variant="outline-primary" className="mt-2"
-                                                onClick={() => arrayHelpers.push('')}>Add more
-                                        </Button>
-                                    </>
-                                );
-                            }}/>
-                    </Row>
-
-                    <Button variant="outline-primary" type="submit"
-                            disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                                }}/>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-secondary" onClick={() => onCancel()}>
+                            {cancelBtn ? cancelBtn : t('button.cancel')}
+                        </Button>
+                        <Button variant="outline-primary" type="submit"
+                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                    </Modal.Footer>
                 </Form>
             )}
         </Formik>
