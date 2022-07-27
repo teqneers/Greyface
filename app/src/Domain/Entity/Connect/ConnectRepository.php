@@ -62,18 +62,18 @@ class ConnectRepository extends ServiceEntityRepository
                 ->setParameter('query', '%' . $query . '%');
         }
 
-        if ($sortBy !== null) {
-            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
-        } else {
-            $qb = $qb->orderBy('c.domain', 'ASC');
-        }
-
         if ($start !== null) {
             $countQb = clone $qb;
             $countQb->select('COUNT(c.domain)');
             $count = $countQb->getQuery()->getSingleScalarResult();
             $qb = $qb->setMaxResults($max)
                 ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
+        }
+
+        if ($sortBy !== null) {
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('c.domain', 'ASC');
         }
 
         $result = $qb->getQuery()->getArrayResult();
