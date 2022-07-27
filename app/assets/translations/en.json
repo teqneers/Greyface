@@ -58,6 +58,7 @@
             "header": "Users",
             "createHeader": "Create New User",
             "editHeader": "Edit User",
+            "setPassword": "Set New Password",
             "deleteHeader": "Delete user",
             "deleteMessage": "Do you really want to delete this user? The user remains in the system but can no longer access or be selected.",
             "unDeleteHeader": "Restore User",

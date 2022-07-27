@@ -87,8 +87,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                // @ts-ignore
                 onSubmit.mutate(values);
             })}
-            {...rest}
-        >
+            {...rest}>
             {({
                   handleSubmit,
                   handleChange,

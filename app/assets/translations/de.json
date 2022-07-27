@@ -58,6 +58,7 @@
             "header": "Benutzer",
             "createHeader": "Neuen Benutzer anlegen",
             "editHeader": "Benutzer bearbeiten",
+            "setPassword": "Neues Passwort festlegen",
             "deleteHeader": "Benutzer löschen",
             "deleteMessage": "Möchten Sie diesen Benutzer wirklich löschen? Der Benutzer verbleibt im System, kann aber nicht mehr zugreifen oder ausgewählt werden.",
             "unDeleteHeader": "Benutzer wiederherstellen",

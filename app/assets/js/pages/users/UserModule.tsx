@@ -11,6 +11,7 @@ import {UserAlias} from '../../types/user';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
+import SetPassword from './SetPassword';
 import UsersTable from './UsersTable';
 
 const TABLE_STATE_STORAGE_KEY = 'users.table.state';
@@ -86,6 +87,14 @@ const UserModule = () => {
 
             <Route path={`${path}/:id/edit`}>
                 <EditUser onCancel={() => history.push(url)}
+                          onUpdate={() => {
+                              history.push(url);
+                              refetch();
+                          }}/>
+            </Route>
+
+            <Route path={`${path}/:id/password`}>
+                <SetPassword onCancel={() => history.push(url)}
                           onUpdate={() => {
                               history.push(url);
                               refetch();

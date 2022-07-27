@@ -57,9 +57,11 @@ const UsersTable: React.VFC<UsersTableProps> = (
         Cell: ({row: {original: row}}: CellProps<User, string>) => {
             return <>
                 <Button className="m-1" variant="outline-primary" size="sm"
-                        onClick={() => history.push(`/users/${row.id}/edit`)}>Edit</Button>
+                        onClick={() => history.push(`/users/${row.id}/password`)}>{t('button.changePassword')}</Button>
+                <Button className="m-1" variant="outline-primary" size="sm"
+                        onClick={() => history.push(`/users/${row.id}/edit`)}>{t('button.edit')}</Button>
                 {!isCurrentUser(row) && <Button size="sm" variant="outline-danger"
-                        onClick={() => history.push(`/users/${row.id}/delete`)}>Delete</Button>}
+                        onClick={() => history.push(`/users/${row.id}/delete`)}>{t('button.delete')}</Button>}
             </>;
         }
     }], [t, history, isCurrentUser]);
@@ -67,10 +69,8 @@ const UsersTable: React.VFC<UsersTableProps> = (
     if (isFetching) {
         return <LoadingIndicator/>;
     }
-    console.log(data);
-    return (
 
-        <div>
+    return (
             <Table<User>
                 idColumn="id"
                 data={data}
@@ -79,7 +79,6 @@ const UsersTable: React.VFC<UsersTableProps> = (
                 disableSortRemove={true}
                 onStateChange={onStateChange}
                 initialState={initialState}/>
-        </div>
     );
 };
 

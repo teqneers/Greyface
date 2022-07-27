@@ -49,7 +49,6 @@ const GreyListModule: React.VFC = () => {
     return (
         <ApplicationModuleContainer title="greylist.header">
 
-            <div className="row">
                 {isError ? (
                     <div>Error: {error}</div>
                 ) : (<GreyListTable
@@ -58,7 +57,6 @@ const GreyListModule: React.VFC = () => {
                     isFetching={isFetching || isLoading}
                     initialState={tableState}
                     onStateChange={onStateChange}/>)}
-            </div>
 
         </ApplicationModuleContainer>
     );
