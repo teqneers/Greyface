@@ -14,9 +14,10 @@ interface EditUserAliasProps {
 }
 
 const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
-    const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const queryClient = useQueryClient();
+
+    const [error, setError] = useState<string | null>(null);
 
     const {params: {id}} = useRouteMatch<{ id: string }>();
 

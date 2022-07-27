@@ -1,0 +1,61 @@
+import React, {useState} from 'react';
+import {Button} from 'react-bootstrap';
+import {useTranslation} from 'react-i18next';
+import {useMutation} from 'react-query';
+import ModalConfirmation from '../../controllers/ModalConfirmation';
+import {Greylist} from '../../types/greylist';
+
+
+interface DeleteGreyListProps {
+    onDelete: () => void,
+    data: Greylist
+}
+
+const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
+    const {t} = useTranslation();
+
+    const [show, setShow] = useState(false);
+
+    const deleteRecord = useMutation(
+        (data: Greylist) => fetch('/api/greylist/delete', {
+            method: 'DELETE',
+            body: JSON.stringify({
+                'dynamicId': {
+                    'name': data.connect.name,
+                    'domain': data.connect.domain,
+                    'source': data.connect.source,
+                    'rcpt': data.connect.rcpt
+                }
+            })
+        }).then(async response => {
+            const data = await response.json();
+
+            // check for error response
+            if (!response.ok) {
+                // get error message from body or default to response status
+                const error = (data && data.message) || response.status;
+                return Promise.reject(error);
+            }
+            onDelete();
+        }).catch(error => {
+            console.error('There was an error!', error);
+        }));
+
+    return (
+        <>
+            <Button variant="primary" onClick={() => setShow(true)}>
+                {t('button.delete')}
+            </Button>
+
+            <ModalConfirmation
+                show={show}
+                onConfirm={() => deleteRecord.mutateAsync(data)}
+                onCancel={() => setShow(false)}
+                title="user.deleteHeader">
+                {t('user.deleteMessage')}
+            </ModalConfirmation>
+        </>
+    );
+};
+
+export default DeleteGreyList;

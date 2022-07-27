@@ -33,7 +33,8 @@ const GreyListModule: React.VFC = () => {
         isError,
         error,
         data,
-        isFetching
+        isFetching,
+        refetch
     } = useQuery(['greylist', tableState, searchQuery], () => {
 
         let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
@@ -59,6 +60,7 @@ const GreyListModule: React.VFC = () => {
                     <div>Error: {error}</div>
                 ) : (<GreyListTable
                     data={data.results}
+                    refetch={refetch}
                     pageCount={Math.ceil(data.count / tableState.pageSize)}
                     isFetching={isFetching || isLoading}
                     initialState={tableState}

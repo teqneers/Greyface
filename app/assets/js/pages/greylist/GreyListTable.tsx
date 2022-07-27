@@ -1,31 +1,36 @@
 import React, {useMemo} from 'react';
+import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import { Column, TableState} from 'react-table';
+import {useHistory} from 'react-router-dom';
+import {CellProps, Column, TableState} from 'react-table';
 
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
 import DisplayDate from '../../controllers/DisplayDate';
 import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
 import {Greylist} from '../../types/greylist';
-import {UserAlias} from '../../types/user';
+import DeleteGreyList from './DeleteGreyList';
 
 interface GreyListTableProps {
     data: Greylist[],
+    refetch: () => void,
     pageCount: number,
     isFetching: boolean,
-    initialState?: Partial<TableState<UserAlias>>,
-    onStateChange?: (state: TableState<UserAlias>) => void,
+    initialState?: Partial<TableState<Greylist>>,
+    onStateChange?: (state: TableState<Greylist>) => void,
 }
 
 const GreyListTable: React.VFC<GreyListTableProps> = (
     {
         data,
+        refetch,
         isFetching,
         pageCount,
         initialState,
         onStateChange
     }) => {
 
+    const history = useHistory();
     const {t} = useTranslation();
 
     const columns = useMemo<Column<Greylist>[]>(() => [{
@@ -70,8 +75,14 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
         id: 'actions',
         disableSortBy: true,
         disableResizing: true,
-        accessor: null
-    }], [t]);
+        Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
+            return <>
+                <Button className="m-1" variant="outline-primary" size="sm"
+                        onClick={() => history.push(`/users/${row.connect.name}/edit`)}>{t('button.moveToWhitelist')}</Button>
+                <DeleteGreyList onDelete={refetch} data={row}/>
+            </>;
+        }
+    }], [t, refetch, history]);
 
     if (isFetching) {
         return <LoadingIndicator/>;
@@ -79,7 +90,7 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
 
     return (
         <Table<Greylist>
-            idColumn="id"
+            idColumn="connect.domain,username"
             data={data}
             pageCount={pageCount}
             columns={columns}

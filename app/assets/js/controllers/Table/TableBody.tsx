@@ -28,6 +28,7 @@ function TableBody<D extends object>(
         <tbody {...rest}>
             {data.length > 0
                 ? data.map((row, index) => {
+                    console.log(row);
                     prepareRow(row);
                     let className = classNames('tr', {clickable: !!onRowClick || !!onRowDoubleClick});
                     if (rowClassName) {

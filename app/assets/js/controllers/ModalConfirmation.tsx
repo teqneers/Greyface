@@ -4,6 +4,7 @@ import {Button, Modal} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 
 export interface ModalProps {
+    show?: boolean,
     title: string,
     onCancel: () => void,
     onConfirm: () => void,
@@ -11,6 +12,7 @@ export interface ModalProps {
 
 const ModalConfirmation: React.FC<ModalProps> = (
     {
+        show = true,
         title,
         onCancel,
         onConfirm,
@@ -20,7 +22,7 @@ const ModalConfirmation: React.FC<ModalProps> = (
     const {t} = useTranslation();
 
     return (
-        <Modal show={true} onHide={() => onCancel()}>
+        <Modal show={show} onHide={() => onCancel()}>
 
             <Modal.Header closeButton>
                 <Modal.Title>{t(title)}</Modal.Title>
