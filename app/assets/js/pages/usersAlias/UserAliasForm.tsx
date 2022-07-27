@@ -35,6 +35,7 @@ const Schema: yup.SchemaOf<UserAliasValues> = yup.object()
     );
 
 interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
+    createMode: boolean,
     submitBtn?: string | null,
     cancelBtn?: string | null,
     onCancel?: () => void,
@@ -45,6 +46,7 @@ interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
 
 function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasRequest>(
     {
+        createMode,
         onSubmit,
         submitBtn,
         cancelBtn,
@@ -68,8 +70,12 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
         <Formik
             validationSchema={Schema}
             onSubmit={((values) => {
+                let submitData = values;
+                if(!createMode) {
+                    submitData = {...values, alias_name: values.alias_name[0]};
+                }
                 // @ts-ignore
-                onSubmit.mutate(values);
+                onSubmit.mutate(submitData);
             })}
             {...rest}>
             {({
@@ -92,6 +98,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                     value={values.user_id}
                                     onChange={handleChange}
                                     isInvalid={!!errors.user_id}>
+                                    <option disabled selected={!values.user_id}/>
                                     {users.results.map((u) => {
                                         return (
                                             <option key={u.id} value={u.id}>{u.username}</option>
@@ -126,9 +133,9 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                             isInvalid={!!errors.alias_name?.[index]}>
                                                         </Form.Control>
 
-                                                        <Button variant="outline-warning"
+                                                        {createMode && <Button variant="outline-warning"
                                                                 onClick={() => arrayHelpers.remove(index)}>X
-                                                        </Button>
+                                                        </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
                                                             {errors.alias_name?.[index]}
@@ -137,9 +144,9 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
 
                                                 </Form.Group>
                                             ))}
-                                            <Button variant="link" className="mt-2 m-auto w-75"
+                                            {createMode && <Button variant="link" className="mt-2 m-auto w-75"
                                                     onClick={() => arrayHelpers.push('')}>{t('alias.addMore')}
-                                            </Button>
+                                            </Button>}
                                         </>
                                     );
                                 }}/>
@@ -158,6 +165,8 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
     );
 }
 
-UserAliasForm.defaultProps = {};
+UserAliasForm.defaultProps = {
+    createMode: true
+};
 
 export default UserAliasForm;

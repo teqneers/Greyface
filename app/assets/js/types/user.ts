@@ -13,7 +13,7 @@ export interface User extends HasId, AuditTracking {
     is_deleted: boolean,
 }
 
-export interface UserAlias {
+export interface UserAlias extends HasId{
     alias_name: string,
     user: User
 }

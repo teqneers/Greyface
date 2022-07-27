@@ -10,6 +10,7 @@ import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
+import EditUserAlias from './EditUserAlias';
 import UserAliasTable from './UserAliasTable';
 
 const TABLE_STATE_STORAGE_KEY = 'useralias.table.state';
@@ -62,7 +63,6 @@ const UserAliasModule: React.VFC = () => {
         <ApplicationModuleContainer title="alias.header">
 
 
-
             <ModuleTopBar title="alias.header"
                           buttons={<Button
                               variant="outline-primary"
@@ -86,8 +86,17 @@ const UserAliasModule: React.VFC = () => {
                                  }}/>
             </Route>
 
-        </ApplicationModuleContainer>
-    );
+            <Route path={`${path}/:id/edit`}>
+                <EditUserAlias onCancel={() => history.push(url)}
+                               onUpdate={(id) => {
+                                   history.push(`${url}/${id}`);
+                                   refetch();
+                               }}/>
+            </Route>
+
+</ApplicationModuleContainer>
+)
+    ;
 };
 
 export default UserAliasModule;
