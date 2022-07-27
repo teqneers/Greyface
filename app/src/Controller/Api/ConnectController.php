@@ -44,17 +44,9 @@ class ConnectController
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $list = $connectRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
-        $count = is_array($list) ? count($list) : $list->count();
-
-        if ($list instanceof IteratorAggregate) {
-            $list = (array)$list->getIterator();
-        }
-
-        return new JsonResponse([
-            'results' => $list,
-            'count' => $count,
-        ]);
+        $response = $connectRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
+       dump($response);
+        return new JsonResponse($response);
     }
 
     #[Route('/toWhiteList', methods: ['POST'])]

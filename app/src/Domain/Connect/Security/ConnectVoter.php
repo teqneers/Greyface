@@ -54,7 +54,7 @@ class ConnectVoter extends BaseUserVoter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
-        $user = $this->ensureAdmin($token);
+        $user = $this->ensureUser($token);
         if (!$user) {
             return false;
         }

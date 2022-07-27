@@ -60,7 +60,7 @@ class UserRepository extends ServiceEntityRepository
 
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
-                ->setFirstResult($start);
+                ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
             return new Paginator($qb, false);
         }
         return $qb->getQuery()

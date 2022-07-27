@@ -44,6 +44,17 @@ class ConnectRepository extends ServiceEntityRepository
 
     public function findAll(User $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
+        $count = null;
+
+        $mapping = [
+            'name' => 'c.name',
+            'domain' => 'c.domain',
+            'source' => 'c.source',
+            'rcpt' => 'c.rcpt',
+            'username' => 'u.username',
+            'firstSeen' => 'c.firstSeen'
+        ];
+
         $qb = $this->createDefaultQueryBuilder();
 
         if ($query) {
@@ -52,25 +63,27 @@ class ConnectRepository extends ServiceEntityRepository
         }
 
         if ($sortBy !== null) {
-            $mapping = [
-                'name' => 'c.name',
-                'domain' => 'c.domain',
-                'source' => 'c.source',
-                'rcpt' => 'c.rcpt',
-                'username' => 'u.username',
-                'firstSeen' => 'c.firstSeen'
-            ];
             $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
         } else {
             $qb = $qb->orderBy('c.domain', 'ASC');
         }
+
         if ($start !== null) {
-            $qb = $qb->setMaxResults($max)
-                ->setFirstResult($start);
-            return new Paginator($qb, false);
+          $count  = count($qb->getQuery()->getArrayResult());
+          $qb = $qb->setMaxResults($max)
+                ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
         }
-        return $qb->getQuery()
-            ->getResult();
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        if($count === null) {
+           $count  = count($result);
+        }
+
+        return [
+            'count' => $count,
+            'results' => $result
+        ];
     }
 
     private
