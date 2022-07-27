@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
-import {Alert, CloseButton, Modal} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useRouteMatch} from 'react-router-dom';
+
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import ModalForm from '../../controllers/ModalForm';
 
 import UserForm, {UpdateUserValues, UpdateUserRequest} from './UserForm';
 
@@ -54,29 +56,23 @@ const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
     }
 
     return (
-        <Modal show={true} onHide={() => onCancel()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{t('user.editHeader')}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ModalForm onHide={() => onCancel()} title="user.editHeader">
 
+            {error && <Alert key="danger" variant="danger">
+                {error}
+            </Alert>}
 
-                {error && <Alert key="danger" variant="danger">
-                    {error}
-                </Alert>}
-
-                <UserForm<UpdateUserValues, UpdateUserRequest>
-                    initialValues={{
-                        username: data.username,
-                        email: data.email,
-                        role: data.role
-                    }}
-                    onSubmit={updateUser}
-                    onCancel={onCancel}
-                    createUser={false}
-                    submitBtn={t('button.save')}/>
-            </Modal.Body>
-        </Modal>
+            <UserForm<UpdateUserValues, UpdateUserRequest>
+                initialValues={{
+                    username: data.username,
+                    email: data.email,
+                    role: data.role
+                }}
+                onSubmit={updateUser}
+                onCancel={onCancel}
+                createUser={false}
+                submitBtn={t('button.save')}/>
+        </ModalForm>
     );
 };
 

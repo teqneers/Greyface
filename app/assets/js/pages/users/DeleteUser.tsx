@@ -1,8 +1,9 @@
 import React from 'react';
-import {Button, Modal} from 'react-bootstrap';
 import {useRouteMatch} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
+
+import ModalConfirmation from '../../controllers/ModalConfirmation';
 
 interface DeleteUserProps {
     onCancel: (id: string) => void,
@@ -33,22 +34,12 @@ const DeleteUser: React.VFC<DeleteUserProps> = ({onCancel, onDelete}) => {
         }));
 
     return (
-        <>
-            <Modal show={true} onHide={() => onCancel(id)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{t('user.deleteHeader')}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{t('user.deleteMessage')}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="outline-secondary" onClick={() => onCancel(id)}>
-                        {t('button.cancel')}
-                    </Button>
-                    <Button variant="outline-danger" onClick={() => deleteUser.mutateAsync()}>
-                        {t('button.delete')}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+        <ModalConfirmation
+            onConfirm={() => deleteUser.mutateAsync()}
+            onCancel={() => onCancel(id)}
+            title="user.deleteHeader">
+            {t('user.deleteMessage')}
+        </ModalConfirmation>
     );
 };
 
