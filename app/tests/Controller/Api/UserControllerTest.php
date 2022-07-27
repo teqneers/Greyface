@@ -161,4 +161,29 @@ class UserControllerTest extends WebTestCase
         self::assertNotNull($user);
         self::assertTrue($user->isDeleted());
     }
+
+    public function testSetUserPassword(): void
+    {
+        $admin  = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $user = self::createUser();
+
+        self::initializeDatabaseWithEntities($admin, $user);
+
+        self::sendApiJsonRequest(
+            $client,
+            'PUT',
+            '/api/users/' . $user->getId() . '/password',
+            [
+                'password' => 'test123Password',
+            ]
+        );
+        self::assertResponseIsSuccessful();
+        /** @var User|null $user */
+        self::clearEntityManager();
+        [$user] = self::reloadDatabaseEntities($user);
+        self::assertNotNull($user);
+        self::assertUserPasswordEquals('test123Password', $user->getPassword());
+    }
 }

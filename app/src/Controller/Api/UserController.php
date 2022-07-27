@@ -6,6 +6,7 @@ use App\Domain\Entity\User\User;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\Command\CreateUser;
 use App\Domain\User\Command\DeleteUser;
+use App\Domain\User\Command\SetPassword;
 use App\Domain\User\Command\UpdateUser;
 use App\Messenger\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -137,6 +138,29 @@ class UserController
         $commandBus->dispatch($updateUser);
         $params = ['user' => $updateUser->getId()];
         return new JsonResponse($params);
+    }
+
+    #[Route('/{user}/password', requirements: ['user' => '%routing.uuid%'], methods: ['PUT'])]
+    #[IsGranted('USER_EDIT', subject: 'user')]
+    #[ParamConverter('user', class: User::class, converter: 'app.user')]
+    public function setPassword(
+        MessageBusInterface $commandBus,
+        User $user,
+        Request             $request,
+        ValidatorInterface  $validator
+    ): Response {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+        $setPassword = SetPassword::set($user);
+        $setPassword->password = $data['password'] ?? '';
+        $errors = $validator->validate($setPassword);
+
+        if (count($errors) > 0) {
+            return Validation::getViolations($errors);
+        }
+
+        $commandBus->dispatch($setPassword);
+        return new JsonResponse('User password changed successfully!');
     }
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['DELETE'])]
