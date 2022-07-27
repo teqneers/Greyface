@@ -1,9 +1,10 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Button, Col, Form, InputGroup, Row} from 'react-bootstrap';
 import {UseMutationResult, useQuery} from 'react-query';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
+
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 
 export interface UserAliasValues {
@@ -73,16 +74,12 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
             {({
                   handleSubmit,
                   handleChange,
-                  handleBlur,
                   values,
-                  touched,
-                  isValid,
                   errors,
                   isSubmitting
               }) => (
                 <Form noValidate onSubmit={handleSubmit}>
 
-                    {console.log(errors)}
                     <Row className="mb-3">
 
                         <Form.Group as={Col} md="12">

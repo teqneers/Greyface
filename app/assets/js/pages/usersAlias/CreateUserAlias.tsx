@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {Alert, CloseButton, Modal} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
-import {useApplication} from '../../application/ApplicationContext';
 
+import {useApplication} from '../../application/ApplicationContext';
+import ModalForm from '../../controllers/ModalForm';
 import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm';
 
 interface CreateUserAliasProps {
@@ -41,26 +42,24 @@ const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) 
     });
 
     return (
-        <Modal show={true} onHide={() => onCancel()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{t('alias.createHeader')}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ModalForm
+            title="alias.createHeader"
+            onHide={() => onCancel()}>
 
-                {error && <Alert key="danger" variant="danger">
-                    {error}
-                </Alert>}
 
-                <UserAliasForm<UserAliasValues, UserAliasRequest>
-                    initialValues={{
-                        user_id: user.id,
-                        alias_name: []
-                    }}
-                    onSubmit={createUserAlias}
-                    onCancel={onCancel}
-                    submitBtn={t('button.save')}/>
-            </Modal.Body>
-        </Modal>
+            {error && <Alert key="danger" variant="danger">
+                {error}
+            </Alert>}
+
+            <UserAliasForm<UserAliasValues, UserAliasRequest>
+                initialValues={{
+                    user_id: user.id,
+                    alias_name: []
+                }}
+                onSubmit={createUserAlias}
+                onCancel={onCancel}
+                submitBtn={t('button.save')}/>
+        </ModalForm>
     );
 };
 

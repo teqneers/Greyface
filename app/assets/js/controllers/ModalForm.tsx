@@ -21,7 +21,7 @@ const ModalForm: React.FC<ModalProps> = ({title, onHide, children}) => {
             </Modal.Body>
         </Modal>
     );
-}
+};
 
 ModalForm.defaultProps = {
     title: '',

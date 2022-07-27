@@ -41,7 +41,7 @@ const ModalConfirmation: React.FC<ModalProps> = (
 
         </Modal>
     );
-}
+};
 
 ModalConfirmation.defaultProps = {
     title: '',
