@@ -5,7 +5,7 @@ import {TableState} from 'react-table';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
-import {UserAlias} from '../../types/user';
+import {Greylist} from '../../types/greylist';
 import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
@@ -23,7 +23,7 @@ const GreyListModule: React.VFC = () => {
     });
 
     // run every time the table state change
-    const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
+    const onStateChange = useCallback<(state: TableState<Greylist>) => void>((state) => {
         storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
         setTableState(state);
     }, [storage]);

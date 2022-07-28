@@ -31,7 +31,14 @@ class OptInEmailVoter extends BaseUserVoter
 
     protected function supports($attribute, $subject): bool
     {
-        if (in_array($attribute, ['OPTIN_EMAIL_LIST', 'OPTIN_EMAIL_CREATE'], true)) {
+        if (in_array($attribute,
+            [
+                'OPTIN_EMAIL_LIST',
+                'OPTIN_EMAIL_CREATE',
+                'OPTIN_EMAIL_SHOW',
+                'OPTIN_EMAIL_EDIT',
+                'OPTIN_EMAIL_DELETE'
+            ], true)) {
             return true;
         }
 
@@ -42,9 +49,7 @@ class OptInEmailVoter extends BaseUserVoter
         return in_array(
             $attribute,
             [
-                'OPTIN_EMAIL_SHOW',
-                'OPTIN_EMAIL_EDIT',
-                'OPTIN_EMAIL_DELETE'
+
             ]
         );
     }
@@ -59,11 +64,9 @@ class OptInEmailVoter extends BaseUserVoter
         switch ($attribute) {
             case 'OPTIN_EMAIL_LIST':
             case 'OPTIN_EMAIL_CREATE':
-                return true;
             case 'OPTIN_EMAIL_SHOW':
             case 'OPTIN_EMAIL_EDIT':
             case 'OPTIN_EMAIL_DELETE':
-                /** @var OptInEmail $subject */
                 return true;
             default:
                 return false;

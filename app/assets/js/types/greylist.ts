@@ -1,7 +1,6 @@
-import {AuditTracking, HasId, DateObject} from './common';
+import {DateObject} from './common';
 
-
-export interface Greylist extends HasId, AuditTracking {
+export interface Greylist {
     aliasName: string,
     username: string,
     userId: string,
@@ -12,4 +11,8 @@ export interface Greylist extends HasId, AuditTracking {
         rcpt: string,
         firstSeen: DateObject
     },
+}
+
+export interface WhiteListEmail {
+    email: string
 }

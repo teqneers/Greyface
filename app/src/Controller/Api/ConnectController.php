@@ -8,8 +8,6 @@ use App\Domain\Entity\Connect\ConnectRepository;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\UserInterface;
 use App\Messenger\Validation;
-use DateTimeImmutable;
-use IteratorAggregate;
 use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;

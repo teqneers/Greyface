@@ -87,13 +87,7 @@ class OptInEmailControllerTest extends WebTestCase
                 'email' => 'optin@email.de'
             ]
         );
-        $result = self::getSuccessfulJsonResponse($client);
-        self::assertArrayHasKey('email', $result);
-        self::clearEntityManager();
-        /** @var OptInEmail|null $email */
-        $email = self::loadDatabaseEntity(OptInEmail::class, $result['email']);
-        self::assertNotNull($email);
-        self::assertSame('optin@email.de', $email->getEmail());
+        self::assertResponseIsSuccessful();
     }
 
     public function testCreateOptInEmailDuplicateFailed(): void
@@ -127,8 +121,11 @@ class OptInEmailControllerTest extends WebTestCase
         self::sendApiJsonRequest(
             $client,
             'PUT',
-            '/api/opt-in/emails/' . $email->getEmail(),
+            '/api/opt-in/emails/edit',
             [
+                'dynamicID' => [
+                    'email' => $email->getEmail()
+                ],
                 'email' => 'optinup@email.de'
             ]
         );
@@ -150,7 +147,13 @@ class OptInEmailControllerTest extends WebTestCase
 
         self::initializeDatabaseWithEntities($admin, $email);
 
-        $client->request('DELETE', '/api/opt-in/emails/' . $email->getEmail());
+        self::sendApiJsonRequest(
+            $client,
+            'DELETE',
+            '/api/opt-in/emails/delete',
+            [
+                'email' => $email->getEmail()
+            ]);
 
         self::assertResponseIsSuccessful();
 

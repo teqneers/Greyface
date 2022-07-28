@@ -25,12 +25,14 @@
             "back": "Back",
             "searchAndFilters": "Search & Filter",
             "createUser": "New User",
-            "createUserAlias": "New Alias"
+            "createUserAlias": "New Alias",
+            "addEmail": "Add Email"
         },
         "placeholder": {
             "search": "Search",
             "noData": "Keine Daten gefunden",
-            "sortBy": "Sortieren nach"
+            "sortBy": "Sortieren nach",
+            "addMore": "Add More Field"
         },
         "errors": {
             "required": "This field is required!"
@@ -43,7 +45,11 @@
         "menu": {
             "greylist": "Greylist",
             "users": "Users",
-            "alias": "Alias"
+            "alias": "Alias",
+            "whitelist": "Whitelist",
+            "blacklist": "Blacklist",
+            "email": "Email",
+            "domain": "Domain"
         },
         "greylist": {
             "header": "Greylist",
@@ -90,8 +96,21 @@
             "deleteHeader": "Delete Alias",
             "deleteMessage": "Do you really want to delete this Alias?",
             "aliasName": "Alias",
-            "user": "User",
-            "addMore": "Add More Field"
+            "user": "User"
+        },
+        "whitelist": {
+            "header": "Whitelist",
+            "email": {
+                "header": "Whitelist Email",
+                "addHeader": "Add Whitelist Emails",
+                "editHeader": "Edit Whitelist Email",
+                "deleteHeader": "Delete Whitelist Email",
+                "deleteMessage": "Do you really want to delete this?",
+                "email": "Email"
+            },
+            "domain": {
+                "header": "Whitelist Domain"
+            }
         }
     }
 }

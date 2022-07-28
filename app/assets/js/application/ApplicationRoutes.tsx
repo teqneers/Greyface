@@ -1,5 +1,6 @@
 import React from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
+import WhitelistEmailModule from '../pages/Whitelist/whitelistEmail/WhitelistEmailModule';
 
 const GreyListModule =  React.lazy(() => import('../pages/greylist/GreyListModule'));
 const UserModule =  React.lazy(() => import('../pages/users/UserModule'));
@@ -18,6 +19,11 @@ function ApplicationRoutes(): React.ReactElement {
 
             <Route path="/users-aliases">
                 <UserAliasModule/>
+            </Route>
+
+
+            <Route path="/opt-in/emails">
+                <WhitelistEmailModule/>
             </Route>
 
             <Route><Redirect to="/"/></Route>

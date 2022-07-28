@@ -6,11 +6,10 @@ const EmptyText: React.VFC = () => {
 
     return (
         <div style={{
-            height: 200,
+            height: 100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--color-note)',
             textTransform: 'uppercase'
         }}>{t('placeholder.noData')}</div>
     );

@@ -7,6 +7,7 @@ import EmptyText from './EmptyText';
 export type RowClickHandler<D extends object> = (row: D, id: string, index: number, tableRow: Row<D>) => void;
 
 export interface TableBodyProps<D extends object> extends BaseTableBodyProps {
+    columnCount: number,
     data: Row<D>[],
     prepareRow: (row: Row<D>) => void,
     onRowClick?: RowClickHandler<D>,
@@ -16,6 +17,7 @@ export interface TableBodyProps<D extends object> extends BaseTableBodyProps {
 
 function TableBody<D extends object>(
     {
+        columnCount,
         data,
         prepareRow,
         onRowClick,
@@ -28,7 +30,6 @@ function TableBody<D extends object>(
         <tbody {...rest}>
             {data.length > 0
                 ? data.map((row, index) => {
-                    console.log(row);
                     prepareRow(row);
                     let className = classNames('tr', {clickable: !!onRowClick || !!onRowDoubleClick});
                     if (rowClassName) {
@@ -49,7 +50,7 @@ function TableBody<D extends object>(
                         </tr>
                     );
                 })
-                : <EmptyText/>}
+                : <tr aria-colspan={columnCount}><td><EmptyText/></td></tr>}
         </tbody>
     );
 }

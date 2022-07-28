@@ -90,6 +90,7 @@ function Table<D extends object>(
         previousPage,
         setPageSize,
         state,
+        columns
     } = useTable<D>(
         {
             ...rest,
@@ -142,7 +143,7 @@ function Table<D extends object>(
                 ))}
                 </thead>
 
-                <TableBody data={page} prepareRow={prepareRow} {...getTableBodyProps()}
+                <TableBody columnCount={columns.length} data={page} prepareRow={prepareRow} {...getTableBodyProps()}
                            onRowClick={onRowClick} onRowDoubleClick={onRowDoubleClick} rowClassName={rowClassName}/>
 
             </BTable>
