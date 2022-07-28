@@ -18,7 +18,7 @@
             "create": "Erstellen",
             "edit": "Bearbeiten",
             "delete": "Löschen",
-            "unDelete": "Wiederherstellen",
+            "moveToWhitelist": "Move to Auto Whitelist",
             "save": "Speichern",
             "cancel": "Abbrechen",
             "close": "Close",
@@ -52,7 +52,11 @@
             "source": "Source",
             "recipient": "Recipient",
             "firstSeen": "First Seen",
-            "username": "Username"
+            "username": "Username",
+            "deleteHeader": "Delete Entry",
+            "deleteMessage": "Do you really want to delete this entry?",
+            "moveToWhitelistHeader": "Move to Auto Whitelist",
+            "moveToWhitelistMessage": "Do you really want to move this?"
         },
         "user": {
             "header": "Benutzer",

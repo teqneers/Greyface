@@ -112,12 +112,10 @@ class ConnectControllerTest extends WebTestCase
             'DELETE',
             '/api/greylist/delete',
             [
-                'dynamicId' => [
-                    'name' => 'greyface',
-                    'domain' => 'recruit-greyface.de',
-                    'source' => '15.215.255',
-                    'rcpt' => 'jobs@greyface.de'
-                ]
+                'name' => 'greyface',
+                'domain' => 'recruit-greyface.de',
+                'source' => '15.215.255',
+                'rcpt' => 'jobs@greyface.de'
             ]);
 
         self::assertResponseIsSuccessful();

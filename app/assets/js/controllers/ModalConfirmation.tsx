@@ -8,6 +8,8 @@ export interface ModalProps {
     title: string,
     onCancel: () => void,
     onConfirm: () => void,
+    confirmBtn?: string,
+    confirmBtnVariant?: string
 }
 
 const ModalConfirmation: React.FC<ModalProps> = (
@@ -16,6 +18,8 @@ const ModalConfirmation: React.FC<ModalProps> = (
         title,
         onCancel,
         onConfirm,
+        confirmBtn,
+        confirmBtnVariant,
         children
     }) => {
 
@@ -36,8 +40,9 @@ const ModalConfirmation: React.FC<ModalProps> = (
                 <Button variant="outline-secondary" onClick={() => onCancel()}>
                     {t('button.cancel')}
                 </Button>
-                <Button variant="outline-danger" onClick={() => onConfirm()}>
-                    {t('button.delete')}
+                <Button variant={confirmBtnVariant ? confirmBtnVariant : 'outline-danger'}
+                        onClick={() => onConfirm()}>
+                    {t(confirmBtn ? confirmBtn : 'button.delete')}
                 </Button>
             </Modal.Footer>
 

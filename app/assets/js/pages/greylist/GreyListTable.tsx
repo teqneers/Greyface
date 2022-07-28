@@ -10,6 +10,7 @@ import DisplayDate from '../../controllers/DisplayDate';
 import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
 import {Greylist} from '../../types/greylist';
 import DeleteGreyList from './DeleteGreyList';
+import MoveToWhiteList from './MoveToWhiteList';
 
 interface GreyListTableProps {
     data: Greylist[],
@@ -77,8 +78,7 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
             return <>
-                <Button className="m-1" variant="outline-primary" size="sm"
-                        onClick={() => history.push(`/users/${row.connect.name}/edit`)}>{t('button.moveToWhitelist')}</Button>
+                <MoveToWhiteList onMove={refetch} data={row}/>
                 <DeleteGreyList onDelete={refetch} data={row}/>
             </>;
         }

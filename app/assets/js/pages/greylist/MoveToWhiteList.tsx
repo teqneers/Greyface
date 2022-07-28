@@ -6,19 +6,19 @@ import {useMutation} from 'react-query';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 import {Greylist} from '../../types/greylist';
 
-interface DeleteGreyListProps {
-    onDelete: () => void,
+interface MoveToWhiteListProps {
+    onMove: () => void,
     data: Greylist
 }
 
-const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
+const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
     const {t} = useTranslation();
 
     const [show, setShow] = useState(false);
 
-    const deleteRecord = useMutation(
-        (data: Greylist) => fetch('/api/greylist/delete', {
-            method: 'DELETE',
+    const moveRecord = useMutation(
+        (data: Greylist) => fetch('/api/greylist/toWhiteList', {
+            method: 'POST',
             body: JSON.stringify({
                 'name': data.connect.name,
                 'domain': data.connect.domain,
@@ -34,26 +34,28 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
                 const error = (data && data.message) || response.status;
                 return Promise.reject(error);
             }
-            onDelete();
+            onMove();
         }).catch(error => {
             console.error('There was an error!', error);
         }));
 
     return (
         <>
-            <Button variant="outline-danger" onClick={() => setShow(true)}>
-                {t('button.delete')}
+            <Button variant="outline-primary" className="m-1" onClick={() => setShow(true)}>
+                {t('button.moveToWhitelist')}
             </Button>
 
             <ModalConfirmation
                 show={show}
-                onConfirm={() => deleteRecord.mutateAsync(data)}
+                confirmBtnVariant="outline-primary"
+                confirmBtn="button.moveToWhitelist"
+                onConfirm={() => moveRecord.mutateAsync(data)}
                 onCancel={() => setShow(false)}
-                title="greylist.deleteHeader">
-                {t('greylist.deleteMessage')}
+                title="greylist.moveToWhitelistHeader">
+                {t('greylist.moveToWhitelistMessage')}
             </ModalConfirmation>
         </>
     );
 };
 
-export default DeleteGreyList;
+export default MoveToWhiteList;

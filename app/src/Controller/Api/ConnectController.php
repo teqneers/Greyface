@@ -112,10 +112,10 @@ class ConnectController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $name = $data['dynamicId']['name'];
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
-        $rcpt = $data['dynamicId']['rcpt'];
+        $name = $data['name'] ?? '';
+        $domain = $data['domain'] ?? '';
+        $source = $data['source'] ?? '';
+        $rcpt = $data['rcpt'] ?? '';
 
         $greylist = $connectRepository->find([
             'name' => $name,
