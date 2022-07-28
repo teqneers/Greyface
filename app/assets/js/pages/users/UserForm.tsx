@@ -1,11 +1,12 @@
 import React from 'react';
-import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Col, Form, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
 import {useTranslation} from 'react-i18next';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 
 import CancelButton from '../../controllers/Buttons/CancelButton';
+import SubmitButton from '../../controllers/Buttons/SubmitButton';
 import {UserRole, USER_ROLES} from '../../types/user';
 
 interface UserValues {
@@ -166,8 +167,9 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                     </Modal.Body>
                     <Modal.Footer>
                         <CancelButton  onClick={() => onCancel()}/>
-                        <Button variant="outline-primary" type="submit"
-                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+
+                        <SubmitButton label={submitBtn}
+                                      disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>
             )}

@@ -1,7 +1,9 @@
 import React from 'react';
 
-import {Button, Modal} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
+import CancelButton from './Buttons/CancelButton';
+import DefaultButton from './Buttons/DefaultButton';
 
 export interface ModalProps {
     show?: boolean,
@@ -37,13 +39,11 @@ const ModalConfirmation: React.FC<ModalProps> = (
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="outline-secondary" onClick={() => onCancel()}>
-                    {t('button.cancel')}
-                </Button>
-                <Button variant={confirmBtnVariant ? confirmBtnVariant : 'outline-danger'}
-                        onClick={() => onConfirm()}>
-                    {t(confirmBtn ? confirmBtn : 'button.delete')}
-                </Button>
+                <CancelButton onClick={() => onCancel()}/>
+                <DefaultButton
+                    label={confirmBtn ? confirmBtn : 'button.delete'}
+                    variant={confirmBtnVariant ? confirmBtnVariant : 'outline-danger'}
+                    onClick={() => onConfirm()}/>
             </Modal.Footer>
 
         </Modal>

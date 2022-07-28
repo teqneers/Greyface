@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
 import CancelButton from '../../../controllers/Buttons/CancelButton';
+import SubmitButton from '../../../controllers/Buttons/SubmitButton';
 
 export interface DomainValues {
     domain: string[]
@@ -117,8 +118,9 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                     </Modal.Body>
                     <Modal.Footer>
                         <CancelButton onClick={() => onCancel()}/>
-                        <Button variant="outline-primary" type="submit"
-                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+
+                        <SubmitButton label={submitBtn}
+                                      disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>
             )}

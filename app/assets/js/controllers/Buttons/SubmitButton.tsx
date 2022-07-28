@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 
-interface DefaultButtonProps {
+interface SubmitButtonProps {
     label: string,
     variant?: string,
     disabled?: boolean,
@@ -12,13 +12,13 @@ interface DefaultButtonProps {
 
 type ButtonTypes = 'button' | 'submit' | 'reset';
 
-function DefaultButton({
+function SubmitButton({
                            label,
                            variant,
                            disabled = false,
-                           type = 'button',
+                           type = 'submit',
                            onClick
-                       }: DefaultButtonProps): React.ReactElement {
+                       }: SubmitButtonProps): React.ReactElement {
     const {t} = useTranslation();
 
     return (
@@ -32,4 +32,4 @@ function DefaultButton({
     );
 }
 
-export default DefaultButton;
+export default SubmitButton;

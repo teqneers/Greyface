@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
 import CancelButton from '../../controllers/Buttons/CancelButton';
+import SubmitButton from '../../controllers/Buttons/SubmitButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 
 export interface UserAliasValues {
@@ -152,8 +153,9 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                     </Modal.Body>
                     <Modal.Footer>
                         <CancelButton onClick={() => onCancel()}/>
-                        <Button variant="outline-primary" type="submit"
-                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+
+                        <SubmitButton label={submitBtn}
+                                      disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>
             )}
