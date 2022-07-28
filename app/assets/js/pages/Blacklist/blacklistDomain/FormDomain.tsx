@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
+import CancelButton from '../../../controllers/Buttons/CancelButton';
+
 export interface DomainValues {
     domain: string[]
 }
@@ -28,7 +30,6 @@ const Schema: yup.SchemaOf<DomainValues> = yup.object()
 interface FormDomainProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
     submitBtn?: string | null,
-    cancelBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
     validationSchema?: yup.SchemaOf<any>,
@@ -40,7 +41,6 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
         createMode,
         onSubmit,
         submitBtn,
-        cancelBtn,
         onCancel,
         ...rest
     }: FormDomainProps<TValues, TData, any, any>
@@ -53,7 +53,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
             validationSchema={Schema}
             onSubmit={((values) => {
                 let submitData = values;
-                if(!createMode) {
+                if (!createMode) {
                     submitData = {...values, domain: values.domain[0]};
                 }
                 // @ts-ignore
@@ -106,18 +106,17 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
 
                                                 </Form.Group>
                                             ))}
-                                            {createMode && fieldsCount < 5 && <Button variant="link" className="mt-2 m-auto w-75"
-                                                                   onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
-                                            </Button>}
+                                            {createMode && fieldsCount < 5 &&
+                                                <Button variant="link" className="mt-2 m-auto w-75"
+                                                        onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
+                                                </Button>}
                                         </>
                                     );
                                 }}/>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-secondary" onClick={() => onCancel()}>
-                            {cancelBtn ? cancelBtn : t('button.cancel')}
-                        </Button>
+                        <CancelButton onClick={() => onCancel()}/>
                         <Button variant="outline-primary" type="submit"
                                 disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                     </Modal.Footer>

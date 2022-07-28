@@ -1,12 +1,13 @@
 import React, {useMemo} from 'react';
-import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useHistory} from 'react-router-dom';
 import {CellProps, Column, TableState} from 'react-table';
+
+import DefaultButton from '../../controllers/Buttons/DefaultButton';
+import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
 import {UserAlias} from '../../types/user';
-
 
 interface UserAliasTableProps {
     data: UserAlias[],
@@ -48,10 +49,10 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<UserAlias, string>) => {
             return <>
-                <Button className="m-1" variant="outline-primary" size="sm"
-                        onClick={() => history.push(`/users-aliases/${row.id}/edit`)}>{t('button.edit')}</Button>
-                <Button size="sm" variant="outline-danger"
-                        onClick={() => history.push(`/users-aliases/${row.id}/delete`)}>{t('button.delete')}</Button>
+                <DefaultButton label="button.edit"
+                        onClick={() => history.push(`/users-aliases/${row.id}/edit`)}/>
+                <DeleteButton
+                        onClick={() => history.push(`/users-aliases/${row.id}/delete`)}/>
             </>;
         }
     }], [t, history]);

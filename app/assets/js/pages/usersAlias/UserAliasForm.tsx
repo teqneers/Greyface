@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
+import CancelButton from '../../controllers/Buttons/CancelButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 
 export interface UserAliasValues {
@@ -17,8 +18,6 @@ export interface UserAliasRequest {
     alias_name: string[]
 }
 
-
-// @ts-ignore
 const Schema: yup.SchemaOf<UserAliasValues> = yup.object()
     .noUnknown()
     .shape(
@@ -37,7 +36,6 @@ const Schema: yup.SchemaOf<UserAliasValues> = yup.object()
 interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
     submitBtn?: string | null,
-    cancelBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
     validationSchema?: yup.SchemaOf<any>,
@@ -49,7 +47,6 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
         createMode,
         onSubmit,
         submitBtn,
-        cancelBtn,
         onCancel,
         ...rest
     }: UserAliasFromProps<TValues, TData, any, any>
@@ -65,13 +62,12 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
         return <LoadingIndicator/>;
     }
 
-
     return (
         <Formik
             validationSchema={Schema}
             onSubmit={((values) => {
                 let submitData = values;
-                if(!createMode) {
+                if (!createMode) {
                     submitData = {...values, alias_name: values.alias_name[0]};
                 }
                 // @ts-ignore
@@ -135,7 +131,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                         </Form.Control>
 
                                                         {createMode && <Button variant="outline-warning"
-                                                                onClick={() => arrayHelpers.remove(index)}>X
+                                                                               onClick={() => arrayHelpers.remove(index)}>X
                                                         </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
@@ -145,18 +141,17 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
 
                                                 </Form.Group>
                                             ))}
-                                            {createMode && fieldsCount < 5 && <Button variant="link" className="mt-2 m-auto w-75"
-                                                    onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
-                                            </Button>}
+                                            {createMode && fieldsCount < 5 &&
+                                                <Button variant="link" className="mt-2 m-auto w-75"
+                                                        onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
+                                                </Button>}
                                         </>
                                     );
                                 }}/>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-secondary" onClick={() => onCancel()}>
-                            {cancelBtn ? cancelBtn : t('button.cancel')}
-                        </Button>
+                        <CancelButton onClick={() => onCancel()}/>
                         <Button variant="outline-primary" type="submit"
                                 disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                     </Modal.Footer>

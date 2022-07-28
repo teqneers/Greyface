@@ -44,7 +44,6 @@ const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) 
             title="alias.createHeader"
             onHide={() => onCancel()}>
 
-
             {error && <Alert key="danger" variant="danger">
                 {error}
             </Alert>}

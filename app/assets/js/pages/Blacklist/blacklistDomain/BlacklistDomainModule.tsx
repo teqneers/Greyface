@@ -1,11 +1,10 @@
 import React, {useCallback, useState} from 'react';
-import {Button} from 'react-bootstrap';
-import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
+import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
 import {UserAlias} from '../../../types/user';
@@ -16,7 +15,6 @@ const TABLE_STATE_STORAGE_KEY = 'blacklistDomain.table.state';
 
 const BlacklistDomainModule: React.VFC = () => {
 
-    const {t} = useTranslation();
     const history = useHistory();
     const {path, url} = useRouteMatch();
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,7 +41,7 @@ const BlacklistDomainModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-out','domains', tableState, searchQuery], () => {
+    } = useQuery(['opt-out', 'domains', tableState, searchQuery], () => {
 
         let url = `/api/opt-out/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -62,27 +60,27 @@ const BlacklistDomainModule: React.VFC = () => {
         <ApplicationModuleContainer title="blacklist.domain.header">
 
             <ModuleTopBar title="blacklist.domain.header"
-                          buttons={<Button
-                              variant="outline-primary"
-                              onClick={() => history.push(`${url}/add`)}>{t('button.addDomain')}</Button>}
+                          buttons={<DefaultButton
+                              label="button.addDomain"
+                              onClick={() => history.push(`${url}/add`)}/>}
                           setSearchQuery={setSearchQuery}/>
 
-                {isError ? (
-                    <div>Error: {error}</div>
-                ) : (<BlacklistDomainTable
-                    data={data.results}
-                    refetch={refetch}
-                    pageCount={Math.ceil(data.count / tableState.pageSize)}
-                    isFetching={isFetching || isLoading}
-                    initialState={tableState}
-                    onStateChange={onStateChange}/>)}
+            {isError ? (
+                <div>Error: {error}</div>
+            ) : (<BlacklistDomainTable
+                data={data.results}
+                refetch={refetch}
+                pageCount={Math.ceil(data.count / tableState.pageSize)}
+                isFetching={isFetching || isLoading}
+                initialState={tableState}
+                onStateChange={onStateChange}/>)}
 
             <Route path={`${path}/add`}>
                 <AddDomain onCancel={() => history.push(url)}
-                                 onCreate={() => {
-                                     history.push(url);
-                                     refetch();
-                                 }}/>
+                           onCreate={() => {
+                               history.push(url);
+                               refetch();
+                           }}/>
             </Route>
         </ApplicationModuleContainer>
     );

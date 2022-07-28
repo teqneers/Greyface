@@ -1,11 +1,10 @@
 import React, {useCallback, useState} from 'react';
-import {Button} from 'react-bootstrap';
-import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
@@ -17,7 +16,6 @@ import UserAliasTable from './UserAliasTable';
 const TABLE_STATE_STORAGE_KEY = 'useralias.table.state';
 const UserAliasModule: React.VFC = () => {
 
-    const {t} = useTranslation();
     const history = useHistory();
     const {path, url} = useRouteMatch();
 
@@ -65,9 +63,9 @@ const UserAliasModule: React.VFC = () => {
 
 
             <ModuleTopBar title="alias.header"
-                          buttons={<Button
-                              variant="outline-primary"
-                              onClick={() => history.push(`${url}/create`)}>{t('button.createUserAlias')}</Button>}
+                          buttons={<DefaultButton
+                              label="button.createUserAlias"
+                              onClick={() => history.push(`${url}/create`)}/>}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (
@@ -102,9 +100,8 @@ const UserAliasModule: React.VFC = () => {
                     }}/>
             </Route>
 
-</ApplicationModuleContainer>
-)
-    ;
+        </ApplicationModuleContainer>
+    );
 };
 
 export default UserAliasModule;

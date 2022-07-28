@@ -1,10 +1,12 @@
 import React from 'react';
 import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
-import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
-import {UserRole, USER_ROLES} from '../../types/user';
+import * as yup from 'yup';
 import {Formik} from 'formik';
+
+import CancelButton from '../../controllers/Buttons/CancelButton';
+import {UserRole, USER_ROLES} from '../../types/user';
 
 interface UserValues {
     password?: string | number | string[];
@@ -64,7 +66,6 @@ const CreateSchema = UpdateSchema.shape({
 interface UserFromProps<TValues extends object, TData, TRes, TError> {
     createUser: boolean,
     submitBtn?: string | null,
-    cancelBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
     validationSchema?: yup.SchemaOf<any>,
@@ -76,7 +77,6 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
         createUser,
         onSubmit,
         submitBtn,
-        cancelBtn,
         onCancel,
         ...rest
     }: UserFromProps<TValues, TData, any, any>
@@ -165,9 +165,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-secondary" onClick={() => onCancel()}>
-                            {cancelBtn ? cancelBtn : t('button.cancel')}
-                        </Button>
+                        <CancelButton  onClick={() => onCancel()}/>
                         <Button variant="outline-primary" type="submit"
                                 disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                     </Modal.Footer>

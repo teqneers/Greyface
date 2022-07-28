@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
+import CancelButton from '../../../controllers/Buttons/CancelButton';
+
 export interface DomainValues {
     domain: string[]
 }
@@ -28,7 +30,6 @@ const Schema: yup.SchemaOf<DomainValues> = yup.object()
 interface FormDomainProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
     submitBtn?: string | null,
-    cancelBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
     validationSchema?: yup.SchemaOf<any>,
@@ -40,7 +41,6 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
         createMode,
         onSubmit,
         submitBtn,
-        cancelBtn,
         onCancel,
         ...rest
     }: FormDomainProps<TValues, TData, any, any>
@@ -115,9 +115,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-secondary" onClick={() => onCancel()}>
-                            {cancelBtn ? cancelBtn : t('button.cancel')}
-                        </Button>
+                        <CancelButton onClick={() => onCancel()}/>
                         <Button variant="outline-primary" type="submit"
                                 disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                     </Modal.Footer>

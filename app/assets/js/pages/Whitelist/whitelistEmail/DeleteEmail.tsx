@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
 import {WhiteListEmail} from '../../../types/greylist';
 
@@ -38,9 +38,7 @@ const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
 
     return (
         <>
-            <Button variant="outline-danger" onClick={() => setShow(true)}>
-                {t('button.delete')}
-            </Button>
+            <DeleteButton onClick={() => setShow(true)}/>
 
             <ModalConfirmation
                 show={show}

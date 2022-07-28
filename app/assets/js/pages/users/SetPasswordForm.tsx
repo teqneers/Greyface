@@ -5,6 +5,8 @@ import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
+import CancelButton from '../../controllers/Buttons/CancelButton';
+
 export interface SetPasswordValues {
     password: string,
 }
@@ -26,7 +28,6 @@ const Schema: yup.SchemaOf<SetPasswordValues> = yup.object()
 
 interface UserFromProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
-    cancelBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
     validationSchema?: yup.SchemaOf<any>,
@@ -38,7 +39,6 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
         onSubmit,
         submitBtn,
         onCancel,
-        cancelBtn,
         ...rest
     }: UserFromProps<TValues, TData, any, any>
 ): React.ReactElement {
@@ -84,9 +84,8 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="outline-secondary" onClick={() => onCancel()}>
-                            {cancelBtn ? cancelBtn : t('button.cancel')}
-                        </Button>
+                        <CancelButton onClick={() => onCancel()}/>
+
                         <Button variant="outline-primary" type="submit"
                                 disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
                     </Modal.Footer>

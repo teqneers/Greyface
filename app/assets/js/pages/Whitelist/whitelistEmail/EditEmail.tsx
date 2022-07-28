@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {Alert, Button} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
 import {WhiteListEmail} from '../../../types/greylist';
 import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
@@ -48,9 +49,8 @@ const EditEmail = ({onUpdate, data}: EditEmailProps) => {
 
     return (
         <>
-            <Button variant="outline-primary" className="m-1" onClick={() => setShow(true)}>
-                {t('button.edit')}
-            </Button>
+            <DefaultButton label="button.edit" onClick={() => setShow(true)}/>
+
             <ModalForm
                 show={show}
                 title="whitelist.email.editHeader"

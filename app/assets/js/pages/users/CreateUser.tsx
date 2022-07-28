@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {Alert, Modal} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 
+import ModalForm from '../../controllers/ModalForm';
 import UserForm, {CreateUserRequest, CreateUserValues} from './UserForm';
 
 interface CreateUserProps {
@@ -39,11 +40,9 @@ const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
     });
 
     return (
-        <Modal show={true} onHide={() => onCancel()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{t('user.createHeader')}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ModalForm
+            title="user.createHeader"
+            onHide={() => onCancel()}>
 
                 {error && <Alert key="danger" variant="danger">
                     {error}
@@ -60,8 +59,7 @@ const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
                     onCancel={onCancel}
                     createUser={true}
                     submitBtn={t('button.save')}/>
-            </Modal.Body>
-        </Modal>
+        </ModalForm>
     );
 };
 

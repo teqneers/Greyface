@@ -1,11 +1,10 @@
 import React, {useCallback, useState} from 'react';
-import {Button} from 'react-bootstrap';
-import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {UserAlias} from '../../types/user';
@@ -18,7 +17,6 @@ import UsersTable from './UsersTable';
 const TABLE_STATE_STORAGE_KEY = 'users.table.state';
 
 const UserModule = () => {
-    const {t} = useTranslation();
     const history = useHistory();
     const {path, url} = useRouteMatch();
 
@@ -64,9 +62,9 @@ const UserModule = () => {
         <ApplicationModuleContainer title="user.header">
 
             <ModuleTopBar title="user.header"
-                          buttons={<Button
-                              variant="outline-primary"
-                              onClick={() => history.push(`${url}/create`)}>{t('button.createUser')}</Button>}
+                          buttons={<DefaultButton
+                              label="button.createUser"
+                              onClick={() => history.push(`${url}/create`)}/>}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Button} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 import {Greylist} from '../../types/greylist';
 
@@ -41,9 +41,7 @@ const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
 
     return (
         <>
-            <Button variant="outline-primary" className="m-1" onClick={() => setShow(true)}>
-                {t('button.moveToWhitelist')}
-            </Button>
+            <DefaultButton label="button.moveToWhitelist" onClick={() => setShow(true)}/>
 
             <ModalConfirmation
                 show={show}
