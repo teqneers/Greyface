@@ -31,7 +31,14 @@ class OptInDomainVoter extends BaseUserVoter
 
     protected function supports($attribute, $subject): bool
     {
-        if (in_array($attribute, ['OPTIN_DOMAIN_LIST', 'OPTIN_DOMAIN_CREATE'], true)) {
+        if (in_array($attribute,
+            [
+                'OPTIN_DOMAIN_LIST',
+                'OPTIN_DOMAIN_CREATE',
+                'OPTIN_DOMAIN_SHOW',
+                'OPTIN_DOMAIN_EDIT',
+                'OPTIN_DOMAIN_DELETE'
+            ], true)) {
             return true;
         }
 
@@ -42,9 +49,7 @@ class OptInDomainVoter extends BaseUserVoter
         return in_array(
             $attribute,
             [
-                'OPTIN_DOMAIN_SHOW',
-                'OPTIN_DOMAIN_EDIT',
-                'OPTIN_DOMAIN_DELETE'
+
             ]
         );
     }
@@ -59,11 +64,9 @@ class OptInDomainVoter extends BaseUserVoter
         switch ($attribute) {
             case 'OPTIN_DOMAIN_LIST':
             case 'OPTIN_DOMAIN_CREATE':
-                return true;
             case 'OPTIN_DOMAIN_SHOW':
             case 'OPTIN_DOMAIN_EDIT':
             case 'OPTIN_DOMAIN_DELETE':
-                /** @var OptInDomain $subject */
                 return true;
             default:
                 return false;

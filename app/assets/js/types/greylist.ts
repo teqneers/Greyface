@@ -16,3 +16,6 @@ export interface Greylist {
 export interface WhiteListEmail {
     email: string
 }
+export interface WhiteListDomain {
+    domain: string
+}

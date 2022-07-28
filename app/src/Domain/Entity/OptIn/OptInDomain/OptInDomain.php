@@ -32,7 +32,7 @@ class OptInDomain
         return new self($domain);
     }
 
-    private function __construct(string $domain)
+    public function __construct(string $domain)
     {
         $this->setDomain($domain);
     }

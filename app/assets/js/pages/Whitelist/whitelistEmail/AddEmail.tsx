@@ -1,20 +1,19 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation, useQueryClient} from 'react-query';
+import {useMutation} from 'react-query';
 
 import ModalForm from '../../../controllers/ModalForm';
 import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
 
 interface AddEmailProps {
     onCancel: () => void,
-    onCreate: (id: string) => void,
+    onCreate: () => void,
 }
 
 const AddEmail: React.VFC<AddEmailProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
-    const queryClient = useQueryClient();
     const createEmails = useMutation(async (values: EmailRequest) => {
         return await fetch('/api/opt-in/emails', {
             method: 'POST',
@@ -33,9 +32,8 @@ const AddEmail: React.VFC<AddEmailProps> = ({onCancel, onCreate}) => {
                 });
             });
     }, {
-        onSuccess: async ({user: id}) => {
-            await queryClient.invalidateQueries('users');
-            onCreate(id);
+        onSuccess: async () => {
+            onCreate();
         }
     });
 

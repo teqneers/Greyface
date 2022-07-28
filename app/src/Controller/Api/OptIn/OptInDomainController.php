@@ -7,12 +7,12 @@ use App\Domain\Entity\OptIn\OptInDomain\OptInDomainRepository;
 use App\Messenger\Validation;
 use IteratorAggregate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use OutOfBoundsException;
 
 #[Route('/api/opt-in/domains')]
 class OptInDomainController
@@ -25,18 +25,21 @@ class OptInDomainController
         OptInDomainRepository $optInDomainRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $domains = $optInDomainRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $domains = $optInDomainRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($domains) ? count($domains) : $domains->count();
 
         if ($domains instanceof IteratorAggregate) {
-            $domains = $domains->getIterator();
+            $domains = (array)$domains->getIterator();
         }
 
         return new JsonResponse([
-            'results' => $domains,
+            'results' => $count === 0 ? [] : $domains,
             'count' => $count,
         ]);
     }
@@ -51,22 +54,30 @@ class OptInDomainController
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
-        $optinDomain = OptInDomain::create($data['domain'] ?? '');
-        $errors = $validator->validate($optinDomain);
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
+
+        $data['domain'] = is_array($data['domain']) ? $data['domain'] : array($data['domain']);
+
+        $domains = [];
+        foreach ($data['domain'] as $domain) {
+            $domainToCreate = new OptInDomain($domain);
+            $errors = $validator->validate($domainToCreate);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $domains[] = $domainToCreate;
         }
 
-        $optinDomain = $optInDomainRepository->save($optinDomain);
-        $params = ['domain' => $optinDomain->getDomain()];
-        return new JsonResponse($params, Response::HTTP_CREATED);
+        foreach ($domains as $domain) {
+            $optInDomainRepository->save($domain);
+        }
+
+        return new JsonResponse('Data has been added successfully!');
     }
 
     #[Route('/{optInDomain}', methods: ['PUT'])]
-    #[IsGranted('OPTIN_DOMAIN_EDIT', subject: 'optInDomain')]
-    #[ParamConverter('optInDomain', class: OptInDomain::class, converter: 'app.optInDomain')]
+    #[IsGranted('OPTIN_DOMAIN_EDIT')]
     public function edit(
-        OptInDomain           $optInDomain,
         Request               $request,
         ValidatorInterface    $validator,
         OptInDomainRepository $optInDomainRepository
@@ -74,6 +85,13 @@ class OptInDomainController
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
+
+        $domainToFind = $data['dynamicID']['domain'] ?? '';
+
+        $optInDomain = $optInDomainRepository->findById($domainToFind);
+        if (!$optInDomain) {
+            throw new OutOfBoundsException('No Opt-In Email found for ' . $domainToFind);
+        }
 
         $optInDomain->domain = $data['domain'] ?? '';
         $errors = $validator->validate($optInDomain);
@@ -87,15 +105,23 @@ class OptInDomainController
         return new JsonResponse($params);
     }
 
-    #[Route('/{optInDomain}', methods: ['DELETE'])]
-    #[IsGranted('OPTIN_DOMAIN_DELETE', subject: 'optInDomain')]
-    #[ParamConverter('optInDomain', class: OptInDomain::class, converter: 'app.optInDomain')]
+    #[Route('/delete', methods: ['DELETE'])]
+    #[IsGranted('OPTIN_DOMAIN_DELETE')]
     public function delete(
-        OptInDomain           $optInDomain,
+        Request           $request,
         OptInDomainRepository $optInDomainRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $domain = $data['domain'] ?? '';
+
+        $optInDomain = $optInDomainRepository->findById($domain);
+        if (!$optInDomain) {
+            throw new OutOfBoundsException('No Opt-In domain found for ' . $domain);
+        }
         $optInDomainRepository->delete($optInDomain);
-        return new JsonResponse('Domain deleted successfully!');
+        return new JsonResponse('Record deleted successfully!');
     }
 }

@@ -26,7 +26,8 @@
             "searchAndFilters": "Suchen & Filtern",
             "createUser": "neuer Benutzer",
             "createUserAlias": "New Alias",
-            "addEmail": "Add Email"
+            "addEmail": "Add Email",
+            "addDomain": "Add Domain"
         },
         "placeholder": {
             "search": "Suchen",
@@ -109,7 +110,12 @@
                 "email": "Email"
             },
             "domain": {
-                "header": "Whitelist Domain"
+                "header": "Whitelist Domain",
+                "addHeader": "Add Whitelist Domains",
+                "editHeader": "Edit Whitelist Domain",
+                "deleteHeader": "Delete Whitelist Domain",
+                "deleteMessage": "Do you really want to delete this?",
+                "domain": "Domain"
             }
         }
     }

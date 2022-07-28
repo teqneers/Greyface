@@ -9,12 +9,12 @@ import ApplicationModuleContainer from '../../../application/ApplicationModuleCo
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
 import {UserAlias} from '../../../types/user';
-import AddEmail from './AddEmail';
-import WhitelistEmailTable from './WhitelistEmailTable';
+import AddDomain from './AddDomain';
+import WhitelistDomainTable from './WhitelistDomainTable';
 
-const TABLE_STATE_STORAGE_KEY = 'whitelistEmail.table.state';
+const TABLE_STATE_STORAGE_KEY = 'whitelistDomain.table.state';
 
-const WhitelistEmailModule: React.VFC = () => {
+const WhitelistDomainModule: React.VFC = () => {
 
     const {t} = useTranslation();
     const history = useHistory();
@@ -24,7 +24,7 @@ const WhitelistEmailModule: React.VFC = () => {
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
     const [tableState, setTableState] = useState(storage_table_state_key ?? {
-        sortBy: [{id: 'email', desc: false}],
+        sortBy: [{id: 'domain', desc: false}],
         filters: [],
         pageSize: 10,
         pageIndex: 0
@@ -43,9 +43,9 @@ const WhitelistEmailModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-in','emails', tableState, searchQuery], () => {
+    } = useQuery(['opt-in','domains', tableState, searchQuery], () => {
 
-        let url = `/api/opt-in/emails?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `/api/opt-in/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
@@ -59,17 +59,17 @@ const WhitelistEmailModule: React.VFC = () => {
     }
 
     return (
-        <ApplicationModuleContainer title="whitelist.email.header">
+        <ApplicationModuleContainer title="whitelist.domain.header">
 
-            <ModuleTopBar title="whitelist.email.header"
+            <ModuleTopBar title="whitelist.domain.header"
                           buttons={<Button
                               variant="outline-primary"
-                              onClick={() => history.push(`${url}/add`)}>{t('button.addEmail')}</Button>}
+                              onClick={() => history.push(`${url}/add`)}>{t('button.addDomain')}</Button>}
                           setSearchQuery={setSearchQuery}/>
 
                 {isError ? (
                     <div>Error: {error}</div>
-                ) : (<WhitelistEmailTable
+                ) : (<WhitelistDomainTable
                     data={data.results}
                     refetch={refetch}
                     pageCount={Math.ceil(data.count / tableState.pageSize)}
@@ -78,7 +78,7 @@ const WhitelistEmailModule: React.VFC = () => {
                     onStateChange={onStateChange}/>)}
 
             <Route path={`${path}/add`}>
-                <AddEmail onCancel={() => history.push(url)}
+                <AddDomain onCancel={() => history.push(url)}
                                  onCreate={() => {
                                      history.push(url);
                                      refetch();
@@ -88,4 +88,4 @@ const WhitelistEmailModule: React.VFC = () => {
     );
 };
 
-export default WhitelistEmailModule;
+export default WhitelistDomainModule;

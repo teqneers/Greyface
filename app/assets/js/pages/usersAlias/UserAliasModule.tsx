@@ -81,26 +81,24 @@ const UserAliasModule: React.VFC = () => {
 
             <Route path={`${path}/create`}>
                 <CreateUserAlias onCancel={() => history.push(url)}
-                                 onCreate={(id) => {
-                                     history.push(`${url}/${id}`);
+                                 onCreate={() => {
+                                     history.push(url);
                                      refetch();
                                  }}/>
             </Route>
 
             <Route path={`${path}/:id/edit`}>
                 <EditUserAlias onCancel={() => history.push(url)}
-                               onUpdate={(id) => {
-                                   history.push(`${url}/${id}`);
-                                   refetch();
+                               onUpdate={() => {
+                                   history.push(url);
                                }}/>
             </Route>
 
             <Route path={`${path}/:id/delete`}>
                 <DeleteUserAlias
-                    onCancel={(id) => history.push(`${url}/${id}`)}
+                    onCancel={() => history.push(url)}
                     onDelete={() => {
                         history.push(url);
-                        refetch();
                     }}/>
             </Route>
 

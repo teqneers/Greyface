@@ -1,5 +1,6 @@
 import React from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
+import WhitelistDomainModule from '../pages/Whitelist/whitelistDomain/WhitelistDomainModule';
 import WhitelistEmailModule from '../pages/Whitelist/whitelistEmail/WhitelistEmailModule';
 
 const GreyListModule =  React.lazy(() => import('../pages/greylist/GreyListModule'));
@@ -24,6 +25,10 @@ function ApplicationRoutes(): React.ReactElement {
 
             <Route path="/opt-in/emails">
                 <WhitelistEmailModule/>
+            </Route>
+
+            <Route path="/opt-in/domains">
+                <WhitelistDomainModule/>
             </Route>
 
             <Route><Redirect to="/"/></Route>

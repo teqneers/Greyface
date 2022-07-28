@@ -3,21 +3,19 @@ import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
-import {useApplication} from '../../application/ApplicationContext';
-import ModalForm from '../../controllers/ModalForm';
-import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm';
+import ModalForm from '../../../controllers/ModalForm';
+import FormDomain , {DomainRequest, DomainValues} from './FormDomain';
 
-interface CreateUserAliasProps {
+interface AddDomainProps {
     onCancel: () => void,
     onCreate: () => void,
 }
 
-const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) => {
-    const {user} = useApplication();
+const AddDomain: React.VFC<AddDomainProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
-    const createUserAlias = useMutation(async (values: UserAliasRequest) => {
-        return await fetch('/api/users-aliases', {
+    const createEmails = useMutation(async (values: DomainRequest) => {
+        return await fetch('/api/opt-in/domains', {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {
@@ -41,24 +39,22 @@ const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) 
 
     return (
         <ModalForm
-            title="alias.createHeader"
+            title="whitelist.domain.addHeader"
             onHide={() => onCancel()}>
-
 
             {error && <Alert key="danger" variant="danger">
                 {error}
             </Alert>}
 
-            <UserAliasForm<UserAliasValues, UserAliasRequest>
+            <FormDomain<DomainValues, DomainRequest>
                 initialValues={{
-                    user_id: user.id,
-                    alias_name: []
+                    domain: []
                 }}
-                onSubmit={createUserAlias}
+                onSubmit={createEmails}
                 onCancel={onCancel}
                 submitBtn={t('button.save')}/>
         </ModalForm>
     );
 };
 
-export default CreateUserAlias;
+export default AddDomain;

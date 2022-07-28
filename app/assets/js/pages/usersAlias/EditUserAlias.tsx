@@ -10,7 +10,7 @@ import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm'
 
 interface EditUserAliasProps {
     onCancel: () => void,
-    onUpdate: (id: string) => void,
+    onUpdate: () => void,
 }
 
 const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
@@ -45,9 +45,9 @@ const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
                 });
             });
     }, {
-        onSuccess: async ({user: id}) => {
-            await queryClient.invalidateQueries('users');
-            onUpdate(id);
+        onSuccess: async () => {
+            await queryClient.invalidateQueries('users-aliases');
+            onUpdate();
         }
     });
 

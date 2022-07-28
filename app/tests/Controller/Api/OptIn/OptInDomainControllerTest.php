@@ -87,13 +87,7 @@ class OptInDomainControllerTest extends WebTestCase
                 'domain' => 'testing.de'
             ]
         );
-        $result = self::getSuccessfulJsonResponse($client);
-        self::assertArrayHasKey('domain', $result);
-        self::clearEntityManager();
-        /** @var OptInDomain|null $domain */
-        $domain = self::loadDatabaseEntity(OptInDomain::class, $result['domain']);
-        self::assertNotNull($domain);
-        self::assertSame('testing.de', $domain->getDomain());
+        self::assertResponseIsSuccessful();
     }
 
     public function testCreateOptInDomainDuplicateFailed(): void
@@ -129,8 +123,11 @@ class OptInDomainControllerTest extends WebTestCase
         self::sendApiJsonRequest(
             $client,
             'PUT',
-            '/api/opt-in/domains/' . $domain->getDomain(),
+            '/api/opt-in/domains/edit',
             [
+                'dynamicID' => [
+                    'domain' => $domain->getDomain()
+                ],
                 'domain' => 'teqneers-testing.de'
             ]
         );
@@ -152,8 +149,13 @@ class OptInDomainControllerTest extends WebTestCase
 
         self::initializeDatabaseWithEntities($admin, $domain);
 
-        $client->request('DELETE', '/api/opt-in/domains/' . $domain->getDomain());
-
+        self::sendApiJsonRequest(
+            $client,
+            'DELETE',
+            '/api/opt-in/domains/delete',
+            [
+                'domain' => $domain->getDomain()
+            ]);
         self::assertResponseIsSuccessful();
 
         self::clearEntityManager();
