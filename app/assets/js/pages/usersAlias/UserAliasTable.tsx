@@ -62,7 +62,7 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
 
     return (
         <Table<UserAlias>
-            idColumn="aliasName"
+            idColumn="aliasName,username"
             data={data}
             pageCount={pageCount}
             columns={columns}

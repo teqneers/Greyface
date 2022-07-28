@@ -19,3 +19,9 @@ export interface WhiteListEmail {
 export interface WhiteListDomain {
     domain: string
 }
+export interface BlackListEmail {
+    email: string
+}
+export interface BlackListDomain {
+    domain: string
+}

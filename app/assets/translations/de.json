@@ -117,6 +117,25 @@
                 "deleteMessage": "Do you really want to delete this?",
                 "domain": "Domain"
             }
+        },
+        "blacklist": {
+            "header": "Blacklist",
+            "email": {
+                "header": "Blacklist Email",
+                "addHeader": "Add Blacklist Emails",
+                "editHeader": "Edit Blacklist Email",
+                "deleteHeader": "Delete Blacklist Email",
+                "deleteMessage": "Do you really want to delete this?",
+                "email": "Email"
+            },
+            "domain": {
+                "header": "Blacklist Domain",
+                "addHeader": "Add Blacklist Domains",
+                "editHeader": "Edit Blacklist Domain",
+                "deleteHeader": "Delete Blacklist Domain",
+                "deleteMessage": "Do you really want to delete this?",
+                "domain": "Domain"
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ function ApplicationMenu(): React.ReactElement {
                 <NavLink className="nav-link" to="/users-aliases">{t('menu.alias')}</NavLink>
                 <NavLink className="nav-link" to="/opt-in/emails">{t('menu.whitelist')} {t('menu.email')}</NavLink>
                 <NavLink className="nav-link" to="/opt-in/domains">{t('menu.whitelist')} {t('menu.domain')}</NavLink>
+                <NavLink className="nav-link" to="/opt-out/emails">{t('menu.blacklist')} {t('menu.email')}</NavLink>
+                <NavLink className="nav-link" to="/opt-out/domains">{t('menu.blacklist')} {t('menu.domain')}</NavLink>
             </>)}
         </Nav>
     );

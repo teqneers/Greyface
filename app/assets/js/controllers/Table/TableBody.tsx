@@ -37,7 +37,7 @@ function TableBody<D extends object>(
                     }
                     return (
                         // eslint-disable-next-line react/jsx-key
-                        <tr {...row.getRowProps()} className={className}
+                        <tr key={row.id} {...row.getRowProps()} className={className}
                             // onClick={onRowClick ? () => onRowClick(row.original, row.id, index, row) : null}
                              onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row.original, row.id, index, row) : null}>
                             {row.cells.map((cell) => (
