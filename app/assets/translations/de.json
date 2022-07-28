@@ -46,7 +46,7 @@
             "alias": "Alias"
         },
         "greylist": {
-            "header": "Willkommen!",
+            "header": "Greylist",
             "sender": "Sender",
             "domain": "Domäne",
             "source": "Source",
