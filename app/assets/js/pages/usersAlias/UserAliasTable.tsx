@@ -48,8 +48,10 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<UserAlias, string>) => {
             return <>
-                <Button className="m-1" variant="outline-primary" size="sm" onClick={() => history.push(`/users-aliases/${row.id}/edit`)}>{t('button.edit')}</Button>
-                <Button size="sm" variant="outline-danger" onClick={() => history.push(`/users-aliases/${row.id}/delete`)}>{t('button.delete')}</Button>
+                <Button className="m-1" variant="outline-primary" size="sm"
+                        onClick={() => history.push(`/users-aliases/${row.id}/edit`)}>{t('button.edit')}</Button>
+                <Button size="sm" variant="outline-danger"
+                        onClick={() => history.push(`/users-aliases/${row.id}/delete`)}>{t('button.delete')}</Button>
             </>;
         }
     }], [t, history]);
@@ -59,16 +61,14 @@ const UserAliasTable: React.VFC<UserAliasTableProps> = (
     }
 
     return (
-        <div>
-            <Table<UserAlias>
-                idColumn="aliasName"
-                data={data}
-                pageCount={pageCount}
-                columns={columns}
-                disableSortRemove={true}
-                onStateChange={onStateChange}
-                initialState={initialState}/>
-        </div>
+        <Table<UserAlias>
+            idColumn="aliasName"
+            data={data}
+            pageCount={pageCount}
+            columns={columns}
+            disableSortRemove={true}
+            onStateChange={onStateChange}
+            initialState={initialState}/>
     );
 };
 
