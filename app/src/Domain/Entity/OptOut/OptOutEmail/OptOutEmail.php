@@ -33,7 +33,7 @@ class OptOutEmail
         return new self($email);
     }
 
-    private function __construct(string $email)
+    public function __construct(string $email)
     {
         $this->setEmail($email);
     }

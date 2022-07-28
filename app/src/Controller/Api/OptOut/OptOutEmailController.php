@@ -7,12 +7,12 @@ use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmailRepository;
 use App\Messenger\Validation;
 use IteratorAggregate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use OutOfBoundsException;
 
 #[Route('/api/opt-out/emails')]
 class OptOutEmailController
@@ -25,18 +25,21 @@ class OptOutEmailController
         OptOutEmailRepository $optOutEmailRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $emails = $optOutEmailRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $emails = $optOutEmailRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($emails) ? count($emails) : $emails->count();
 
         if ($emails instanceof IteratorAggregate) {
-            $emails = $emails->getIterator();
+            $emails = (array)$emails->getIterator();
         }
 
         return new JsonResponse([
-            'results' => $emails,
+            'results' => $count === 0 ? [] : $emails,
             'count' => $count,
         ]);
     }
@@ -51,22 +54,30 @@ class OptOutEmailController
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
-        $optinEmail = OptOutEmail::create($data['email'] ?? '');
-        $errors = $validator->validate($optinEmail);
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
+
+        $data['email'] = is_array($data['email']) ? $data['email'] : array($data['email']);
+
+        $emails = [];
+        foreach ($data['email'] as $email) {
+            $emailToCreate = new OptOutEmail($email);
+            $errors = $validator->validate($emailToCreate);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $emails[] = $emailToCreate;
         }
 
-        $optinEmail = $optOutEmailRepository->save($optinEmail);
-        $params = ['email' => $optinEmail->getEmail()];
-        return new JsonResponse($params, Response::HTTP_CREATED);
+        foreach ($emails as $email) {
+            $optOutEmailRepository->save($email);
+        }
+
+        return new JsonResponse('Data has been added successfully!');
     }
 
-    #[Route('/{optOutEmail}', methods: ['PUT'])]
-    #[IsGranted('OPTOUT_EMAIL_EDIT', subject: 'optOutEmail')]
-    #[ParamConverter('optOutEmail', class: OptOutEmail::class, converter: 'app.optOutEmail')]
+    #[Route('/edit', methods: ['PUT'])]
+    #[IsGranted('OPTOUT_EMAIL_EDIT')]
     public function edit(
-        OptOutEmail           $optOutEmail,
         Request               $request,
         ValidatorInterface    $validator,
         OptOutEmailRepository $optOutEmailRepository
@@ -74,6 +85,13 @@ class OptOutEmailController
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
+
+        $emailToFind = $data['dynamicID']['email'] ?? '';
+
+        $optOutEmail = $optOutEmailRepository->findById($emailToFind);
+        if (!$optOutEmail) {
+            throw new OutOfBoundsException('No Opt-out Email found for ' . $emailToFind);
+        }
 
         $optOutEmail->email = $data['email'] ?? '';
         $errors = $validator->validate($optOutEmail);
@@ -87,14 +105,22 @@ class OptOutEmailController
         return new JsonResponse($params);
     }
 
-    #[Route('/{optOutEmail}', methods: ['DELETE'])]
-    #[IsGranted('OPTOUT_EMAIL_DELETE', subject: 'optOutEmail')]
-    #[ParamConverter('optOutEmail', class: OptOutEmail::class, converter: 'app.optOutEmail')]
+    #[Route('/delete', methods: ['DELETE'])]
+    #[IsGranted('OPTOUT_EMAIL_DELETE')]
     public function delete(
-        OptOutEmail           $optOutEmail,
+        Request           $request,
         OptOutEmailRepository $optOutEmailRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $email = $data['email'] ?? '';
+
+        $optOutEmail = $optOutEmailRepository->findById($email);
+        if (!$optOutEmail) {
+            throw new OutOfBoundsException('No Opt-out Email found for ' . $email);
+        }
         $optOutEmailRepository->delete($optOutEmail);
         return new JsonResponse('Email deleted successfully!');
     }

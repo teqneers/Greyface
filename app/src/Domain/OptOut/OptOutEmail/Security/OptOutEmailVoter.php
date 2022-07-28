@@ -31,7 +31,15 @@ class OptOutEmailVoter extends BaseUserVoter
 
     protected function supports($attribute, $subject): bool
     {
-        if (in_array($attribute, ['OPTOUT_EMAIL_LIST', 'OPTOUT_EMAIL_CREATE'], true)) {
+        if (in_array($attribute,
+            [
+                'OPTOUT_EMAIL_LIST',
+                'OPTOUT_EMAIL_CREATE',
+                'OPTOUT_EMAIL_SHOW',
+                'OPTOUT_EMAIL_EDIT',
+                'OPTOUT_EMAIL_DELETE'
+
+            ], true)) {
             return true;
         }
 
@@ -42,9 +50,6 @@ class OptOutEmailVoter extends BaseUserVoter
         return in_array(
             $attribute,
             [
-                'OPTOUT_EMAIL_SHOW',
-                'OPTOUT_EMAIL_EDIT',
-                'OPTOUT_EMAIL_DELETE'
             ]
         );
     }
@@ -59,11 +64,9 @@ class OptOutEmailVoter extends BaseUserVoter
         switch ($attribute) {
             case 'OPTOUT_EMAIL_LIST':
             case 'OPTOUT_EMAIL_CREATE':
-                return true;
             case 'OPTOUT_EMAIL_SHOW':
             case 'OPTOUT_EMAIL_EDIT':
             case 'OPTOUT_EMAIL_DELETE':
-                /** @var OptOutEmail $subject */
                 return true;
             default:
                 return false;

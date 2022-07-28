@@ -38,19 +38,32 @@ class OptOutEmailRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll($start = null, $max = 20): iterable|Paginator
+    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder()
-            ->orderBy('d.email', 'ASC');
+        $qb = $this->createDefaultQueryBuilder();
+
+        if ($query) {
+            $qb = $qb->andWhere('d.email LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        if ($sortBy !== null) {
+            $mapping = [
+                'email' => 'd.email'
+            ];
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('d.email', 'ASC');
+        }
+
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
-                     ->setFirstResult($start);
+                ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
             return new Paginator($qb, false);
         }
         return $qb->getQuery()
             ->getResult();
     }
-
 
     private function createDefaultQueryBuilder(): QueryBuilder
     {

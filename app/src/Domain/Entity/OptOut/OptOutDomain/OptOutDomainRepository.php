@@ -37,14 +37,27 @@ class OptOutDomainRepository extends ServiceEntityRepository
         return null;
     }
 
-
-    public function findAll($start = null, $max = 20): iterable|Paginator
+    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder()
-            ->orderBy('d.domain', 'ASC');
+        $qb = $this->createDefaultQueryBuilder();
+
+        if ($query) {
+            $qb = $qb->andWhere('d.domain LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        if ($sortBy !== null) {
+            $mapping = [
+                'domain' => 'd.domain'
+            ];
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('d.domain', 'ASC');
+        }
+
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
-                     ->setFirstResult($start);
+                ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
             return new Paginator($qb, false);
         }
         return $qb->getQuery()

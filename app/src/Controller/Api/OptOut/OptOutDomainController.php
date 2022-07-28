@@ -7,12 +7,12 @@ use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomainRepository;
 use App\Messenger\Validation;
 use IteratorAggregate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use OutOfBoundsException;
 
 #[Route('/api/opt-out/domains')]
 class OptOutDomainController
@@ -25,18 +25,21 @@ class OptOutDomainController
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $domains = $optOutDomainRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $domains = $optOutDomainRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($domains) ? count($domains) : $domains->count();
 
         if ($domains instanceof IteratorAggregate) {
-            $domains = $domains->getIterator();
+            $domains = (array)$domains->getIterator();
         }
 
         return new JsonResponse([
-            'results' => $domains,
+            'results' => $count === 0 ? [] : $domains,
             'count' => $count,
         ]);
     }
@@ -51,30 +54,44 @@ class OptOutDomainController
     {
         $body = $request->getContent();
         $data = json_decode($body, true);
-        $optinDomain = OptOutDomain::create($data['domain'] ?? '');
-        $errors = $validator->validate($optinDomain);
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
+
+        $data['domain'] = is_array($data['domain']) ? $data['domain'] : array($data['domain']);
+
+        $domains = [];
+        foreach ($data['domain'] as $domain) {
+            $domainToCreate = new OptOutDomain($domain);
+            $errors = $validator->validate($domainToCreate);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $domains[] = $domainToCreate;
         }
 
-        $optinDomain = $optOutDomainRepository->save($optinDomain);
-        $params = ['domain' => $optinDomain->getDomain()];
-        return new JsonResponse($params, Response::HTTP_CREATED);
+        foreach ($domains as $domain) {
+            $optOutDomainRepository->save($domain);
+        }
+
+        return new JsonResponse('Data has been added successfully!');
     }
 
-    #[Route('/{optOutDomain}', methods: ['PUT'])]
-    #[IsGranted('OPTOUT_DOMAIN_EDIT', subject: 'optOutDomain')]
-    #[ParamConverter('optOutDomain', class: OptOutDomain::class, converter: 'app.optOutDomain')]
+    #[Route('/edit', methods: ['PUT'])]
+    #[IsGranted('OPTOUT_DOMAIN_EDIT')]
     public function edit(
-        OptOutDomain           $optOutDomain,
         Request               $request,
         ValidatorInterface    $validator,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
-
         $body = $request->getContent();
         $data = json_decode($body, true);
+
+        $domainToFind = $data['dynamicID']['domain'] ?? '';
+
+        $optOutDomain = $optOutDomainRepository->findById($domainToFind);
+        if (!$optOutDomain) {
+            throw new OutOfBoundsException('No Opt-out domain found for ' . $domainToFind);
+        }
 
         $optOutDomain->domain = $data['domain'] ?? '';
         $errors = $validator->validate($optOutDomain);
@@ -88,14 +105,22 @@ class OptOutDomainController
         return new JsonResponse($params);
     }
 
-    #[Route('/{optOutDomain}', methods: ['DELETE'])]
-    #[IsGranted('OPTOUT_DOMAIN_DELETE', subject: 'optOutDomain')]
-    #[ParamConverter('optOutDomain', class: OptOutDomain::class, converter: 'app.optOutDomain')]
+    #[Route('/delete', methods: ['DELETE'])]
+    #[IsGranted('OPTOUT_DOMAIN_DELETE')]
     public function delete(
-        OptOutDomain           $optOutDomain,
+        Request           $request,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $domain = $data['domain'] ?? '';
+
+        $optOutDomain = $optOutDomainRepository->findById($domain);
+        if (!$optOutDomain) {
+            throw new OutOfBoundsException('No Opt-out domain found for ' . $domain);
+        }
         $optOutDomainRepository->delete($optOutDomain);
         return new JsonResponse('Domain deleted successfully!');
     }

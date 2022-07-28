@@ -31,7 +31,15 @@ class OptOutDomainVoter extends BaseUserVoter
 
     protected function supports($attribute, $subject): bool
     {
-        if (in_array($attribute, ['OPTOUT_DOMAIN_LIST', 'OPTOUT_DOMAIN_CREATE'], true)) {
+        if (in_array(
+            $attribute,
+            [
+                'OPTOUT_DOMAIN_LIST',
+                'OPTOUT_DOMAIN_CREATE',
+                'OPTOUT_DOMAIN_SHOW',
+                'OPTOUT_DOMAIN_EDIT',
+                'OPTOUT_DOMAIN_DELETE'
+            ], true)) {
             return true;
         }
 
@@ -42,9 +50,7 @@ class OptOutDomainVoter extends BaseUserVoter
         return in_array(
             $attribute,
             [
-                'OPTOUT_DOMAIN_SHOW',
-                'OPTOUT_DOMAIN_EDIT',
-                'OPTOUT_DOMAIN_DELETE'
+
             ]
         );
     }
@@ -59,11 +65,9 @@ class OptOutDomainVoter extends BaseUserVoter
         switch ($attribute) {
             case 'OPTOUT_DOMAIN_LIST':
             case 'OPTOUT_DOMAIN_CREATE':
-                return true;
             case 'OPTOUT_DOMAIN_SHOW':
             case 'OPTOUT_DOMAIN_EDIT':
             case 'OPTOUT_DOMAIN_DELETE':
-                /** @var OptOutDomain $subject */
                 return true;
             default:
                 return false;

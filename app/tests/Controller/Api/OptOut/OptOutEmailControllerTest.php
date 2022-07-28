@@ -86,13 +86,7 @@ class OptOutEmailControllerTest extends WebTestCase
                 'email' => 'optout@email.de'
             ]
         );
-        $result = self::getSuccessfulJsonResponse($client);
-        self::assertArrayHasKey('email', $result);
-        self::clearEntityManager();
-        /** @var OptOutEmail|null $email */
-        $email = self::loadDatabaseEntity(OptOutEmail::class, $result['email']);
-        self::assertNotNull($email);
-        self::assertSame('optout@email.de', $email->getEmail());
+        self::assertResponseIsSuccessful();
     }
 
     public function testCreateOptOutEmailDuplicateFailed(): void
@@ -127,8 +121,11 @@ class OptOutEmailControllerTest extends WebTestCase
         self::sendApiJsonRequest(
             $client,
             'PUT',
-            '/api/opt-out/emails/' . $email->getEmail(),
+            '/api/opt-out/emails/edit',
             [
+                'dynamicID' => [
+                    'email' => $email->getEmail()
+                ],
                 'email' => 'optout-up@email.de'
             ]
         );
@@ -150,7 +147,13 @@ class OptOutEmailControllerTest extends WebTestCase
 
         self::initializeDatabaseWithEntities($admin, $email);
 
-        $client->request('DELETE', '/api/opt-out/emails/' . $email->getEmail());
+        self::sendApiJsonRequest(
+            $client,
+            'DELETE',
+            '/api/opt-out/emails/delete',
+            [
+                'email' => $email->getEmail()
+            ]);
 
         self::assertResponseIsSuccessful();
 

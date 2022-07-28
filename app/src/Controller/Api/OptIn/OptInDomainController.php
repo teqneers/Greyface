@@ -90,7 +90,7 @@ class OptInDomainController
 
         $optInDomain = $optInDomainRepository->findById($domainToFind);
         if (!$optInDomain) {
-            throw new OutOfBoundsException('No Opt-In Email found for ' . $domainToFind);
+            throw new OutOfBoundsException('No Opt-In domain found for ' . $domainToFind);
         }
 
         $optInDomain->domain = $data['domain'] ?? '';
