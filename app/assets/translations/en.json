@@ -36,7 +36,8 @@
             "addMore": "Add More Field"
         },
         "errors": {
-            "required": "This field is required!"
+            "required": "This field is required!",
+            "unique": "Data must be unique!"
         },
         "paging": {
             "previous": "Previous",

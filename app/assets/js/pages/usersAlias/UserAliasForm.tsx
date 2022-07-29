@@ -1,3 +1,4 @@
+import {TFunction} from 'i18next';
 import React from 'react';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult, useQuery} from 'react-query';
@@ -19,20 +20,38 @@ export interface UserAliasRequest {
     alias_name: string[]
 }
 
-const Schema: yup.SchemaOf<UserAliasValues> = yup.object()
-    .noUnknown()
-    .shape(
-        {
-            user_id: yup.string()
-                .max(128)
-                .required(),
-            alias_name: yup.array()
-                .of(yup.string().required().max(128).email())
-                .min(1)
-                .max(5)
-                .default([]),
-        }
-    );
+declare module "yup" {
+    interface ArraySchema<T> {
+        unique(
+            message: string,
+            mapper?: (value: T, index?: number, list?: T[]) => T[]
+        ): ArraySchema<T>;
+    }
+}
+
+yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
+    });
+});
+
+function Schema(t: TFunction): yup.AnySchema {
+    return yup.object()
+        .noUnknown()
+        .shape(
+            {
+                user_id: yup.string()
+                    .max(128)
+                    .required(),
+                alias_name: yup.array()
+                    .of(yup.string().required().max(128).email())
+                    .min(1)
+                    .max(5)
+                    .unique(t('errors.unique'))
+                    .default([]),
+            }
+        );
+}
 
 interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
@@ -65,7 +84,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
 
     return (
         <Formik
-            validationSchema={Schema}
+            validationSchema={Schema(t)}
             onSubmit={((values) => {
                 let submitData = values;
                 if (!createMode) {
@@ -95,7 +114,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                     value={values.user_id}
                                     onChange={handleChange}
                                     isInvalid={!!errors.user_id}>
-                                    <option disabled selected={!values.user_id}/>
+                                    <option disabled value=""/>
                                     {users.results.map((u) => {
                                         return (
                                             <option key={u.id} value={u.id}>{u.username}</option>
@@ -128,7 +147,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                             name={`alias_name[${index}]`}
                                                             value={values.alias_name[index]}
                                                             onChange={handleChange}
-                                                            isInvalid={!!errors.alias_name?.[index]}>
+                                                            isInvalid={(errors.alias_name instanceof Array) ? !!errors.alias_name?.[index] : !!errors.alias_name}>
                                                         </Form.Control>
 
                                                         {createMode && <Button variant="outline-warning"
@@ -136,7 +155,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                         </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
-                                                            {errors.alias_name?.[index]}
+                                                            {(errors.alias_name instanceof Array) ? errors.alias_name?.[index] : errors.alias_name}
                                                         </Form.Control.Feedback>
                                                     </InputGroup>
 

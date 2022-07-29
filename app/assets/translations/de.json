@@ -36,7 +36,8 @@
             "addMore": "Add More Field"
         },
         "errors": {
-            "required": "Dieses Feld muss ausgefüllt werden!"
+            "required": "Dieses Feld muss ausgefüllt werden!",
+            "unique": "Data must be unique!"
         },
         "paging": {
             "previous": "Vorherige",

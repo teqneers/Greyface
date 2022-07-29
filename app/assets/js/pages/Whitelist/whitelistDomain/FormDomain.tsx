@@ -1,4 +1,5 @@
 import React from 'react';
+import {TFunction} from 'i18next';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
 import * as yup from 'yup';
@@ -16,17 +17,35 @@ export interface DomainRequest {
     domain: string[]
 }
 
-const Schema: yup.SchemaOf<DomainValues> = yup.object()
-    .noUnknown()
-    .shape(
-        {
-            domain: yup.array()
-                .of(yup.string().required().max(128))
-                .min(1)
-                .max(5)
-                .default([]),
-        }
-    );
+declare module "yup" {
+    interface ArraySchema<T> {
+        unique(
+            message: string,
+            mapper?: (value: T, index?: number, list?: T[]) => T[]
+        ): ArraySchema<T>;
+    }
+}
+
+yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
+    });
+});
+
+function Schema(t: TFunction): yup.AnySchema {
+    return yup.object()
+        .noUnknown()
+        .shape(
+            {
+                domain: yup.array()
+                    .of(yup.string().required().max(128))
+                    .min(1)
+                    .max(5)
+                    .unique(t('errors.unique'))
+                    .default([]),
+            }
+        );
+}
 
 interface FormDomainProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
@@ -51,10 +70,10 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
     return (
         <Formik
             validateOnBlur={true}
-            validationSchema={Schema}
+            validationSchema={Schema(t)}
             onSubmit={((values) => {
                 let submitData = values;
-                if(!createMode) {
+                if (!createMode) {
                     submitData = {...values, domain: values.domain[0]};
                 }
                 // @ts-ignore
@@ -107,9 +126,10 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
 
                                                 </Form.Group>
                                             ))}
-                                            {createMode && fieldsCount < 5 && <Button variant="link" className="mt-2 m-auto w-75"
-                                                                   onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
-                                            </Button>}
+                                            {createMode && fieldsCount < 5 &&
+                                                <Button variant="link" className="mt-2 m-auto w-75"
+                                                        onClick={() => arrayHelpers.push('')}>{t('placeholder.addMore')}
+                                                </Button>}
                                         </>
                                     );
                                 }}/>
