@@ -87,28 +87,34 @@ class OptInDomainController
         $data = json_decode($body, true);
 
         $domainToFind = $data['dynamicID']['domain'] ?? '';
+        if ($domainToFind === $data['domain']) { // if old data and new data is same
 
-        $optInDomain = $optInDomainRepository->findById($domainToFind);
-        if (!$optInDomain) {
-            throw new OutOfBoundsException('No Opt-In domain found for ' . $domainToFind);
+            $params = ['domain' => $data['domain']];
+
+        } else {
+
+            $optInDomain = $optInDomainRepository->findById($domainToFind);
+            if (!$optInDomain) {
+                throw new OutOfBoundsException('No Opt-In domain found for ' . $domainToFind);
+            }
+
+            $optInDomain->domain = $data['domain'] ?? '';
+            $errors = $validator->validate($optInDomain);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $domain = $optInDomainRepository->save($optInDomain);
+
+            $params = ['domain' => $domain->getDomain()];
         }
-
-        $optInDomain->domain = $data['domain'] ?? '';
-        $errors = $validator->validate($optInDomain);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $domain = $optInDomainRepository->save($optInDomain);
-
-        $params = ['domain' => $domain->getDomain()];
         return new JsonResponse($params);
     }
 
     #[Route('/delete', methods: ['DELETE'])]
     #[IsGranted('OPTIN_DOMAIN_DELETE')]
     public function delete(
-        Request           $request,
+        Request               $request,
         OptInDomainRepository $optInDomainRepository
     ): Response
     {

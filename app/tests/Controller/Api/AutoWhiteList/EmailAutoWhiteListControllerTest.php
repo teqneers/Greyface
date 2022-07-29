@@ -55,7 +55,7 @@ class EmailAutoWhiteListControllerTest extends WebTestCase
         $client = self::createApiClient($admin);
 
         $emailAwl = self::createAutoWhiteListEmail();
-        $emailAwl2 = self::createAutoWhiteListEmail('second-name@email.com','second.greyface.de', '123.123.123');
+        $emailAwl2 = self::createAutoWhiteListEmail('second-name@email.com','greyface.de', '123.123.123');
 
         self::initializeDatabaseWithEntities($admin, $emailAwl, $emailAwl2);
 

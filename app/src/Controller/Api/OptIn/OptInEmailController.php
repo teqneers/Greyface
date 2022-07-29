@@ -88,28 +88,33 @@ class OptInEmailController
         $data = json_decode($body, true);
 
         $emailToFind = $data['dynamicID']['email'] ?? '';
+        if ($emailToFind === $data['email']) { // if old data and new data is same
 
-        $optInEmail = $optInEmailRepository->findById($emailToFind);
-        if (!$optInEmail) {
-            throw new OutOfBoundsException('No Opt-In Email found for ' . $emailToFind);
+            $params = ['email' => $data['email']];
+
+        } else {
+            $optInEmail = $optInEmailRepository->findById($emailToFind);
+            if (!$optInEmail) {
+                throw new OutOfBoundsException('No Opt-In Email found for ' . $emailToFind);
+            }
+
+            $optInEmail->email = $data['email'] ?? '';
+            $errors = $validator->validate($optInEmail);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $email = $optInEmailRepository->save($optInEmail);
+
+            $params = ['email' => $email->getEmail()];
         }
-
-        $optInEmail->email = $data['email'] ?? '';
-        $errors = $validator->validate($optInEmail);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $email = $optInEmailRepository->save($optInEmail);
-
-        $params = ['email' => $email->getEmail()];
         return new JsonResponse($params);
     }
 
     #[Route('/delete', methods: ['DELETE'])]
     #[IsGranted('OPTIN_EMAIL_DELETE')]
     public function delete(
-        Request           $request,
+        Request              $request,
         OptInEmailRepository $optInEmailRepository
     ): Response
     {

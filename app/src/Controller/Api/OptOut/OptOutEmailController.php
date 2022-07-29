@@ -87,21 +87,26 @@ class OptOutEmailController
         $data = json_decode($body, true);
 
         $emailToFind = $data['dynamicID']['email'] ?? '';
+        if ($emailToFind === $data['email']) { // if old data and new data is same
 
-        $optOutEmail = $optOutEmailRepository->findById($emailToFind);
-        if (!$optOutEmail) {
-            throw new OutOfBoundsException('No Opt-out Email found for ' . $emailToFind);
+            $params = ['email' => $data['email']];
+
+        } else {
+            $optOutEmail = $optOutEmailRepository->findById($emailToFind);
+            if (!$optOutEmail) {
+                throw new OutOfBoundsException('No Opt-out Email found for ' . $emailToFind);
+            }
+
+            $optOutEmail->email = $data['email'] ?? '';
+            $errors = $validator->validate($optOutEmail);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $email = $optOutEmailRepository->save($optOutEmail);
+
+            $params = ['email' => $email->getEmail()];
         }
-
-        $optOutEmail->email = $data['email'] ?? '';
-        $errors = $validator->validate($optOutEmail);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $email = $optOutEmailRepository->save($optOutEmail);
-
-        $params = ['email' => $email->getEmail()];
         return new JsonResponse($params);
     }
 

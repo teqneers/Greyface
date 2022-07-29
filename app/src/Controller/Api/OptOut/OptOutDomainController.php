@@ -21,7 +21,7 @@ class OptOutDomainController
     #[Route('', methods: ['GET'])]
     #[IsGranted('OPTOUT_DOMAIN_LIST')]
     public function list(
-        Request               $request,
+        Request                $request,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
@@ -47,8 +47,8 @@ class OptOutDomainController
     #[Route('', methods: ['POST'])]
     #[IsGranted('OPTOUT_DOMAIN_CREATE')]
     public function create(
-        Request               $request,
-        ValidatorInterface    $validator,
+        Request                $request,
+        ValidatorInterface     $validator,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
@@ -78,8 +78,8 @@ class OptOutDomainController
     #[Route('/edit', methods: ['PUT'])]
     #[IsGranted('OPTOUT_DOMAIN_EDIT')]
     public function edit(
-        Request               $request,
-        ValidatorInterface    $validator,
+        Request                $request,
+        ValidatorInterface     $validator,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
@@ -87,28 +87,33 @@ class OptOutDomainController
         $data = json_decode($body, true);
 
         $domainToFind = $data['dynamicID']['domain'] ?? '';
+        if ($domainToFind === $data['domain']) { // if old data and new data is same
 
-        $optOutDomain = $optOutDomainRepository->findById($domainToFind);
-        if (!$optOutDomain) {
-            throw new OutOfBoundsException('No Opt-out domain found for ' . $domainToFind);
+            $params = ['domain' => $data['domain']];
+
+        } else {
+            $optOutDomain = $optOutDomainRepository->findById($domainToFind);
+            if (!$optOutDomain) {
+                throw new OutOfBoundsException('No Opt-out domain found for ' . $domainToFind);
+            }
+
+            $optOutDomain->domain = $data['domain'] ?? '';
+            $errors = $validator->validate($optOutDomain);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $domain = $optOutDomainRepository->save($optOutDomain);
+
+            $params = ['domain' => $domain->getDomain()];
         }
-
-        $optOutDomain->domain = $data['domain'] ?? '';
-        $errors = $validator->validate($optOutDomain);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $domain = $optOutDomainRepository->save($optOutDomain);
-
-        $params = ['domain' => $domain->getDomain()];
         return new JsonResponse($params);
     }
 
     #[Route('/delete', methods: ['DELETE'])]
     #[IsGranted('OPTOUT_DOMAIN_DELETE')]
     public function delete(
-        Request           $request,
+        Request                $request,
         OptOutDomainRepository $optOutDomainRepository
     ): Response
     {
