@@ -8,6 +8,8 @@ const BlacklistDomainModule =  React.lazy(() => import('../pages/Blacklist/black
 const BlacklistEmailModule =  React.lazy(() => import('../pages/Blacklist/blacklistEmail/BlacklistEmailModule'));
 const WhitelistDomainModule =  React.lazy(() => import('../pages/Whitelist/whitelistDomain/WhitelistDomainModule'));
 const WhitelistEmailModule =  React.lazy(() => import('../pages/Whitelist/whitelistEmail/WhitelistEmailModule'));
+const AutoWhitelistDomainModule =  React.lazy(() => import('../pages/AutoWhitelist/autoWhitelistDomain/AutoWhitelistDomainModule'));
+const AutoWhitelistEmailModule =  React.lazy(() => import('../pages/AutoWhitelist/autoWhitelistEmail/AutoWhitelistEmailModule'));
 
 function ApplicationRoutes(): React.ReactElement {
     return (
@@ -24,6 +26,14 @@ function ApplicationRoutes(): React.ReactElement {
                 <UserAliasModule/>
             </Route>
 
+
+            <Route path="/awl/emails">
+                <AutoWhitelistEmailModule/>
+            </Route>
+
+            <Route path="/awl/domains">
+                <AutoWhitelistDomainModule/>
+            </Route>
 
             <Route path="/opt-in/emails">
                 <WhitelistEmailModule/>

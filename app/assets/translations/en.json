@@ -47,6 +47,7 @@
             "greylist": "Greylist",
             "users": "Users",
             "alias": "Alias",
+            "autoWhitelist": "Auto Whitelist",
             "whitelist": "Whitelist",
             "blacklist": "Blacklist",
             "email": "Email",
@@ -135,6 +136,32 @@
                 "deleteHeader": "Delete Blacklist Domain",
                 "deleteMessage": "Do you really want to delete this?",
                 "domain": "Domain"
+            }
+        },
+        "autoWhitelist": {
+            "header": "Auto Whitelist",
+            "email": {
+                "header": "Auto Whitelist Email",
+                "addHeader": "Add Auto Whitelist Emails",
+                "editHeader": "Edit Auto Whitelist Email",
+                "deleteHeader": "Delete Auto Whitelist Email",
+                "deleteMessage": "Do you really want to delete this?",
+                "name": "Sender",
+                "domain": "Domain",
+                "source": "Source",
+                "firstSeen": "First Seen",
+                "lastSeen": "Last Seen"
+            },
+            "domain": {
+                "header": "Auto Whitelist Domain",
+                "addHeader": "Add Auto Whitelist Domains",
+                "editHeader": "Edit Auto Whitelist Domain",
+                "deleteHeader": "Delete Auto Whitelist Domain",
+                "deleteMessage": "Do you really want to delete this?",
+                "domain": "Domain",
+                "source": "Source",
+                "firstSeen": "First Seen",
+                "lastSeen": "Last Seen"
             }
         }
     }

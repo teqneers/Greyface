@@ -37,27 +37,32 @@ class DomainAutoWhiteList
 
     #[ORM\Column(name: "first_seen", type: "datetime_immutable")]
     #[Serializer\Expose]
-    #[Serializer\Type(DateTimeImmutable::class)]
-    private ?DateTimeImmutable $firstSeen = null;
+    #[Serializer\Type(DateTimeImmutable::class . '<\'Y-m-d H:i:s\'>')]
+    public ?DateTimeImmutable $firstSeen = null;
 
     #[ORM\Column(name: "last_seen", type: "datetime_immutable")]
     #[Serializer\Expose]
-    #[Serializer\Type(DateTimeImmutable::class)]
+    #[Serializer\Type(DateTimeImmutable::class . '<\'Y-m-d H:i:s\'>')]
     public ?DateTimeImmutable $lastSeen = null;
 
     public static function create(
         string $domain,
-        string $source
+        string $source,
+        ?DateTimeImmutable $firstSeen = null,
+        ?DateTimeImmutable $lastSeen = null,
     ): self
     {
-        return new self($domain, $source);
+        return new self($domain, $source, $firstSeen, $lastSeen);
     }
 
-    private function __construct(string $domain, string $source)
+    private function __construct(string $domain, string $source,
+        ?DateTimeImmutable $firstSeen = null,
+        ?DateTimeImmutable $lastSeen = null)
     {
         $this->setDomain($domain)
             ->setSource($source)
-            ->setFirstSeen();
+            ->setFirstSeen($firstSeen)
+            ->setLastSeen($lastSeen);
     }
 
     public function getDomain(): string
@@ -89,9 +94,9 @@ class DomainAutoWhiteList
         return $this->firstSeen;
     }
 
-    public function setFirstSeen(): self
+    public function setFirstSeen(?DateTimeImmutable $firstSeen = null): self
     {
-        $this->firstSeen = new DateTimeImmutable('now');
+        $this->firstSeen = $firstSeen ?: new DateTimeImmutable('now');
         return $this;
     }
 
@@ -100,9 +105,9 @@ class DomainAutoWhiteList
         return $this->lastSeen;
     }
 
-    public function setLastSeen(): self
+    public function setLastSeen(?DateTimeImmutable $lastSeen = null): self
     {
-        $this->lastSeen = new DateTimeImmutable('now');
+        $this->lastSeen = $lastSeen ?: new DateTimeImmutable('now');
         return $this;
     }
 }

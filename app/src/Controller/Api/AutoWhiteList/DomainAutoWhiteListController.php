@@ -26,18 +26,21 @@ class DomainAutoWhiteListController
         DomainAutoWhiteListRepository $domainAutoWhiteListRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $domains = $domainAutoWhiteListRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $domains = $domainAutoWhiteListRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($domains) ? count($domains) : $domains->count();
 
         if ($domains instanceof IteratorAggregate) {
-            $domains = $domains->getIterator();
+            $domains = (array)$domains->getIterator();
         }
 
         return new JsonResponse([
-            'results' => $domains,
+            'results' => $count === 0 ? [] : $domains,
             'count' => $count,
         ]);
     }
@@ -55,7 +58,9 @@ class DomainAutoWhiteListController
 
         $domainAwl = DomainAutoWhiteList::create(
             $data['domain'] ?? '',
-            $data['source'] ?? '');
+            $data['source'] ?? '',
+            isset($data['first_seen']) ? new DateTimeImmutable($data['first_seen']) : null,
+            isset($data['last_seen']) ?  new DateTimeImmutable($data['last_seen']) : null);
         $errors = $validator->validate($domainAwl);
 
         if (count($errors) > 0) {
@@ -78,8 +83,8 @@ class DomainAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $domain = $data['dynamicID']['domain'];
+        $source = $data['dynamicID']['source'];
 
         $domainAwl = $domainAutoWhiteListRepository->find([
             'domain' => $domain,
@@ -114,8 +119,8 @@ class DomainAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $domain = $data['dynamicID']['domain'];
+        $source = $data['dynamicID']['source'];
 
 
         $domainAwl = $domainAutoWhiteListRepository->find([
@@ -146,8 +151,8 @@ class DomainAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $domain = $data['domain'];
+        $source = $data['source'];
 
         $domainAwl = $domainAutoWhiteListRepository->find([
             'domain' => $domain,

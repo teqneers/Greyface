@@ -47,7 +47,7 @@ class EmailAutoWhiteList
     #[ORM\Column(name: "first_seen", type: "datetime_immutable")]
     #[Serializer\Expose]
     #[Serializer\Type(DateTimeImmutable::class . '<\'Y-m-d H:i:s\'>')]
-    private ?DateTimeImmutable $firstSeen = null;
+    public ?DateTimeImmutable $firstSeen = null;
 
     #[ORM\Column(name: "last_seen", type: "datetime_immutable")]
     #[Serializer\Expose]

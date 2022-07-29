@@ -28,13 +28,33 @@ class EmailAutoWhiteListRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll($start = null, $max = 20): iterable|Paginator
+    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-        $qb = $this->createDefaultQueryBuilder()
-            ->orderBy('d.domain', 'ASC');
+
+        $mapping = [
+            'name' => 'e.name',
+            'domain' => 'e.domain',
+            'source' => 'e.source',
+            'firstSeen' => 'e.firstSeen',
+            'lastSeen' => 'e.lastSeen'
+        ];
+
+        $qb = $this->createDefaultQueryBuilder();
+
+        if ($query) {
+            $qb = $qb->andWhere('e.name LIKE :query OR e.domain LIKE :query OR e.source LIKE :query OR e.firstSeen LIKE :query OR e.lastSeen LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+        
+        if ($sortBy !== null) {
+            $qb = $qb->orderBy($mapping[$sortBy], $desc ? 'DESC' : 'ASC');
+        } else {
+            $qb = $qb->orderBy('e.name', 'ASC');
+        }
+
         if ($start !== null) {
             $qb = $qb->setMaxResults($max)
-                ->setFirstResult($start);
+                ->setFirstResult(intval($start) === 0 ? $start : (($start) * $max));
             return new Paginator($qb, false);
         }
         return $qb->getQuery()
@@ -44,7 +64,7 @@ class EmailAutoWhiteListRepository extends ServiceEntityRepository
 
     private function createDefaultQueryBuilder(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('d');
+        $qb = $this->createQueryBuilder('e');
         return $qb;
     }
 

@@ -141,7 +141,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
             'PUT',
             '/api/awl/domains/edit',
             [
-                'dynamicId' => [
+                'dynamicID' => [
                     'domain' => $domain->getDomain(),
                     'source' => $domain->getSource()
                 ],
@@ -176,7 +176,7 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
             'PUT',
             '/api/awl/domains/last-seen',
             [
-                'dynamicId' => [
+                'dynamicID' => [
                     'domain' => $domain->getDomain(),
                     'source' => $domain->getSource()
                 ]
@@ -210,10 +210,8 @@ class DomainAutoWhiteListControllerTest extends WebTestCase
             'DELETE',
             '/api/awl/domains/delete',
             [
-                'dynamicId' => [
                     'domain' => $domain->getDomain(),
                     'source' => $domain->getSource()
-                ]
             ]);
 
         self::assertResponseIsSuccessful();

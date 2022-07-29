@@ -190,7 +190,7 @@ class EmailAutoWhiteListControllerTest extends WebTestCase
             'PUT',
             '/api/awl/emails/edit',
             [
-                'dynamicId' => [
+                'dynamicID' => [
                     'name' => $emailAwl->getName(),
                     'domain' => $emailAwl->getDomain(),
                     'source' => $emailAwl->getSource()
@@ -232,7 +232,7 @@ class EmailAutoWhiteListControllerTest extends WebTestCase
             'PUT',
             '/api/awl/emails/last-seen',
             [
-                'dynamicId' => [
+                'dynamicID' => [
                     'name' => $emailAwl->getName(),
                     'domain' => $emailAwl->getDomain(),
                     'source' => $emailAwl->getSource()
@@ -271,11 +271,9 @@ class EmailAutoWhiteListControllerTest extends WebTestCase
             'DELETE',
             '/api/awl/emails/delete',
             [
-                'dynamicId' => [
                     'name' => $emailAwl->getName(),
                     'domain' => $emailAwl->getDomain(),
                     'source' => $emailAwl->getSource()
-                ]
             ]);
 
         self::assertResponseIsSuccessful();

@@ -26,18 +26,21 @@ class EmailAutoWhiteListController
         EmailAutoWhiteListRepository $emailAutoWhiteListRepository
     ): Response
     {
+        $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
-        $emails = $emailAutoWhiteListRepository->findAll($start, $max);
+        $sortBy = $request->query->get('sortBy');
+        $desc = $request->query->get('desc');
+        $emails = $emailAutoWhiteListRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($emails) ? count($emails) : $emails->count();
 
         if ($emails instanceof IteratorAggregate) {
-            $emails = $emails->getIterator();
+            $emails = (array)$emails->getIterator();
         }
 
         return new JsonResponse([
-            'results' => $emails,
+            'results' => $count === 0 ? [] : $emails,
             'count' => $count,
         ]);
     }
@@ -81,9 +84,9 @@ class EmailAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $name = $data['dynamicId']['name'];
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $name = $data['dynamicID']['name'];
+        $domain = $data['dynamicID']['domain'];
+        $source = $data['dynamicID']['source'];
 
         $emailAwl = $emailAutoWhiteListRepository->find([
             'name' => $name,
@@ -120,9 +123,9 @@ class EmailAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $name = $data['dynamicId']['name'];
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $name = $data['dynamicID']['name'];
+        $domain = $data['dynamicID']['domain'];
+        $source = $data['dynamicID']['source'];
 
         $emailAwl = $emailAutoWhiteListRepository->find([
             'name' => $name,
@@ -153,9 +156,9 @@ class EmailAutoWhiteListController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $name = $data['dynamicId']['name'];
-        $domain = $data['dynamicId']['domain'];
-        $source = $data['dynamicId']['source'];
+        $name = $data['name'];
+        $domain = $data['domain'];
+        $source = $data['source'];
 
         $emailAwl = $emailAutoWhiteListRepository->find([
             'name' => $name,
