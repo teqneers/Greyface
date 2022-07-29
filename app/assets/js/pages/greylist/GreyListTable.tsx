@@ -66,7 +66,7 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
                                                     format={DATE_TIME_SECONDS_FORMAT}/>,
             canSort: true,
             disableResizing: true
-        }] as Column<Greylist>[];
+        }] as unknown as Column<Greylist>[];
 
         if (isAdministrator()) {
             columns.push({
