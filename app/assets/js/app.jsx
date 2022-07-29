@@ -8,6 +8,7 @@ import {initSettings} from './application/settings';
 import {initI18n} from './application/i18n';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import '../css/app.scss';
 
 const root = document.getElementById('app');

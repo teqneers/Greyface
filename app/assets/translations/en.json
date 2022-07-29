@@ -18,6 +18,7 @@
             "create": "Create",
             "edit": "Edit",
             "delete": "Delete",
+            "deleteByDate": "Delete by Date",
             "moveToWhitelist": "Move to Auto Whitelist",
             "save": "Save",
             "cancel": "Cancel",
@@ -64,6 +65,8 @@
             "username": "Username",
             "deleteHeader": "Delete Entry",
             "deleteMessage": "Do you really want to delete this entry?",
+            "deleteByDateHeader": "Delete entries by time",
+            "deleteByDateMessage": "All entries from the past to the selected date will be deleted!",
             "moveToWhitelistHeader": "Move to Auto Whitelist",
             "moveToWhitelistMessage": "Do you really want to move this?"
         },

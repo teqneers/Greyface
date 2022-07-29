@@ -8,6 +8,7 @@ use App\Domain\Entity\Connect\ConnectRepository;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\UserInterface;
 use App\Messenger\Validation;
+use DateTime;
 use OutOfBoundsException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -141,7 +142,7 @@ class ConnectController
         $data = json_decode($body, true);
 
         if (isset($data['date'])) {
-            $date = $data['date'];
+            $date = date_format(new DateTime($data['date']), 'Y-m-d');
 
             $connectRepository->deleteByDate($date);
             return new JsonResponse('Domain deleted successfully!');

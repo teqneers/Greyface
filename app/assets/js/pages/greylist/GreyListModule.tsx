@@ -6,6 +6,7 @@ import ApplicationModuleContainer from '../../application/ApplicationModuleConta
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import {Greylist} from '../../types/greylist';
+import DeleteByDate from './DeleteByDate';
 import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
@@ -54,6 +55,7 @@ const GreyListModule: React.VFC = () => {
         <ApplicationModuleContainer title="greylist.header">
 
             <ModuleTopBar title="greylist.header"
+                          buttons={<DeleteByDate onDelete={refetch}/>}
                           setSearchQuery={setSearchQuery}/>
 
                 {isError ? (

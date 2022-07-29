@@ -18,7 +18,7 @@ export interface EmailRequest {
 }
 
 
-declare module "yup" {
+declare module 'yup' {
     interface ArraySchema<T> {
         unique(
             message: string,
