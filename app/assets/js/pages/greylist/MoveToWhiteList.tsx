@@ -41,7 +41,8 @@ const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
 
     return (
         <>
-            <DefaultButton label="button.moveToWhitelist" onClick={() => setShow(true)}/>
+            {/* Move with confirmation */}
+            {/* <DefaultButton label="button.moveToWhitelist" onClick={() => setShow(true)}/>
 
             <ModalConfirmation
                 show={show}
@@ -51,7 +52,11 @@ const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
                 onCancel={() => setShow(false)}
                 title="greylist.moveToWhitelistHeader">
                 {t('greylist.moveToWhitelistMessage')}
-            </ModalConfirmation>
+            </ModalConfirmation> */}
+
+            {/* Move without confirmation */}
+            <DefaultButton label="button.moveToWhitelist" onClick={() => moveRecord.mutateAsync(data)}/>
+
         </>
     );
 };

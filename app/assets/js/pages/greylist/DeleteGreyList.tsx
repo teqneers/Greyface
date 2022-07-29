@@ -41,7 +41,8 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
 
     return (
         <>
-            <DeleteButton onClick={() => setShow(true)} />
+            {/* Delete with confirmation */}
+            {/* <DeleteButton onClick={() => setShow(true)} />
 
             <ModalConfirmation
                 show={show}
@@ -49,7 +50,10 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
                 onCancel={() => setShow(false)}
                 title="greylist.deleteHeader">
                 {t('greylist.deleteMessage')}
-            </ModalConfirmation>
+            </ModalConfirmation> */}
+
+            {/* Delete without confirmation */}
+            <DeleteButton onClick={() => deleteRecord.mutateAsync(data)} />
         </>
     );
 };
