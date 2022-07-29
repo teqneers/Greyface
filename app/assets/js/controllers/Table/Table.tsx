@@ -115,11 +115,9 @@ function Table<D extends object>(
     // table state change
     useDeepCompareEffect(() => {
         if (onStateChange) {
-            console.log(state);
             onStateChange(state);
         }
     }, [onStateChange, state]);
-
     return (
         <>
             <BTable bordered size="sm" {...getTableProps()}>

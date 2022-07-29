@@ -50,7 +50,7 @@ function TableBody<D extends object>(
                         </tr>
                     );
                 })
-                : <tr aria-colspan={columnCount}><td><EmptyText/></td></tr>}
+                : <tr><td colSpan={columnCount}><EmptyText/></td></tr>}
         </tbody>
     );
 }
