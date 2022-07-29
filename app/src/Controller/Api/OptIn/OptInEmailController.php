@@ -56,7 +56,7 @@ class OptInEmailController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $data['email'] = is_array($data['email']) ? $data['email'] : array($data['email']);
+        $data['email'] = is_array($data['email']) ? array_unique($data['email']) : array($data['email']);
 
         $emails = [];
         foreach ($data['email'] as $email) {

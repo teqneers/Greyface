@@ -96,7 +96,7 @@ class UserAliasController
         $body = $request->getContent();
         $data = json_decode($body, true);
         $user = $data['user_id'] ? $userRepository->findById($data['user_id']) : null;
-        $data['alias_name'] = is_array($data['alias_name']) ? $data['alias_name'] : array($data['alias_name']);
+        $data['alias_name'] = is_array($data['alias_name']) ? array_unique($data['alias_name']) : array($data['alias_name']);
 
         $aliases = [];
         foreach ($data['alias_name'] as $alias) {

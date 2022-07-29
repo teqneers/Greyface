@@ -55,7 +55,7 @@ class OptInDomainController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $data['domain'] = is_array($data['domain']) ? $data['domain'] : array($data['domain']);
+        $data['domain'] = is_array($data['domain']) ? array_unique($data['domain']) : array($data['domain']);
 
         $domains = [];
         foreach ($data['domain'] as $domain) {
