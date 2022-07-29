@@ -3,6 +3,7 @@ import {useQuery} from 'react-query';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import {usePermissions} from '../../application/usePermissions';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import UserFilter from '../../controllers/UserFilter';
@@ -12,6 +13,8 @@ import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
 const GreyListModule: React.VFC = () => {
+
+    const {isAdministrator} = usePermissions();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState('');
@@ -44,7 +47,7 @@ const GreyListModule: React.VFC = () => {
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
-        if(user) {
+        if (user) {
             url += `&user=${user}`;
         }
 
@@ -60,20 +63,24 @@ const GreyListModule: React.VFC = () => {
     return (
         <ApplicationModuleContainer title="greylist.header">
 
-            <ModuleTopBar title="greylist.header"
-                          buttons={<DeleteByDate onDelete={refetch}/>}
-                          userFilter={<UserFilter user={user} setUser={setUser} filterFor="greylist"/>}
-                          setSearchQuery={setSearchQuery}/>
+            {isAdministrator() && <ModuleTopBar title="greylist.header"
+                                              buttons={<DeleteByDate onDelete={refetch}/>}
+                                              userFilter={<UserFilter user={user} setUser={setUser}
+                                                                      filterFor="greylist"/>}
+                                              setSearchQuery={setSearchQuery}/>}
 
-                {isError ? (
-                    <div>Error: {error}</div>
-                ) : (<GreyListTable
-                    data={data.results}
-                    refetch={refetch}
-                    pageCount={Math.ceil(data.count / tableState.pageSize)}
-                    isFetching={isFetching || isLoading}
-                    initialState={tableState}
-                    onStateChange={onStateChange}/>)}
+            {!isAdministrator() && <ModuleTopBar title="greylist.header"
+                                               setSearchQuery={setSearchQuery}/>}
+
+            {isError ? (
+                <div>Error: {error}</div>
+            ) : (<GreyListTable
+                data={data.results}
+                refetch={refetch}
+                pageCount={Math.ceil(data.count / tableState.pageSize)}
+                isFetching={isFetching || isLoading}
+                initialState={tableState}
+                onStateChange={onStateChange}/>)}
 
         </ApplicationModuleContainer>
     );
