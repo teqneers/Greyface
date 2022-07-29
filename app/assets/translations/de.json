@@ -18,27 +18,27 @@
             "create": "Erstellen",
             "edit": "Bearbeiten",
             "delete": "Löschen",
-            "deleteByDate": "Löschen by Date",
-            "moveToWhitelist": "Move to Auto Whitelist",
+            "deleteByDate": "Löschen nach Zeit",
+            "moveToWhitelist": "Auto Whitelist verschieben",
             "save": "Speichern",
             "cancel": "Abbrechen",
             "close": "Close",
             "back": "Zurück",
             "searchAndFilters": "Suchen & Filtern",
             "createUser": "neuer Benutzer",
-            "createUserAlias": "New Alias",
-            "addEmail": "Add Email",
-            "addDomain": "Add Domain"
+            "createUserAlias": "Alias hinzufügen",
+            "addEmail": "Email hinzufügen",
+            "addDomain": "Domäne hinzufügen"
         },
         "placeholder": {
             "search": "Suchen",
-            "searchByText": "Suchen by Text",
+            "searchByText": "Volltextsuche",
             "user": "Benutzer",
             "noData": "Keine Daten gefunden",
             "sortBy": "Sortieren nach",
-            "addMore": "Add More Field",
-            "showAll": "Show All",
-            "showUnassigned": "Show Unassigned"
+            "addMore": "Weiteren hinzufügen",
+            "showAll": "Zeige alles",
+            "showUnassigned": "Nicht zugewiesen anzeigen"
         },
         "errors": {
             "required": "Dieses Feld muss ausgefüllt werden!",
@@ -57,7 +57,7 @@
             "whitelist": "Whitelist",
             "blacklist": "Blacklist",
             "email": "Email",
-            "domain": "Domain"
+            "domain": "Domäne"
         },
         "greylist": {
             "header": "Greylist",
@@ -65,14 +65,14 @@
             "domain": "Domäne",
             "source": "Source",
             "recipient": "Recipient",
-            "firstSeen": "First Seen",
+            "firstSeen": "Erstmals Gesichtet",
             "username": "Username",
-            "deleteHeader": "Delete Entry",
-            "deleteMessage": "Do you really want to delete this entry?",
-            "deleteByDateHeader": "Delete entries by time",
-            "deleteByDateMessage": "All entries from the past to the selected date will be deleted!",
-            "moveToWhitelistHeader": "Move to Auto Whitelist",
-            "moveToWhitelistMessage": "Do you really want to move this?"
+            "deleteHeader": "Eintrag löschen",
+            "deleteMessage": "Möchten Sie diesen Eintrag wirklich löschen?",
+            "deleteByDateHeader": "Lösche Einträge nach Zeit",
+            "deleteByDateMessage": "Alle Einträge der Vergangenheit bis zum ausgewähltem Datum werden gelöscht!",
+            "moveToWhitelistHeader": "In die Auto Whitelist verschieben",
+            "moveToWhitelistMessage": "Wollen Sie das wirklich verschieben?"
         },
         "user": {
             "header": "Benutzer",
@@ -100,11 +100,11 @@
             }
         },
         "alias": {
-            "header": "User Aliases",
-            "createHeader": "Create New Alias",
-            "editHeader": "Edit Alias",
-            "deleteHeader": "Delete Alias",
-            "deleteMessage": "Do you really want to delete this Alias?",
+            "header": "Benutzeraliase",
+            "createHeader": "Neuen Alias erstellen",
+            "editHeader": "Alias bearbeiten",
+            "deleteHeader": "Alias löschen",
+            "deleteMessage": "Möchten Sie diesen Alias wirklich löschen?",
             "aliasName": "Alias",
             "user": "Benutzer"
         },
@@ -112,18 +112,18 @@
             "header": "Whitelist",
             "email": {
                 "header": "Whitelist Email",
-                "addHeader": "Add Whitelist Emails",
-                "editHeader": "Edit Whitelist Email",
-                "deleteHeader": "Delete Whitelist Email",
-                "deleteMessage": "Do you really want to delete this?",
+                "addHeader": "Whitelist Email hinzufügen",
+                "editHeader": "Whitelist Email bearbeiten",
+                "deleteHeader": "Whitelist Email löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
                 "email": "Email"
             },
             "domain": {
-                "header": "Whitelist Domain",
-                "addHeader": "Add Whitelist Domains",
-                "editHeader": "Edit Whitelist Domain",
-                "deleteHeader": "Delete Whitelist Domain",
-                "deleteMessage": "Do you really want to delete this?",
+                "header": "Whitelist-Domain",
+                "addHeader": "Whitelist-Domains hinzufügen",
+                "editHeader": "Whitelist-Domain bearbeiten",
+                "deleteHeader": "Whitelist-Domain löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
                 "domain": "Domain"
             }
         },
@@ -131,18 +131,18 @@
             "header": "Blacklist",
             "email": {
                 "header": "Blacklist Email",
-                "addHeader": "Add Blacklist Emails",
-                "editHeader": "Edit Blacklist Email",
-                "deleteHeader": "Delete Blacklist Email",
-                "deleteMessage": "Do you really want to delete this?",
+                "addHeader": "Blacklist Email hinzufügen",
+                "editHeader": "Blacklist Email bearbeiten",
+                "deleteHeader": "Blacklist Email löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
                 "email": "Email"
             },
             "domain": {
-                "header": "Blacklist Domain",
-                "addHeader": "Add Blacklist Domains",
-                "editHeader": "Edit Blacklist Domain",
-                "deleteHeader": "Delete Blacklist Domain",
-                "deleteMessage": "Do you really want to delete this?",
+                "header": "Blacklist-Domain",
+                "addHeader": "Blacklist-Domains hinzufügen",
+                "editHeader": "Blacklist-Domain bearbeiten",
+                "deleteHeader": "Blacklist-Domain löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
                 "domain": "Domain"
             }
         },
@@ -150,26 +150,26 @@
             "header": "Auto Whitelist",
             "email": {
                 "header": "Auto Whitelist Email",
-                "addHeader": "Add Auto Whitelist Emails",
-                "editHeader": "Edit Auto Whitelist Email",
-                "deleteHeader": "Delete Auto Whitelist Email",
-                "deleteMessage": "Do you really want to delete this?",
-                "name": "Sender",
-                "domain": "Domain",
-                "source": "Source",
-                "firstSeen": "First Seen",
-                "lastSeen": "Last Seen"
+                "addHeader": "Auto Whitelist Whitelist Email hinzufügen",
+                "editHeader": "Auto Whitelist Whitelist Email bearbeiten",
+                "deleteHeader": "Auto Whitelist Whitelist Email löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
+                "name": "Absender",
+                "domain": "Domäne",
+                "source": "Quelle",
+                "firstSeen": "Erstmals Gesichtet",
+                "lastSeen": "Zuletzt Gesichtet"
             },
             "domain": {
-                "header": "Auto Whitelist Domain",
-                "addHeader": "Add Auto Whitelist Domains",
-                "editHeader": "Edit Auto Whitelist Domain",
-                "deleteHeader": "Delete Auto Whitelist Domain",
-                "deleteMessage": "Do you really want to delete this?",
-                "domain": "Domain",
-                "source": "Source",
-                "firstSeen": "First Seen",
-                "lastSeen": "Last Seen"
+                "header": "Auto Whitelist Whitelist-Domain",
+                "addHeader": "Domains der auto Whitelist hinzufügen",
+                "editHeader": "Domain der auto Whitelist bearbeiten",
+                "deleteHeader": "Domain der auto Whitelist löschen",
+                "deleteMessage": "Wollen Sie das wirklich löschen?",
+                "domain": "Domäne",
+                "source": "Quelle",
+                "firstSeen": "Erstmals Gesichtet",
+                "lastSeen": "Zuletzt Gesichtet"
             }
         }
     }

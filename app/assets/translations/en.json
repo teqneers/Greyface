@@ -25,8 +25,8 @@
             "close": "Close",
             "back": "Back",
             "searchAndFilters": "Search & Filter",
-            "createUser": "New User",
-            "createUserAlias": "New Alias",
+            "createUser": "Add User",
+            "createUserAlias": "Add Alias",
             "addEmail": "Add Email",
             "addDomain": "Add Domain"
         },
@@ -36,7 +36,7 @@
             "user": "User",
             "noData": "Keine Daten gefunden",
             "sortBy": "Sortieren nach",
-            "addMore": "Add More Field",
+            "addMore": "Add another",
             "showAll": "Show All",
             "showUnassigned": "Show Unassigned"
         },
