@@ -13,7 +13,7 @@
 
     <form name="login" method="post" action="{{ path('login') }}">
         <div class="form-group">
-            <label for="username">{% trans %}login.form.email{% endtrans %}</label>
+            <label for="username">{% trans %}login.form.username{% endtrans %}</label>
             <input class="form-control" type="text" aria-label="Login" id="username" name="username"
                    value="{{ last_username }}"
                    required autocomplete="username" {% if not last_username %}autofocus{% endif %}/>

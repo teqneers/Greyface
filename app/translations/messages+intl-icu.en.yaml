@@ -4,7 +4,7 @@ cancel: Cancel
 
 login.title: Login
 login.header: Welcome to Greyface
-login.form.email: E-mail address
+login.form.username: Username
 login.form.password: Password
 login.form.remember_me: Remember me
 login.submit: Log In
@@ -13,7 +13,7 @@ login.forgot_password: Forgot password?
 change_password.title: Change Password
 change_password.header: Change Password
 change_password.intro: Change Password
-change_password.form.email: E-mail address
+change_password.form.username: Username
 change_password.form.current_password: Current Password
 change_password.form.new_password: New Password
 change_password.form.new_password_repeat: Repeat new Password

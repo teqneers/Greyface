@@ -12,8 +12,8 @@
     {{ form_errors(form) }}
 
     <div class="form-group">
-        <label for="email">{% trans %}change_password.form.email{% endtrans %}</label>
-        <input class="form-control" type="text" disabled id="email" value="{{ user.username }}"/>
+        <label for="username">{% trans %}change_password.form.username{% endtrans %}</label>
+        <input class="form-control" type="text" disabled id="username" value="{{ user.username }}"/>
     </div>
 
     {{ form_rest(form) }}

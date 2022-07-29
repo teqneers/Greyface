@@ -4,7 +4,7 @@ cancel: Abbrechen
 
 login.title: Anmelden
 login.header: Willkommen bei Greyface
-login.form.email: E-Mail Adresse
+login.form.username: Username
 login.form.password: Passwort
 login.form.remember_me: Meine Anmeldedaten speichern
 login.submit: Anmelden
@@ -13,7 +13,7 @@ login.forgot_password: Passwort vergessen?
 change_password.title: Passwort ändern
 change_password.header: Passwort ändern
 change_password.intro: Passwort ändern
-change_password.form.email: E-Mail Adresse
+change_password.form.username: Username
 change_password.form.current_password: Aktuelles Passwort
 change_password.form.new_password: Neues Passwort
 change_password.form.new_password_repeat: Neues Passwort wiederholen
