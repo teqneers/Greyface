@@ -61,7 +61,7 @@ class EmailAutoWhiteListController
             $data['domain'] ?? '',
             $data['source'] ?? '',
             isset($data['first_seen']) ? new DateTimeImmutable($data['first_seen']) : null,
-            isset($data['last_seen']) ?  new DateTimeImmutable($data['last_seen']) : null);
+            isset($data['last_seen']) ? new DateTimeImmutable($data['last_seen']) : null);
         $errors = $validator->validate($emailAwl);
 
         if (count($errors) > 0) {
@@ -88,28 +88,38 @@ class EmailAutoWhiteListController
         $domain = $data['dynamicID']['domain'];
         $source = $data['dynamicID']['source'];
 
-        $emailAwl = $emailAutoWhiteListRepository->find([
-            'name' => $name,
-            'domain' => $domain,
-            'source' => $source
-        ]);
-        if (!$emailAwl) {
-            throw new OutOfBoundsException(
-                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source
-            );
+        $dataToUpdate = $data;
+        unset($dataToUpdate['dynamicID']);
+
+        if ($data['dynamicID'] === $dataToUpdate) { // if old data and new data is same
+
+            $params = ['name' => $name, 'domain' => $domain, 'source' => $source];
+
+        } else {
+
+            $emailAwl = $emailAutoWhiteListRepository->find([
+                'name' => $name,
+                'domain' => $domain,
+                'source' => $source
+            ]);
+            if (!$emailAwl) {
+                throw new OutOfBoundsException(
+                    'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source
+                );
+            }
+
+            $emailAwl->name = $data['name'] ?? '';
+            $emailAwl->domain = $data['domain'] ?? '';
+            $emailAwl->source = $data['source'] ?? '';
+            $errors = $validator->validate($emailAwl);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $emailAwl = $emailAutoWhiteListRepository->save($emailAwl);
+
+            $params = ['name' => $emailAwl->getName(), 'domain' => $emailAwl->getDomain(), 'source' => $emailAwl->getSource()];
         }
-
-        $emailAwl->name = $data['name'] ?? '';
-        $emailAwl->domain = $data['domain'] ?? '';
-        $emailAwl->source = $data['source'] ?? '';
-        $errors = $validator->validate($emailAwl);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $emailAwl = $emailAutoWhiteListRepository->save($emailAwl);
-
-        $params = ['name' => $emailAwl->getName(), 'domain' => $emailAwl->getDomain(), 'source' => $emailAwl->getSource()];
         return new JsonResponse($params);
     }
 

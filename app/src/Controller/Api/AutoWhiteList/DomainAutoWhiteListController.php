@@ -86,26 +86,36 @@ class DomainAutoWhiteListController
         $domain = $data['dynamicID']['domain'];
         $source = $data['dynamicID']['source'];
 
-        $domainAwl = $domainAutoWhiteListRepository->find([
-            'domain' => $domain,
-            'source' => $source
-        ]);
-        if (!$domainAwl) {
-            throw new OutOfBoundsException(
-                'No White List Domain found for Domain ' . $domain . ' and Source ' . $source
-            );
+        $dataToUpdate = $data;
+        unset($dataToUpdate['dynamicID']);
+
+        if ($data['dynamicID'] === $dataToUpdate) { // if old data and new data is same
+
+            $params = ['domain' => $domain, 'source' => $source];
+
+        } else {
+
+            $domainAwl = $domainAutoWhiteListRepository->find([
+                'domain' => $domain,
+                'source' => $source
+            ]);
+            if (!$domainAwl) {
+                throw new OutOfBoundsException(
+                    'No White List Domain found for Domain ' . $domain . ' and Source ' . $source
+                );
+            }
+
+            $domainAwl->domain = $data['domain'] ?? '';
+            $domainAwl->source = $data['source'] ?? '';
+            $errors = $validator->validate($domainAwl);
+
+            if (count($errors) > 0) {
+                return Validation::getViolations($errors);
+            }
+            $domainAwl = $domainAutoWhiteListRepository->save($domainAwl);
+
+            $params = ['domain' => $domainAwl->getDomain(), 'source' => $domainAwl->getSource()];
         }
-
-        $domainAwl->domain = $data['domain'] ?? '';
-        $domainAwl->source = $data['source'] ?? '';
-        $errors = $validator->validate($domainAwl);
-
-        if (count($errors) > 0) {
-            return Validation::getViolations($errors);
-        }
-        $domainAwl = $domainAutoWhiteListRepository->save($domainAwl);
-
-        $params = ['domain' => $domainAwl->getDomain(), 'source' => $domainAwl->getSource()];
         return new JsonResponse($params);
     }
 
