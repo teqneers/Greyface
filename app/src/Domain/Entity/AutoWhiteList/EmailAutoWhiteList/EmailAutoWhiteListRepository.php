@@ -30,7 +30,6 @@ class EmailAutoWhiteListRepository extends ServiceEntityRepository
 
     public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
-
         $mapping = [
             'name' => 'e.name',
             'domain' => 'e.domain',

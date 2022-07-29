@@ -26,6 +26,15 @@ class EmailAutoWhiteListController
         EmailAutoWhiteListRepository $emailAutoWhiteListRepository
     ): Response
     {
+        /* Because of the Error of Greytool we have to delete the entries with the
+         sender_domain value -undef- manually.*/
+        $toDelete = $emailAutoWhiteListRepository->findOneBy([
+            'domain' => '-undef-'
+        ]);
+        if ($toDelete) {
+            $emailAutoWhiteListRepository->delete($toDelete);
+        }
+
         $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
