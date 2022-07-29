@@ -32,9 +32,13 @@
         },
         "placeholder": {
             "search": "Search",
+            "searchByText": "Search by Text",
+            "user": "User",
             "noData": "Keine Daten gefunden",
             "sortBy": "Sortieren nach",
-            "addMore": "Add More Field"
+            "addMore": "Add More Field",
+            "showAll": "Show All",
+            "showUnassigned": "Show Unassigned"
         },
         "errors": {
             "required": "This field is required!",

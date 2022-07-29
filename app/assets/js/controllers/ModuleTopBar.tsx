@@ -1,15 +1,15 @@
 import React from 'react';
-
 import {Container, Form, Nav, Navbar} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 
 export interface ModalProps {
     title: string,
     buttons?: React.ReactNode,
+    userFilter?: React.ReactNode,
     setSearchQuery: (query: string) => void,
 }
 
-const ModalTopBar: React.FC<ModalProps> = ({title, buttons, setSearchQuery}) => {
+const ModalTopBar: React.FC<ModalProps> = ({title, buttons, userFilter, setSearchQuery}) => {
     const {t} = useTranslation();
 
     return (
@@ -22,7 +22,9 @@ const ModalTopBar: React.FC<ModalProps> = ({title, buttons, setSearchQuery}) => 
                         {buttons}
                     </Nav>
 
-                    <div className="d-flex">
+                    <div className="d-flex gap-2">
+                        {userFilter}
+                        <Form.Label column>{t('placeholder.searchByText')}</Form.Label>
                         <Form.Control
                             type="input"
                             name="search"

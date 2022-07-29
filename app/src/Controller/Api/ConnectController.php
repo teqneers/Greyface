@@ -35,9 +35,17 @@ class ConnectController
         $isAdmin = $currentUser instanceof UserInterface && $currentUser->isAdministrator();
 
         $user = $userRepository->findById($currentUser->getId());
+        $userFilter = $request->query->get('user');
         if ($isAdmin) {
-            $user = null;
+            if (!$userFilter) {
+                $user = null;
+            } else if ($userFilter === 'show_unassigned') {
+                $user = $userFilter;
+            } else {
+                $user = $userRepository->findById($userFilter);
+            }
         }
+
         $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;

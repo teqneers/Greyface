@@ -9,6 +9,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @template-extends ServiceEntityRepository<Connect>
@@ -42,7 +43,8 @@ class ConnectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAll(User $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    #[ArrayShape(['count' => "mixed", 'results' => "mixed"])]
+    public function findAll(User|string $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $count = null;
 
@@ -55,7 +57,7 @@ class ConnectRepository extends ServiceEntityRepository
             'firstSeen' => 'c.firstSeen'
         ];
 
-        $qb = $this->createDefaultQueryBuilder();
+        $qb = $this->createDefaultQueryBuilder($user);
 
         if ($query) {
             $qb = $qb->andWhere('c.name LIKE :query OR c.domain LIKE :query OR c.source LIKE :query OR c.rcpt LIKE :query OR u.username LIKE :query OR c.firstSeen LIKE :query')
@@ -89,7 +91,7 @@ class ConnectRepository extends ServiceEntityRepository
     }
 
     private
-    function createDefaultQueryBuilder(?User $user = null): QueryBuilder
+    function createDefaultQueryBuilder(User|string|null $user = null): QueryBuilder
     {
         $qb = $this->_em->createQueryBuilder()
             ->select('c as connect', 'ua.aliasName', 'u.username', 'u.id as userID')
@@ -98,8 +100,12 @@ class ConnectRepository extends ServiceEntityRepository
             ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
 
         if ($user) {
-            $qb = $qb->where('ua.user = :user')
-                ->setParameter('user', $user);
+            if ($user === 'show_unassigned') {
+                $qb = $qb->where('ua.user IS NULL');
+            } else {
+                $qb = $qb->where('ua.user = :user')
+                    ->setParameter('user', $user);
+            }
         }
 
         return $qb;

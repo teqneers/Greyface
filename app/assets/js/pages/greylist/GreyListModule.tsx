@@ -5,6 +5,7 @@ import {TableState} from 'react-table';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
+import UserFilter from '../../controllers/UserFilter';
 import {Greylist} from '../../types/greylist';
 import DeleteByDate from './DeleteByDate';
 import GreyListTable from './GreyListTable';
@@ -13,12 +14,12 @@ const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
 const GreyListModule: React.VFC = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [user, setUser] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
     const [tableState, setTableState] = useState(storage_table_state_key ?? {
         sortBy: [{id: 'username', desc: false}],
-        filters: [],
         pageSize: 10,
         pageIndex: 0
     });
@@ -36,16 +37,21 @@ const GreyListModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['greylist', tableState, searchQuery], () => {
+    } = useQuery(['greylist', tableState, searchQuery, user], () => {
 
         let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
+        }
+        if(user) {
+            url += `&user=${user}`;
         }
 
         return fetch(url).then((res) => res.json());
 
     }, {keepPreviousData: true});
+
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -56,6 +62,7 @@ const GreyListModule: React.VFC = () => {
 
             <ModuleTopBar title="greylist.header"
                           buttons={<DeleteByDate onDelete={refetch}/>}
+                          userFilter={<UserFilter user={user} setUser={setUser} filterFor="greylist"/>}
                           setSearchQuery={setSearchQuery}/>
 
                 {isError ? (

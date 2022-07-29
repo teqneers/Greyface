@@ -26,15 +26,23 @@ class UserAliasController
     #[IsGranted('USER_ALIAS_LIST')]
     public function list(
         Request             $request,
-        UserAliasRepository $userAliasRepository
+        UserAliasRepository $userAliasRepository,
+        UserRepository      $userRepository
     ): Response
     {
+
+        $user = null;
+        $userFilter = $request->query->get('user');
+        if ($userFilter) {
+            $user = $userRepository->findById($userFilter);
+        }
+
         $query = $request->query->get('query');
         $start = $request->query->get('start');
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $userAliases = $userAliasRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
+        $userAliases = $userAliasRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
         $data = [];
         if ($userAliases) {
             foreach ($userAliases as $alias) {

@@ -7,6 +7,7 @@ import ApplicationModuleContainer from '../../application/ApplicationModuleConta
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
+import UserFilter from '../../controllers/UserFilter';
 import {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
 import DeleteUserAlias from './DeleteUserAlias';
@@ -20,6 +21,7 @@ const UserAliasModule: React.VFC = () => {
     const {path, url} = useRouteMatch();
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [user, setUser] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -43,11 +45,16 @@ const UserAliasModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['users-aliases', tableState, searchQuery], () => {
+    } = useQuery(['users-aliases', tableState, searchQuery, user], () => {
 
         let url = `/api/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
+        }
+
+        if(user) {
+            url += `&user=${user}`;
         }
 
         return fetch(url).then((res) => res.json());
@@ -66,6 +73,7 @@ const UserAliasModule: React.VFC = () => {
                           buttons={<DefaultButton
                               label="button.createUserAlias"
                               onClick={() => history.push(`${url}/create`)}/>}
+                          userFilter={<UserFilter user={user} setUser={setUser}/>}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (
