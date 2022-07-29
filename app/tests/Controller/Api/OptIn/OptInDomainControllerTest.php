@@ -90,6 +90,54 @@ class OptInDomainControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testCreateMultipleOptInDomain(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-in/domains',
+            [
+                'domain' => [
+                    'testing.de',
+                    'testing.ca',
+                    'testing.in'
+                ]
+            ]
+        );
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testCreateMultipleOptInDomainDuplicateFailed(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $domain = self::createOptInDomain();
+
+        self::initializeDatabaseWithEntities($admin, $domain);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-in/domains',
+            [
+                'domain' => [
+                    'testing.de',
+                    'testing.ca',
+                    'testing.in',
+                    'optin.greyface.de'
+                ]
+            ]
+        );
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+
     public function testCreateOptInDomainDuplicateFailed(): void
     {
         $admin = self::createAdmin();

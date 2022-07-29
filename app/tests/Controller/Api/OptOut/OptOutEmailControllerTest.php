@@ -89,6 +89,50 @@ class OptOutEmailControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testCreateMultipleOptOutEmail(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-out/emails',
+            [
+                'email' => [
+                    'optout@email.de',
+                    'another-optout@test.de'
+                ]
+            ]
+        );
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testCreateMultipleOptOutEmailDuplicateFailed(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $email = self::createOptOutEmail();
+
+        self::initializeDatabaseWithEntities($admin, $email);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-out/emails',
+            [
+                'email' => [
+                    'optout@email.de',
+                    'demo@test.de'
+                ]
+            ]
+        );
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testCreateOptOutEmailDuplicateFailed(): void
     {
         $admin = self::createAdmin();

@@ -89,6 +89,51 @@ class OptOutDomainControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+    public function testCreateMultipleOptOutDomain(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-out/domains',
+            [
+                'domain' => [
+                    'testing.de',
+                    'testing.in'
+                ]
+            ]
+        );
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testCreateMultipleOptOutDomainDuplicateFailed(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $domain = self::createOptOutDomain();
+
+        self::initializeDatabaseWithEntities($admin, $domain);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-out/domains',
+            [
+                'domain' =>
+                    [
+                        'testing-demo.de',
+                        'optout.greyface.de'
+                    ]
+            ]
+        );
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testCreateOptOutDomainDuplicateFailed(): void
     {
         $admin = self::createAdmin();

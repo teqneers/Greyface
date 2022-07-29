@@ -123,12 +123,39 @@ class UserAliasControllerTest extends WebTestCase
             '/api/users-aliases',
             [
                 'user_id' => $admin->getId(),
-                'alias_name' => ['user@greyface.test', 'alias@greyface.de']
+                'alias_name' => [
+                    'user@greyface.test',
+                    'alias@greyface.de'
+                ]
             ]
         );
         self::assertResponseIsSuccessful();
     }
 
+    public function testCreateMultipleUserAliasWithDuplicateFailed(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $alias = self::createUserAlias($admin, 'alias1@example.de');
+
+        self::initializeDatabaseWithEntities($admin, $alias);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/users-aliases',
+            [
+                'user_id' => $admin->getId(),
+                'alias_name' => [
+                    'user@greyface.test',
+                    'alias1@example.de',
+                    'alias@greyface.de'
+                ]
+            ]
+        );
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 
     public function testUpdateUserAlias(): void
     {

@@ -90,6 +90,53 @@ class OptInEmailControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
+
+    public function testCreateMultipleOptInEmail(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-in/emails',
+            [
+                'email' => [
+                    'optin@email.de',
+                    'test@email.de'
+                ]
+            ]
+        );
+        self::assertResponseIsSuccessful();
+    }
+
+
+    public function testCreateMultipleOptInEmailDuplicateFailed(): void
+    {
+        $admin = self::createAdmin();
+        $client = self::createApiClient($admin);
+
+        $email = self::createOptInEmail();
+
+        self::initializeDatabaseWithEntities($admin, $email);
+
+        self::sendApiJsonRequest(
+            $client,
+            'POST',
+            '/api/opt-in/emails',
+            [
+                'email' =>
+                    [
+                        'optin@email.de',
+                        'test@email.de'
+                    ]
+            ]
+        );
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     public function testCreateOptInEmailDuplicateFailed(): void
     {
         $admin = self::createAdmin();
