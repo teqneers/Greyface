@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CellProps, Column, TableState} from 'react-table';
+import {usePermissions} from '../../application/usePermissions';
 
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
@@ -30,56 +31,68 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
     }) => {
 
     const {t} = useTranslation();
+    const {isAdministrator} = usePermissions();
 
-    const columns = useMemo<Column<Greylist>[]>(() => [{
-        Header: t('greylist.sender'),
-        id: 'name',
-        accessor: (originalRow) => originalRow.connect.name,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: t('greylist.domain'),
-        id: 'domain',
-        accessor: (originalRow) => originalRow.connect.domain,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: t('greylist.source'),
-        id: 'source',
-        accessor: (originalRow) => originalRow.connect.source,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: t('greylist.recipient'),
-        id: 'rcpt',
-        accessor: (originalRow) => originalRow.connect.rcpt,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: t('greylist.firstSeen'),
-        id: 'firstSeen',
-        accessor: (originalRow) => <DisplayDate date={originalRow.connect.firstSeen}
-                                                format={DATE_TIME_SECONDS_FORMAT}/>,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: t('greylist.username'),
-        id: 'username',
-        accessor: (originalRow) => originalRow.username,
-        canSort: true,
-        disableResizing: true
-    }, {
-        Header: '',
-        id: 'actions',
-        disableSortBy: true,
-        disableResizing: true,
-        Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
-            return <>
-                <MoveToWhiteList onMove={refetch} data={row}/>
-                <DeleteGreyList onDelete={refetch} data={row}/>
-            </>;
+    const columns = useMemo<Column<Greylist>[]>(() => {
+
+        const columns = [{
+            Header: t('greylist.sender'),
+            id: 'name',
+            accessor: (originalRow) => originalRow.connect.name,
+            canSort: true,
+            disableResizing: true
+        }, {
+            Header: t('greylist.domain'),
+            id: 'domain',
+            accessor: (originalRow) => originalRow.connect.domain,
+            canSort: true,
+            disableResizing: true
+        }, {
+            Header: t('greylist.source'),
+            id: 'source',
+            accessor: (originalRow) => originalRow.connect.source,
+            canSort: true,
+            disableResizing: true
+        }, {
+            Header: t('greylist.recipient'),
+            id: 'rcpt',
+            accessor: (originalRow) => originalRow.connect.rcpt,
+            canSort: true,
+            disableResizing: true
+        }, {
+            Header: t('greylist.firstSeen'),
+            id: 'firstSeen',
+            accessor: (originalRow) => <DisplayDate date={originalRow.connect.firstSeen}
+                                                    format={DATE_TIME_SECONDS_FORMAT}/>,
+            canSort: true,
+            disableResizing: true
+        }] as Column<Greylist>[];
+
+        if (isAdministrator()) {
+            columns.push({
+                Header: t('greylist.username'),
+                id: 'username',
+                accessor: (originalRow) => originalRow.username,
+                canSort: true,
+                disableResizing: true
+            } as Column<Greylist>);
         }
-    }], [t, refetch]);
+
+        columns.push({
+            Header: '',
+            id: 'actions',
+            disableSortBy: true,
+            disableResizing: true,
+            Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {
+                return <>
+                    <MoveToWhiteList onMove={refetch} data={row}/>
+                    <DeleteGreyList onDelete={refetch} data={row}/>
+                </>;
+            }
+        } as Column<Greylist>);
+
+        return columns;
+    }, [t, refetch, isAdministrator]);
 
     if (isFetching) {
         return <LoadingIndicator/>;
