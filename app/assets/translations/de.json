@@ -42,7 +42,8 @@
         },
         "errors": {
             "required": "Dieses Feld muss ausgefüllt werden!",
-            "unique": "Data must be unique!"
+            "unique": "Daten müssen eindeutig sein!",
+            "min": "Muss mindestens {{ min }} Zeichen lang sein"
         },
         "paging": {
             "previous": "Vorherige",
@@ -87,6 +88,7 @@
             "email": "E-Mail-Adresse",
             "role": "Rolle",
             "password": "Passwort",
+            "passwordRetype": "Passwort wiederholen",
             "createdAt": "Zugewiesen am",
             "roles": {
                 "admin": "Administrator",
