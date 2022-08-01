@@ -14,7 +14,7 @@ import EditUser from './EditUser';
 import SetPassword from './SetPassword';
 import UsersTable from './UsersTable';
 
-const TABLE_STATE_STORAGE_KEY = 'users.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.users';
 
 const UserModule = () => {
     const history = useHistory();

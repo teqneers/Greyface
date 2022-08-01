@@ -189,7 +189,7 @@ function Table<D extends object>(
                             onChange={e => {
                                 setPageSize(Number(e.target.value));
                             }}>
-                            {[5, 10, 15, 20, 25, 30, 40, 50].map(pageSize => (
+                            {[10, 15, 20, 25, 30, 50].map(pageSize => (
                                 <option key={pageSize} value={pageSize}>
                                     Show {pageSize}
                                 </option>

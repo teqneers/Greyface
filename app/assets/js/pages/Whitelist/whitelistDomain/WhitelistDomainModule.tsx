@@ -11,7 +11,7 @@ import {UserAlias} from '../../../types/user';
 import AddDomain from './AddDomain';
 import WhitelistDomainTable from './WhitelistDomainTable';
 
-const TABLE_STATE_STORAGE_KEY = 'whitelistDomain.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.whitelistDomain';
 
 const WhitelistDomainModule: React.VFC = () => {
 

@@ -11,7 +11,7 @@ import {UserAlias} from '../../../types/user';
 import AddEmail from './AddEmail';
 import BlacklistEmailTable from './BlacklistEmailTable';
 
-const TABLE_STATE_STORAGE_KEY = 'blacklistEmail.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.blacklistEmail';
 
 const BlacklistEmailModule: React.VFC = () => {
 

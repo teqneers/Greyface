@@ -11,7 +11,7 @@ import {UserAlias} from '../../../types/user';
 import AddDomain from './AddDomain';
 import AutoWhitelistDomainTable from './AutoWhitelistDomainTable';
 
-const TABLE_STATE_STORAGE_KEY = 'autoWhitelistDomain.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.autoWhitelistDomain';
 
 const AutoDomainModule: React.VFC = () => {
 

@@ -11,7 +11,7 @@ import {UserAlias} from '../../../types/user';
 import AddDomain from './AddDomain';
 import BlacklistDomainTable from './BlacklistDomainTable';
 
-const TABLE_STATE_STORAGE_KEY = 'blacklistDomain.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.blacklistDomain';
 
 const BlacklistDomainModule: React.VFC = () => {
 

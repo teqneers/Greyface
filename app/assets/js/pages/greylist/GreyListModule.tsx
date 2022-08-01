@@ -11,7 +11,7 @@ import {Greylist} from '../../types/greylist';
 import DeleteByDate from './DeleteByDate';
 import GreyListTable from './GreyListTable';
 
-const TABLE_STATE_STORAGE_KEY = 'greylist.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greylist.table';
 const GreyListModule: React.VFC = () => {
 
     const {isAdministrator} = usePermissions();

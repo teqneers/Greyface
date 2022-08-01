@@ -14,7 +14,7 @@ import DeleteUserAlias from './DeleteUserAlias';
 import EditUserAlias from './EditUserAlias';
 import UserAliasTable from './UserAliasTable';
 
-const TABLE_STATE_STORAGE_KEY = 'useralias.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.useralias';
 const UserAliasModule: React.VFC = () => {
 
     const history = useHistory();

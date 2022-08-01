@@ -11,7 +11,7 @@ import {UserAlias} from '../../../types/user';
 import AddEmail from './AddEmail';
 import AutoWhitelistEmailTable from './AutoWhitelistEmailTable';
 
-const TABLE_STATE_STORAGE_KEY = 'autoWhitelistEmail.table.state';
+const TABLE_STATE_STORAGE_KEY = 'greyface.autoWhitelistEmail';
 
 const AutoEmailModule: React.VFC = () => {
 
