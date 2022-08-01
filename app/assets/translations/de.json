@@ -43,7 +43,8 @@
         "errors": {
             "required": "Dieses Feld muss ausgefüllt werden!",
             "unique": "Daten müssen eindeutig sein!",
-            "min": "Muss mindestens {{ min }} Zeichen lang sein"
+            "min": "Muss mindestens {{ min }} Zeichen lang sein",
+            "passNotMatch": "Passwort stimmt nicht überein"
         },
         "paging": {
             "previous": "Vorherige",

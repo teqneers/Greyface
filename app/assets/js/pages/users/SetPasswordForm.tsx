@@ -28,9 +28,9 @@ function Schema(t: TFunction): yup.AnySchema {
                     .max(128),
                 passwordConfirmation: yup.string()
                     .required()
-                    .when("password", {
+                    .when('password', {
                         is: password => (password && password.length > 0),
-                        then: yup.string().oneOf([yup.ref("password")], "Password doesn't match")
+                        then: yup.string().oneOf([yup.ref('password')], t('errors.passNotMatch'))
                     })
             }
         );

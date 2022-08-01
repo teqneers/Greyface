@@ -43,7 +43,8 @@
         "errors": {
             "required": "This field is required!",
             "unique": "Data must be unique!",
-            "min": "Must be at least {{ min }} characters"
+            "min": "Must be at least {{ min }} characters",
+            "passNotMatch": "Password does not match"
         },
         "paging": {
             "previous": "Previous",
