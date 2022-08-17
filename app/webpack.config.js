@@ -6,11 +6,13 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
+const publicPath = process.env.PUBLIC_PATH || '/build';
+
 Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
-    .setPublicPath('/build')
+    .setPublicPath(publicPath)
     // only needed for CDN's or sub-directory deploy
     //.setManifestKeyPrefix('build/')
 
