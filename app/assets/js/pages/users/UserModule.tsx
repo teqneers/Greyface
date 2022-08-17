@@ -3,6 +3,7 @@ import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
+import {useApplication} from '../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
@@ -18,6 +19,7 @@ const TABLE_STATE_STORAGE_KEY = 'greyface.users';
 
 const UserModule = () => {
     const history = useHistory();
+    const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -46,7 +48,7 @@ const UserModule = () => {
         refetch
     } = useQuery(['users', tableState, searchQuery], () => {
 
-        let url = `/api/users?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/users?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

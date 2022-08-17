@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
-import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 
+import {useApplication} from '../../../application/ApplicationContext';
+import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
 import {BlackListEmail} from '../../../types/greylist';
 import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
@@ -15,12 +16,13 @@ interface EditEmailProps {
 
 const EditEmail = ({onUpdate, data}: EditEmailProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const editRecord = useMutation(async (values: EmailRequest) => {
-        return await fetch('/api/opt-out/emails/edit', {
+        return await fetch(`${apiUrl}/opt-out/emails/edit`, {
             method: 'PUT',
             body: JSON.stringify({
                 'dynamicID': {

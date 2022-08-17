@@ -4,6 +4,7 @@ import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
+import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
@@ -14,8 +15,8 @@ import WhitelistDomainTable from './WhitelistDomainTable';
 const TABLE_STATE_STORAGE_KEY = 'greyface.whitelistDomain';
 
 const WhitelistDomainModule: React.VFC = () => {
-
     const history = useHistory();
+    const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -43,7 +44,7 @@ const WhitelistDomainModule: React.VFC = () => {
         refetch
     } = useQuery(['opt-in', 'domains', tableState, searchQuery], () => {
 
-        let url = `/api/opt-in/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/opt-in/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

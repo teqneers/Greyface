@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
 import {useRouteMatch} from 'react-router-dom';
 
+import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 
 interface UserDetailProps {
@@ -12,10 +13,11 @@ interface UserDetailProps {
 
 const UserDetail: React.VFC<UserDetailProps> = ({onBack}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();
 
     const {data, isLoading} = useQuery(['users', id], () => {
-        return fetch('/api/users/' + id)
+        return fetch(`${apiUrl}/users/${id}`)
             .then((res) => res.json());
     });
 

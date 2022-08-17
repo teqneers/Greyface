@@ -3,6 +3,7 @@ import {useRouteMatch} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 
+import {useApplication} from '../../application/ApplicationContext';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 
 interface DeleteUserAliasProps {
@@ -12,10 +13,11 @@ interface DeleteUserAliasProps {
 
 const DeleteUserAlias: React.VFC<DeleteUserAliasProps> = ({onCancel, onDelete}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();
     const queryClient = useQueryClient();
     const deleteUserAlias = useMutation(
-        () => fetch(`/api/users-aliases/${id}`, {
+        () => fetch(`${apiUrl}/users-aliases/${id}`, {
             method: 'DELETE'
         }).then(async response => {
             const data = await response.json();

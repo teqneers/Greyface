@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useRouteMatch} from 'react-router-dom';
 
+import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModalForm from '../../controllers/ModalForm';
 
@@ -17,18 +18,19 @@ interface EditUserProps {
 const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const queryClient = useQueryClient();
 
     const {params: {id}} = useRouteMatch<{ id: string }>();
 
     const {data, isLoading} = useQuery(['users', id], () => {
-        return fetch(`/api/users/${id}`)
+        return fetch(`${apiUrl}/users/${id}`)
             .then((res) => res.json());
     });
 
 
     const updateUser = useMutation(async (values: UpdateUserRequest) => {
-        return await fetch(`/api/users/${id}`, {
+        return await fetch(`${apiUrl}/users/${id}`, {
             method: 'PUT',
             body: JSON.stringify(values)
         }).then(function (response) {

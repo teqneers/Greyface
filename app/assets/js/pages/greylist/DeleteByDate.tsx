@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 import DatePicker from 'react-datepicker';
 
+import {useApplication} from '../../application/ApplicationContext';
 import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 import {DATE_FORMAT} from '../../types/common';
@@ -15,11 +16,12 @@ interface DeleteByDateProps {
 
 const DeleteByDate = ({onDelete}: DeleteByDateProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (values: { date: string }) => fetch('/api/greylist/delete-to-date', {
+        (values: { date: string }) => fetch(`${apiUrl}/greylist/delete-to-date`, {
             method: 'DELETE',
             body: JSON.stringify(values)
         }).then(async response => {

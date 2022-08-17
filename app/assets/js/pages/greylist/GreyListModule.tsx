@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useQuery} from 'react-query';
 import {TableState} from 'react-table';
 
+import {useApplication} from '../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
 import {usePermissions} from '../../application/usePermissions';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
@@ -13,6 +14,8 @@ import GreyListTable from './GreyListTable';
 
 const TABLE_STATE_STORAGE_KEY = 'greylist.table';
 const GreyListModule: React.VFC = () => {
+
+    const {apiUrl} = useApplication();
 
     const {isAdministrator} = usePermissions();
 
@@ -42,7 +45,7 @@ const GreyListModule: React.VFC = () => {
         refetch
     } = useQuery(['greylist', tableState, searchQuery, user], () => {
 
-        let url = `/api/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
 
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;

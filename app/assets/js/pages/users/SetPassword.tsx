@@ -15,6 +15,7 @@ interface SetPasswordProps {
 
 const SetPassword: React.VFC<SetPasswordProps> = ({onCancel, onUpdate}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const {user, logoutUrl} = useApplication();
     const queryClient = useQueryClient();
 
@@ -23,7 +24,7 @@ const SetPassword: React.VFC<SetPasswordProps> = ({onCancel, onUpdate}) => {
     const {params: {id}} = useRouteMatch<{ id: string }>();
 
     const setPassword = useMutation(async (values: SetPasswordRequest) => {
-        return await fetch(`/api/users/${id}/password`, {
+        return await fetch(`${apiUrl}/users/${id}/password`, {
             method: 'PUT',
             body: JSON.stringify(values)
         }).then(function (response) {
@@ -59,7 +60,8 @@ const SetPassword: React.VFC<SetPasswordProps> = ({onCancel, onUpdate}) => {
 
             <SetPasswordForm<SetPasswordValues, SetPasswordRequest>
                 initialValues={{
-                    password: ''
+                    password: '',
+                    passwordConfirmation: ''
                 }}
                 onSubmit={setPassword}
                 onCancel={onCancel}

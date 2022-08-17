@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
 import {AutoWhiteListEmail} from '../../../types/greylist';
@@ -13,11 +14,12 @@ interface DeleteEmailProps {
 
 const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: AutoWhiteListEmail) => fetch('/api/awl/emails/delete', {
+        (data: AutoWhiteListEmail) => fetch(`${apiUrl}/awl/emails/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'name': data.name,

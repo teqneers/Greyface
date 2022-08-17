@@ -3,6 +3,7 @@ import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 
+import {useApplication} from '../../application/ApplicationContext';
 import ModalForm from '../../controllers/ModalForm';
 import UserForm, {CreateUserRequest, CreateUserValues} from './UserForm';
 
@@ -14,9 +15,10 @@ interface CreateUserProps {
 const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const queryClient = useQueryClient();
     const createUser = useMutation(async (values: CreateUserRequest) => {
-        return await fetch('/api/users', {
+        return await fetch(`${apiUrl}/users`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
+import {useApplication} from '../../application/ApplicationContext';
 import CancelButton from '../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../controllers/Buttons/SubmitButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
@@ -72,9 +73,10 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
     }: UserAliasFromProps<TValues, TData, any, any>
 ): React.ReactElement {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const {data: users, isLoading: usersLoading} = useQuery(['users'], () => {
-        return fetch('/api/users')
+        return fetch(`${apiUrl}/users`)
             .then((res) => res.json());
     }, {keepPreviousData: true});
 

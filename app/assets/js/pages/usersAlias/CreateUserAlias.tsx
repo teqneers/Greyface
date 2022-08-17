@@ -14,10 +14,11 @@ interface CreateUserAliasProps {
 
 const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) => {
     const {user} = useApplication();
+    const {apiUrl} = useApplication();
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const createUserAlias = useMutation(async (values: UserAliasRequest) => {
-        return await fetch('/api/users-aliases', {
+        return await fetch(`${apiUrl}/users-aliases`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

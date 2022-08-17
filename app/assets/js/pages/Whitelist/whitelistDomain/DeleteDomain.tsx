@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
 import {WhiteListDomain} from '../../../types/greylist';
@@ -13,11 +14,12 @@ interface DeleteDomainProps {
 
 const DeleteDomain = ({onDelete, data}: DeleteDomainProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: WhiteListDomain) => fetch('/api/opt-in/domains/delete', {
+        (data: WhiteListDomain) => fetch(`${apiUrl}/opt-in/domains/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'domain': data.domain

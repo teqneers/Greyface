@@ -3,6 +3,7 @@ import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
@@ -16,6 +17,7 @@ const TABLE_STATE_STORAGE_KEY = 'greyface.blacklistDomain';
 const BlacklistDomainModule: React.VFC = () => {
 
     const history = useHistory();
+    const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -43,7 +45,7 @@ const BlacklistDomainModule: React.VFC = () => {
         refetch
     } = useQuery(['opt-out', 'domains', tableState, searchQuery], () => {
 
-        let url = `/api/opt-out/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/opt-out/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

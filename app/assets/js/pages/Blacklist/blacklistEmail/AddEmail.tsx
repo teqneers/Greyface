@@ -3,6 +3,7 @@ import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
 import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
 
@@ -14,8 +15,9 @@ interface AddEmailProps {
 const AddEmail: React.VFC<AddEmailProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const createEmails = useMutation(async (values: EmailRequest) => {
-        return await fetch('/api/opt-out/emails', {
+        return await fetch(`${apiUrl}/opt-out/emails`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

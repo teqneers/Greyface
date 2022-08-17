@@ -3,6 +3,7 @@ import {useRouteMatch} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from 'react-query';
 
+import {useApplication} from '../../application/ApplicationContext';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 
 interface DeleteUserProps {
@@ -12,10 +13,11 @@ interface DeleteUserProps {
 
 const DeleteUser: React.VFC<DeleteUserProps> = ({onCancel, onDelete}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();
     const queryClient = useQueryClient();
     const deleteUser = useMutation(
-        () => fetch(`/api/users/${id}`, {
+        () => fetch(`${apiUrl}/users/${id}`, {
             method: 'DELETE'
         }).then(async response => {
             const data = await response.json();

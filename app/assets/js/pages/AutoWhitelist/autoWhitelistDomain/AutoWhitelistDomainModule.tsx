@@ -3,6 +3,7 @@ import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
@@ -14,7 +15,7 @@ import AutoWhitelistDomainTable from './AutoWhitelistDomainTable';
 const TABLE_STATE_STORAGE_KEY = 'greyface.autoWhitelistDomain';
 
 const AutoDomainModule: React.VFC = () => {
-
+    const {apiUrl} = useApplication();
     const history = useHistory();
     const {path, url} = useRouteMatch();
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,7 +44,7 @@ const AutoDomainModule: React.VFC = () => {
         refetch
     } = useQuery(['awl', 'domains', tableState, searchQuery], () => {
 
-        let url = `/api/awl/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/awl/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

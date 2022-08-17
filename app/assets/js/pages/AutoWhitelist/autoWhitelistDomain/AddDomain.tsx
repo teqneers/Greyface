@@ -3,6 +3,7 @@ import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
 import FormDomain , {DomainRequest, DomainValues} from './FormDomain';
 
@@ -14,8 +15,9 @@ interface AddDomainProps {
 const AddDomain: React.VFC<AddDomainProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const createEmails = useMutation(async (values: DomainRequest) => {
-        return await fetch('/api/awl/domains', {
+        return await fetch(`${apiUrl}/awl/domains`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

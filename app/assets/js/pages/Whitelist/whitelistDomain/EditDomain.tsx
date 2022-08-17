@@ -3,6 +3,7 @@ import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
 import {WhiteListDomain} from '../../../types/greylist';
@@ -15,12 +16,13 @@ interface EditDomainProps {
 
 const EditDomain = ({onUpdate, data}: EditDomainProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const editRecord = useMutation(async (values: DomainRequest) => {
-        return await fetch('/api/opt-in/domains/edit', {
+        return await fetch(`${apiUrl}/opt-in/domains/edit`, {
             method: 'PUT',
             body: JSON.stringify({
                 'dynamicID': {

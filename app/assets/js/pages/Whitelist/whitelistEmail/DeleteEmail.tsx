@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../../application/ApplicationContext';
 import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
 import {WhiteListEmail} from '../../../types/greylist';
@@ -13,11 +14,12 @@ interface DeleteEmailProps {
 
 const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: WhiteListEmail) => fetch('/api/opt-in/emails/delete', {
+        (data: WhiteListEmail) => fetch(`${apiUrl}/opt-in/emails/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'email': data.email

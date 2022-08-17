@@ -32,6 +32,11 @@ class LocalLoginAuthenticator extends AbstractLoginFormAuthenticator
     ) {
     }
 
+    public function supports(Request $request): bool
+    {
+        return parent::supports($request) || ($request->isMethod('POST') && $this->getLoginUrl($request) === $request->getBaseUrl() . $request->getPathInfo());
+    }
+
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate('login');

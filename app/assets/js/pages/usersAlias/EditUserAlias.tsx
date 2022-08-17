@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {useRouteMatch} from 'react-router-dom';
 
+import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModalForm from '../../controllers/ModalForm';
 import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm';
@@ -15,6 +16,7 @@ interface EditUserAliasProps {
 
 const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
     const queryClient = useQueryClient();
 
     const [error, setError] = useState<string | null>(null);
@@ -22,13 +24,13 @@ const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
     const {params: {id}} = useRouteMatch<{ id: string }>();
 
     const {data, isLoading} = useQuery(['users', id], () => {
-        return fetch(`/api/users-aliases/${id}`)
+        return fetch(`${apiUrl}/users-aliases/${id}`)
             .then((res) => res.json());
     });
 
 
     const updateUser = useMutation(async (values: UserAliasRequest) => {
-        return await fetch(`/api/users-aliases/${id}`, {
+        return await fetch(`${apiUrl}/users-aliases/${id}`, {
             method: 'PUT',
             body: JSON.stringify(values)
         }).then(function (response) {

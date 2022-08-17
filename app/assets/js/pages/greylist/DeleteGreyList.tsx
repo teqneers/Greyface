@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation} from 'react-query';
 
+import {useApplication} from '../../application/ApplicationContext';
 import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
 import {Greylist} from '../../types/greylist';
@@ -13,11 +14,12 @@ interface DeleteGreyListProps {
 
 const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: Greylist) => fetch('/api/greylist/delete', {
+        (data: Greylist) => fetch(`${apiUrl}/greylist/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'name': data.connect.name,
