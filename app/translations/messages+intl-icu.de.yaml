@@ -12,7 +12,7 @@ login.forgot_password: Passwort vergessen?
 
 change_password.title: Passwort ändern
 change_password.header: Passwort ändern
-change_password.intro: Passwort ändern
+change_password.intro: Bitte ändern Sie Ihr Passwort.
 change_password.form.username: Username
 change_password.form.current_password: Aktuelles Passwort
 change_password.form.new_password: Neues Passwort
@@ -21,5 +21,5 @@ change_password.submit: Passwort ändern
 change_password.success.title: Passwort geändert
 change_password.success.header: Passwort geändert
 change_password.success.text: >
-  Ihr Passwort wurde erfolgreich geändert. Bitte melden Sie sich mit dem neuen Passwort erneut an.
-change_password.success.button: Weiter zur Anmeldung
+  Ihr Passwort wurde erfolgreich geändert.
+change_password.success.button: Weiter zur Bewerbung

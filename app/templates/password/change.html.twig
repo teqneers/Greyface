@@ -18,12 +18,12 @@
 
     {{ form_rest(form) }}
 
-    <div class="form-group mt-2">
-        <button type="submit" class="btn btn-success">
-            <span>{% trans %}change_password.submit{% endtrans %}</span>
-        </button>
-        <button class="btn btn-light" onclick="window.location.href='{{ path('app') }}'">
+    <div class="form-group mt-3 text-center">
+        <button class="btn btn-outline-dark" onclick="window.location.href='{{ path('app') }}'">
             <span>{% trans %}cancel{% endtrans %}</span>
+        </button>
+        <button type="submit" class="btn btn-outline-primary">
+            <span>{% trans %}change_password.submit{% endtrans %}</span>
         </button>
     </div>
 

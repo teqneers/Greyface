@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\Command\ChangePassword;
 use App\Domain\User\Form\ChangePasswordType;
+use App\Domain\User\UserInterface as DomainUserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +44,7 @@ class PasswordController extends AbstractController
             $request->getSession()
                 ->migrate(true);
             return $this->redirectToRoute('change_password_success');
+
         }
 
         return $this->render(
