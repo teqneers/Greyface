@@ -70,6 +70,7 @@ The latest version of Greyface can be found on https://github.com/teqneers/Greyf
 ## Technical Requirements
 1. Install PHP 8.1 or higher
 2. Install Composer
+3. Install Yarn
 
 ## Setup
 
@@ -84,7 +85,11 @@ download and install sqlgrey in a php/mysql environment!
 ### 1. Clone project
 `git clone https://github.com/teqneers/Greyface.git`
 
-`cd Greyface`
+`cd Greyface/app`
+
+`yarn install`
+
+`yarn start`
 
 ### 2. dotenv configurations
 Create a `.env.local` next to `.env` and set
