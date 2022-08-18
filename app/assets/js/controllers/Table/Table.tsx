@@ -94,6 +94,7 @@ function Table<D extends object>(
     } = useTable<D>(
         {
             ...rest,
+            manualSortBy: true,
             manualPagination: true,
             pageCount: controlledPageCount,
             // eslint-disable-next-line react-hooks/exhaustive-deps
