@@ -2,6 +2,8 @@ import React from 'react';
 import {Form} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 import {useQuery} from 'react-query';
+
+import {useApplication} from '../application/ApplicationContext';
 import LoadingIndicator from './LoadingIndicator';
 
 interface UserFilterProps {
@@ -12,9 +14,10 @@ interface UserFilterProps {
 
 const UserFilter: React.FC<UserFilterProps> = ({user, setUser, filterFor = 'userAlias'}) => {
     const {t} = useTranslation();
+    const {apiUrl} = useApplication();
 
     const {data: users, isLoading: usersLoading} = useQuery(['users'], () => {
-        return fetch('/api/users')
+        return fetch(`${apiUrl}/users2`)
             .then((res) => res.json());
     }, {keepPreviousData: true});
 
@@ -31,7 +34,7 @@ const UserFilter: React.FC<UserFilterProps> = ({user, setUser, filterFor = 'user
                 onChange={(v) => setUser(v.target.value)}>
                 <option value="">{t('placeholder.showAll')}</option>
                 {filterFor === 'greylist' && <option value="show_unassigned">{t('placeholder.showUnassigned')}</option>}
-                {users.results.map((u) => {
+                {users && users.results && users.results.map((u) => {
                     return (
                         <option key={u.id} value={u.id}>{u.username}</option>
                     );
