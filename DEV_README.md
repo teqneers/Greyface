@@ -68,9 +68,9 @@ INTERESTED?
 The latest version of Greyface can be found on https://github.com/teqneers/Greyface
 
 ## Technical Requirements
-1. PHP 8.1 or higher
-2. Composer
-3. Yarn
+1. Install PHP 8.1 or higher
+2. Install Composer
+3. Install Yarn
 
 ## Setup
 
@@ -89,14 +89,14 @@ download and install sqlgrey in a php/mysql environment!
 
 `yarn install`
 
-`yarn build`
+`yarn start`
 
 ### 2. dotenv configurations
 Create a `.env.local` next to `.env` and set
 your configuration variables there, e.g.:
 
 ```dotenv
-APP_ENV=prod
+APP_ENV=dev
 APP_SECRET=<<the application secret>> # http://nux.net/secret
 DATABASE_URL=DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
 ```
@@ -117,6 +117,6 @@ Finally run the database updates using \
 We have created a new admin user **(usr:admin, pwd: admin)**, Please use this to login.
 Do not forget to change the password after installation!
 
-### 5. Web server configurations
-Please follow the below document link to configure your web server. \
-https://symfony.com/doc/current/setup/web_server_configuration.html
+### 5. Start server
+
+`php bin/console server:start`
