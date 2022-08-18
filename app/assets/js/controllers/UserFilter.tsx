@@ -17,7 +17,7 @@ const UserFilter: React.FC<UserFilterProps> = ({user, setUser, filterFor = 'user
     const {apiUrl} = useApplication();
 
     const {data: users, isLoading: usersLoading} = useQuery(['users'], () => {
-        return fetch(`${apiUrl}/users2`)
+        return fetch(`${apiUrl}/users`)
             .then((res) => res.json());
     }, {keepPreviousData: true});
 
