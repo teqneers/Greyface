@@ -39,7 +39,7 @@ const ApplicationContainer: React.FC = ({children}) => {
                         <NavDropdown
                             title={<><img
                                 src={require(`../../images/language/${flag}.png`)}
-                                className="d-inline-block m-1" alt={flag}/>
+                                className="d-inline-block" alt={flag}/>
                                 {t(`locale.${locale.replace('-', '_')}`)}</>}>
 
                             {Object.entries(SettingsLocale).map(([key, value]) => {
