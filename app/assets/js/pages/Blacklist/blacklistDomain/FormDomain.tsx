@@ -115,7 +115,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                                                             isInvalid={(errors.domain instanceof Array) ? !!errors.domain?.[index] : !!errors.domain}>
                                                         </Form.Control>
 
-                                                        {createMode && <Button variant="outline-warning"
+                                                        {createMode && fieldsCount > 1 && <Button variant="outline-warning"
                                                                                onClick={() => arrayHelpers.remove(index)}>X
                                                         </Button>}
 

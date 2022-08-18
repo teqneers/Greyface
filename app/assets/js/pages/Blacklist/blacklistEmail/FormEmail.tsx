@@ -115,7 +115,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
                                                             isInvalid={(errors.email instanceof Array) ? !!errors.email?.[index] : !!errors.email}>
                                                         </Form.Control>
 
-                                                        {createMode && <Button variant="outline-warning"
+                                                        {createMode && fieldsCount > 1 && <Button variant="outline-warning"
                                                                                onClick={() => arrayHelpers.remove(index)}>X
                                                         </Button>}
 

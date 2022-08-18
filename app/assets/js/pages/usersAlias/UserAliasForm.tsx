@@ -152,7 +152,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                             isInvalid={(errors.alias_name instanceof Array) ? !!errors.alias_name?.[index] : !!errors.alias_name}>
                                                         </Form.Control>
 
-                                                        {createMode && <Button variant="outline-warning"
+                                                        {createMode && fieldsCount > 1 && <Button variant="outline-warning"
                                                                                onClick={() => arrayHelpers.remove(index)}>X
                                                         </Button>}
 
