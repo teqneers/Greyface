@@ -17,7 +17,7 @@ trait UsersMigrationHelper
     /**
      * @param array $user
      */
-    private function addUser(array $user, $passHasher): void
+    private function addUser(array $user, $passHasher, $needToHash = true): void
     {
         $hashedPass = $passHasher->getPasswordHasher(UserInterface::class)->hash($user['password'] ?? 'admin');
 
@@ -32,7 +32,7 @@ SQL
                 'username' => $user['username'],
                 'email' => $user['email'],
                 'role' => $user['is_admin'] === 1 ? User::ROLE_ADMIN : User::ROLE_USER,
-                'password' => $hashedPass,
+                'password' => $needToHash ? $hashedPass : $user['password'],
                 'now' => new DateTimeImmutable('now'),
                 'deleted_at' => isset($user['is_deleted']) ? new DateTimeImmutable('now') : null,
             ],
@@ -51,10 +51,10 @@ SQL
     /**
      * @param array $users
      */
-    private function addUsers(array $users, $passHasher): void
+    private function addUsers(array $users, $passHasher, $needToHash = true): void
     {
         foreach ($users as $user) {
-            $this->addUser($user, $passHasher);
+            $this->addUser($user, $passHasher, $needToHash);
         }
     }
 

@@ -16,7 +16,7 @@ if (!class_exists(Dotenv::class)) {
 $appPath = dirname(__DIR__, 2);
 $_SERVER['APP_PATH'] = $appPath;
 
-(new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
+(new Dotenv())->bootEnv($appPath . '/.env');
 
 function bootstrapDatabase()
 {
