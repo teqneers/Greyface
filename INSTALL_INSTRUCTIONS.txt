@@ -24,18 +24,7 @@
     The second one adds creates a new admin user (usr:admin, pwd: admin). 
     Do not forget to change the password after installation!
 
-6. Make a copy of /Greyface/greyface_template.ini and name it /Greyface/greyface.ini
-7. Enter the data in the .ini file to configure Greyface:
-
-            [mySQLData]
-            hostname = localhost     <- the url to your mysql database with the sqlgrey table
-            username = user          <- username to login to the database
-            password = xxxx          <- the password which the given user will use to connect to mysql
-            dbName = greyface        <- the database name of sqlgrey
-
-            [application]
-            logging = true|false     <- defines if the error logging to /Greyface/log/greyface.log should be activated
-            displayErrors = true     <- defines if errors will be shown in the returne JSON objects which the server will send back
-
+6. Make a copy of .env file and name it .env.local
+    Set the DATABASE_URL to the database URL.
 
 That's it, enjoy!

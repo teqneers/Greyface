@@ -1,14 +1,14 @@
 GREYFACE
 ========
 
-Greyface is an open source AJAX based web interface to SQLGrey, a greylisting policy daemon for the Postfix MTA.
+Greyface is an open source React based web interface to SQLGrey, a greylisting policy daemon for the Postfix MTA.
 View and manipulate live greylisting data through an easy-to-use interface or submit new greylisting data.
 
 Greyface is an open source web application developed by TEQneers, which interacts with SQLGrey and Postfix and
 out-of-box. It builds on the greylisting approach and helps users and system administrators in managing their e-mails.
 
 The old Greyface version 1 can still be found here: http://sourceforge.net/projects/greyface/
-The new version is a complete refactoring of the old version and uses now ExtJs 4.2 instead 3.0.
+The new version is a complete refactoring of the old version and uses Symfony and React.
 
 
 THE APPROACH
@@ -57,8 +57,8 @@ whitelist.
 
 TECHNICAL REALIZATION
 =====================
-Greyface is written in PHP 5, offering a connection to the supplied database of SQLGrey.
-The use of the latest web technologies using the ExtJs framework 4.2, increases usability and makes it fit for
+Greyface is written in Symfony 6.1 and PHP 8.1, offering a connection to the supplied database of SQLGrey.
+The use of the latest web technologies using the React framework 17.0.2, increases usability and makes it fit for
 the future.
 
 
@@ -66,4 +66,52 @@ the future.
 INTERESTED?
 ===========
 The latest version of Greyface can be found on https://github.com/teqneers/Greyface
-For more information about installing GREYFACE on your system, read the install.txt
+
+## Technical Requirements
+1. Install PHP 8.1 or higher
+2. Install Composer
+
+## Setup
+
+### 0. Prerequisites
+Greyface is a Symfony and mysql based admin tool on top of sqlgrey. Due to this fact it is required that you
+download and install sqlgrey in a php/mysql environment!
+
+0.1 Download and install sqlgrey from http://sqlgrey.sourceforge.net/ \
+0.2 Provide a mySQL installation and combine it with sqlgrey.
+
+
+### 1. Clone project
+`git clone https://github.com/teqneers/Greyface.git`
+
+`cd Greyface`
+
+### 2. dotenv configurations
+Create a `.env.local` next to `.env` and set
+your configuration variables there, e.g.:
+
+```dotenv
+APP_ENV=dev
+APP_SECRET=<<the application secret>> # http://nux.net/secret
+DATABASE_URL=DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+```
+
+Set the `DATABASE_URL` to the database URL where the backend database is located.
+
+Ensure that both `/cache` and `/log` are writable by the console user and the php processes.
+
+### 3. Install Symfony dependencies
+Inside the Greyface folder run the below command to install the dependencies 
+
+`composer install`
+
+### 4. Database migrations
+Finally run the database updates using
+`php bin/console doctrine:migrations:migrate` 
+
+We have created a new admin user **(usr:admin, pwd: admin)**, Please use this to login.
+Do not forget to change the password after installation!
+
+### 5. Start the server
+
+`php bin/console server:run` 
