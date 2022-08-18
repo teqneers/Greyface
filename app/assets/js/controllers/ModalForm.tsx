@@ -16,7 +16,7 @@ const ModalForm: React.FC<ModalProps> = (
     const {t} = useTranslation();
 
     return (
-        <Modal show={show} onHide={() => onHide()}>
+        <Modal show={show} onHide={() => onHide()} backdrop="static">
             <Modal.Header closeButton>
                 <Modal.Title>{t(title)}</Modal.Title>
             </Modal.Header>
