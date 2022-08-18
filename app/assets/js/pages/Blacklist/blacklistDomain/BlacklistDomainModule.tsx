@@ -43,9 +43,9 @@ const BlacklistDomainModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-out', 'domains', tableState, searchQuery], () => {
+    } = useQuery(['opt-in', 'domains', tableState, searchQuery], () => {
 
-        let url = `${apiUrl}/opt-out/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/opt-in/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

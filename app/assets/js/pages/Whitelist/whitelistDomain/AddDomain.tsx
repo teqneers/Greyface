@@ -17,7 +17,7 @@ const AddDomain: React.VFC<AddDomainProps> = ({onCancel, onCreate}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const createEmails = useMutation(async (values: DomainRequest) => {
-        return await fetch(`${apiUrl}/opt-in/domains`, {
+        return await fetch(`${apiUrl}/opt-out/domains`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

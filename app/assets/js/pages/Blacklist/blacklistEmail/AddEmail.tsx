@@ -17,7 +17,7 @@ const AddEmail: React.VFC<AddEmailProps> = ({onCancel, onCreate}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const createEmails = useMutation(async (values: EmailRequest) => {
-        return await fetch(`${apiUrl}/opt-out/emails`, {
+        return await fetch(`${apiUrl}/opt-in/emails`, {
             method: 'POST',
             body: JSON.stringify(values)
         }).then(function (response) {

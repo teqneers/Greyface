@@ -19,7 +19,7 @@ const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: BlackListEmail) => fetch(`${apiUrl}/opt-out/emails/delete`, {
+        (data: BlackListEmail) => fetch(`${apiUrl}/opt-in/emails/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'email': data.email

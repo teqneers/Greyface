@@ -35,20 +35,20 @@ function ApplicationRoutes(): React.ReactElement {
                 <AutoWhitelistDomainModule/>
             </Route>
 
-            <Route path="/opt-in/emails">
+            <Route path="/opt-out/emails">
                 <WhitelistEmailModule/>
             </Route>
 
-            <Route path="/opt-in/domains">
+            <Route path="/opt-out/domains">
                 <WhitelistDomainModule/>
             </Route>
 
 
-            <Route path="/opt-out/emails">
+            <Route path="/opt-in/emails">
                 <BlacklistEmailModule/>
             </Route>
 
-            <Route path="/opt-out/domains">
+            <Route path="/opt-in/domains">
                 <BlacklistDomainModule/>
             </Route>
 

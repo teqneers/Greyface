@@ -19,7 +19,7 @@ const DeleteDomain = ({onDelete, data}: DeleteDomainProps) => {
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
-        (data: WhiteListDomain) => fetch(`${apiUrl}/opt-in/domains/delete`, {
+        (data: WhiteListDomain) => fetch(`${apiUrl}/opt-out/domains/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'domain': data.domain

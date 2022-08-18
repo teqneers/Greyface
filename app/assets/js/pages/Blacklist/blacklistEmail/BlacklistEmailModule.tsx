@@ -43,9 +43,9 @@ const BlacklistEmailModule: React.VFC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-out', 'emails', tableState, searchQuery], () => {
+    } = useQuery(['opt-in', 'emails', tableState, searchQuery], () => {
 
-        let url = `${apiUrl}/opt-out/emails?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
+        let url = `${apiUrl}/opt-in/emails?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }

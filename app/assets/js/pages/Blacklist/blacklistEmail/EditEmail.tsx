@@ -22,7 +22,7 @@ const EditEmail = ({onUpdate, data}: EditEmailProps) => {
     const [error, setError] = useState<string | null>(null);
 
     const editRecord = useMutation(async (values: EmailRequest) => {
-        return await fetch(`${apiUrl}/opt-out/emails/edit`, {
+        return await fetch(`${apiUrl}/opt-in/emails/edit`, {
             method: 'PUT',
             body: JSON.stringify({
                 'dynamicID': {

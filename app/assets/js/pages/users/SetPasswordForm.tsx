@@ -2,11 +2,12 @@ import {TFunction} from 'i18next';
 import React from 'react';
 import {UseMutationResult} from 'react-query';
 import {useTranslation} from 'react-i18next';
-import {Button, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Col, Form, Modal, Row} from 'react-bootstrap';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
 import CancelButton from '../../controllers/Buttons/CancelButton';
+import SubmitButton from '../../controllers/Buttons/SubmitButton';
 
 export interface SetPasswordValues {
     password: string,
@@ -81,7 +82,7 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                                 <Form.Label>{t('user.password')}</Form.Label>
 
                                 <Form.Control
-                                    type="text"
+                                    type="password"
                                     name="password"
                                     value={values.password}
                                     onChange={handleChange}
@@ -96,7 +97,7 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                                 <Form.Label>{t('user.passwordRetype')}</Form.Label>
 
                                 <Form.Control
-                                    type="text"
+                                    type="password"
                                     name="passwordConfirmation"
                                     value={values.passwordConfirmation}
                                     onChange={handleChange}
@@ -112,8 +113,8 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                     <Modal.Footer>
                         <CancelButton onClick={() => onCancel()}/>
 
-                        <Button variant="outline-primary" type="submit"
-                                disabled={isSubmitting && !onSubmit.isError}>{submitBtn}</Button>
+                        <SubmitButton label={submitBtn}
+                                      disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>
             )}

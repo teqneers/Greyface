@@ -22,7 +22,7 @@ const EditDomain = ({onUpdate, data}: EditDomainProps) => {
     const [error, setError] = useState<string | null>(null);
 
     const editRecord = useMutation(async (values: DomainRequest) => {
-        return await fetch(`${apiUrl}/opt-in/domains/edit`, {
+        return await fetch(`${apiUrl}/opt-out/domains/edit`, {
             method: 'PUT',
             body: JSON.stringify({
                 'dynamicID': {
