@@ -22,23 +22,30 @@ const UserAliasModule: React.VFC = () => {
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [user, setUser] = useState('');
-
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
     const [tableState, setTableState] = useState(storage_table_state_key ?? {
         sortBy: [{id: 'username', desc: false}],
         filters: [],
         pageSize: 10,
-        pageIndex: 0
+        pageIndex: 0,
+        searchQuery: '',
+        user: ''
     });
+
+    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+    const [user, setUser] = useState(tableState.user ?? '');
 
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state,
+                searchQuery: searchQuery,
+                user: user
+            }));
         setTableState(state);
-    }, [storage]);
+    }, [storage, user, searchQuery]);
 
     const {
         isLoading,
@@ -55,7 +62,7 @@ const UserAliasModule: React.VFC = () => {
             url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
         }
 
-        if(user) {
+        if (user) {
             url += `&user=${user}`;
         }
 
@@ -76,6 +83,7 @@ const UserAliasModule: React.VFC = () => {
                               label="button.createUserAlias"
                               onClick={() => history.push(`${url}/create`)}/>}
                           userFilter={<UserFilter user={user} setUser={setUser}/>}
+                          searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (

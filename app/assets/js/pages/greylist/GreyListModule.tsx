@@ -19,22 +19,29 @@ const GreyListModule: React.VFC = () => {
 
     const {isAdministrator} = usePermissions();
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [user, setUser] = useState('');
-
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
     const [tableState, setTableState] = useState(storage_table_state_key ?? {
         sortBy: [{id: 'username', desc: false}],
         pageSize: 10,
-        pageIndex: 0
+        pageIndex: 0,
+        searchQuery: '',
+        user: ''
     });
+
+    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+    const [user, setUser] = useState(tableState.user ?? '');
 
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<Greylist>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state,
+                searchQuery: searchQuery,
+                user: user
+            }));
         setTableState(state);
-    }, [storage]);
+    }, [storage, user, searchQuery]);
 
     const {
         isLoading,
@@ -67,13 +74,14 @@ const GreyListModule: React.VFC = () => {
         <ApplicationModuleContainer title="greylist.header">
 
             {isAdministrator() && <ModuleTopBar title="greylist.header"
-                                              buttons={<DeleteByDate onDelete={refetch}/>}
-                                              userFilter={<UserFilter user={user} setUser={setUser}
-                                                                      filterFor="greylist"/>}
-                                              setSearchQuery={setSearchQuery}/>}
+                                                buttons={<DeleteByDate onDelete={refetch}/>}
+                                                userFilter={<UserFilter user={user} setUser={setUser}
+                                                                        filterFor="greylist"/>}
+                                                searchQuery={searchQuery}
+                                                setSearchQuery={setSearchQuery}/>}
 
             {!isAdministrator() && <ModuleTopBar title="greylist.header"
-                                               setSearchQuery={setSearchQuery}/>}
+                                                 setSearchQuery={setSearchQuery}/>}
 
             {isError ? (
                 <div>Error: {error}</div>

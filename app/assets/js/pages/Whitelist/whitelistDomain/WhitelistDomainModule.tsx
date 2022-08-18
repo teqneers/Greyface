@@ -8,7 +8,7 @@ import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {UserAlias} from '../../../types/user';
+import {WhiteListDomain} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import WhitelistDomainTable from './WhitelistDomainTable';
 
@@ -18,7 +18,6 @@ const WhitelistDomainModule: React.VFC = () => {
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
-    const [searchQuery, setSearchQuery] = useState('');
 
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
@@ -26,14 +25,21 @@ const WhitelistDomainModule: React.VFC = () => {
         sortBy: [{id: 'domain', desc: false}],
         filters: [],
         pageSize: 10,
-        pageIndex: 0
+        pageIndex: 0,
+        searchQuery: ''
     });
 
+    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+
     // run every time the table state change
-    const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
+    const onStateChange = useCallback<(state: TableState<WhiteListDomain>) => void>((state) => {
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state,
+                searchQuery: searchQuery
+            }));
         setTableState(state);
-    }, [storage]);
+    }, [storage, searchQuery]);
 
     const {
         isLoading,
@@ -64,6 +70,7 @@ const WhitelistDomainModule: React.VFC = () => {
                           buttons={<DefaultButton
                               label="button.addDomain"
                               onClick={() => history.push(`${url}/add`)}/>}
+                          searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (

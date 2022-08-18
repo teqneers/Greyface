@@ -8,7 +8,7 @@ import ApplicationModuleContainer from '../../application/ApplicationModuleConta
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
-import {UserAlias} from '../../types/user';
+import {User} from '../../types/user';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
@@ -22,22 +22,27 @@ const UserModule = () => {
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
 
-    const [searchQuery, setSearchQuery] = useState('');
-
     const storage = window.localStorage;
     const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
     const [tableState, setTableState] = useState(storage_table_state_key ?? {
         sortBy: [{id: 'username', desc: false}],
         filters: [],
         pageSize: 10,
-        pageIndex: 0
+        pageIndex: 0,
+        searchQuery: ''
     });
 
+    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+
     // run every time the table state change
-    const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY, JSON.stringify(state));
+    const onStateChange = useCallback<(state: TableState<User>) => void>((state) => {
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state,
+                searchQuery: searchQuery
+            }));
         setTableState(state);
-    }, [storage]);
+    }, [storage, searchQuery]);
 
     const {
         isLoading,
@@ -67,6 +72,7 @@ const UserModule = () => {
                           buttons={<DefaultButton
                               label="button.createUser"
                               onClick={() => history.push(`${url}/create`)}/>}
+                          searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
             {isError ? (

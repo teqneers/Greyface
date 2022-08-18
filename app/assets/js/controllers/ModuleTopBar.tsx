@@ -6,10 +6,18 @@ export interface ModalProps {
     title: string,
     buttons?: React.ReactNode,
     userFilter?: React.ReactNode,
+    searchQuery?: string,
     setSearchQuery: (query: string) => void,
 }
 
-const ModalTopBar: React.FC<ModalProps> = ({title, buttons, userFilter, setSearchQuery}) => {
+const ModalTopBar: React.FC<ModalProps> = (
+    {
+        title,
+        buttons,
+        userFilter,
+        searchQuery = '',
+        setSearchQuery
+    }) => {
     const {t} = useTranslation();
 
     return (
@@ -29,6 +37,7 @@ const ModalTopBar: React.FC<ModalProps> = ({title, buttons, userFilter, setSearc
                             type="input"
                             name="search"
                             placeholder={t('placeholder.search')}
+                            value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
                             }}/>
