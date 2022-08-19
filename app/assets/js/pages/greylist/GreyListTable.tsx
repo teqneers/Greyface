@@ -38,24 +38,35 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
         const columns = [{
             Header: t('greylist.sender'),
             id: 'name',
+            minWidth: 300,
+            maxWidth: 500,
             accessor: (originalRow) => originalRow.connect.name,
             canSort: true,
             disableResizing: true
         }, {
             Header: t('greylist.domain'),
             id: 'domain',
+            width: 160,
+            minWidth: 150,
+            maxWidth: 200,
             accessor: (originalRow) => originalRow.connect.domain,
             canSort: true,
             disableResizing: true
         }, {
             Header: t('greylist.source'),
             id: 'source',
+            width: 130,
+            minWidth: 130,
+            maxWidth: 150,
             accessor: (originalRow) => originalRow.connect.source,
             canSort: true,
             disableResizing: true
         }, {
             Header: t('greylist.recipient'),
             id: 'rcpt',
+            width: 180,
+            minWidth: 180,
+            maxWidth: 250,
             accessor: (originalRow) => originalRow.connect.rcpt,
             canSort: true,
             disableResizing: true
@@ -72,6 +83,9 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
             columns.push({
                 Header: t('greylist.username'),
                 id: 'username',
+                width: 100,
+                minWidth: 100,
+                maxWidth: 150,
                 accessor: (originalRow) => originalRow.username,
                 canSort: true,
                 disableResizing: true
@@ -81,6 +95,9 @@ const GreyListTable: React.VFC<GreyListTableProps> = (
         columns.push({
             Header: '',
             id: 'actions',
+            width: 220,
+            minWidth: 220,
+            maxWidth: 220,
             disableSortBy: true,
             disableResizing: true,
             Cell: ({row: {original: row}}: CellProps<Greylist, string>) => {

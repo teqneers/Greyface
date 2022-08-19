@@ -60,6 +60,9 @@ const AutoDomainTable: React.VFC<AutoDomainTableProps> = (
     }, {
         Header: '',
         id: 'actions',
+        width: 100,
+        minWidth: 100,
+        maxWidth: 100,
         disableSortBy: true,
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<AutoWhiteListDomain, string>) => {

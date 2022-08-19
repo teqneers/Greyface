@@ -1,3 +1,4 @@
+
 .table {
   border-collapse: collapse;
 
@@ -19,11 +20,31 @@
     color: white;
   }
 
-  .th .sort-icon {
+  th .sort-icon {
     opacity: 0;
   }
 
-  .th:hover .sort-icon, .th .sort-icon.active {
+  th:hover .sort-icon, th .sort-icon.active {
     opacity: 1;
   }
+
+
+  tbody {
+
+    tr {
+
+      border-top: 0;
+
+      min-width: fit-content !important;
+
+      border-bottom: 1px solid var(--form-color-border);
+
+      td {
+        word-break: break-all;
+        white-space: normal;
+      }
+
+    }
+  }
+
 }

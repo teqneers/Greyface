@@ -10,11 +10,13 @@ import {
     UseTableColumnOptions,
     UseTableColumnProps,
     UseTableOptions,
-    useResizeColumns,
     UseResizeColumnsColumnProps,
     UseResizeColumnsOptions,
     UseResizeColumnsState,
-    usePagination, UsePaginationOptions, UsePaginationInstanceProps, UsePaginationState
+    usePagination,
+    UsePaginationOptions,
+    UsePaginationInstanceProps,
+    UsePaginationState, useFlexLayout
 } from 'react-table';
 import SortMarker from './SortMarker';
 import TableBody, {TableBodyProps} from './TableBody';
@@ -76,6 +78,14 @@ function Table<D extends object>(
         ...rest
     }: TableProps<D> & TableOptions<D>
 ): React.ReactElement {
+
+    const defaultColumn = React.useMemo(
+        () => ({
+            width: 150,
+        }),
+        []
+    );
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -94,6 +104,7 @@ function Table<D extends object>(
     } = useTable<D>(
         {
             ...rest,
+            defaultColumn,
             manualSortBy: true,
             manualPagination: true,
             pageCount: controlledPageCount,
@@ -102,8 +113,8 @@ function Table<D extends object>(
         },
         useSortBy,
         useColumnOrder,
-        useResizeColumns,
-        usePagination
+        usePagination,
+        useFlexLayout
     );
     const {pageIndex, pageSize} = state;
 
@@ -120,7 +131,7 @@ function Table<D extends object>(
         }
     }, [onStateChange, state]);
     return (
-        <>
+        <div className="gf-table">
             <BTable bordered size="sm" {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
@@ -198,7 +209,7 @@ function Table<D extends object>(
                         </Form.Select>
                     </Col>
                 </Row>}
-        </>
+        </div>
     );
 }
 

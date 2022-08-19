@@ -34,6 +34,8 @@ const AutoEmailTable: React.VFC<AutoEmailTableProps> = (
     const columns = useMemo<Column<AutoWhiteListEmail>[]>(() => [{
         Header: t('autoWhitelist.email.name'),
         id: 'name',
+        minWidth: 300,
+        maxWidth: 500,
         accessor: (originalRow) => originalRow.name,
         canSort: true,
         disableResizing: true
@@ -66,6 +68,9 @@ const AutoEmailTable: React.VFC<AutoEmailTableProps> = (
     }, {
         Header: '',
         id: 'actions',
+        width: 100,
+        minWidth: 100,
+        maxWidth: 100,
         disableSortBy: true,
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<AutoWhiteListEmail, string>) => {

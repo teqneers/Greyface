@@ -38,6 +38,9 @@ const BlacklistDomainTable: React.VFC<BlacklistDomainTableProps> = (
     }, {
         Header: '',
         id: 'actions',
+        width: 100,
+        minWidth: 100,
+        maxWidth: 100,
         disableSortBy: true,
         disableResizing: true,
         Cell: ({row: {original: row}}: CellProps<BlackListDomain, string>) => {
