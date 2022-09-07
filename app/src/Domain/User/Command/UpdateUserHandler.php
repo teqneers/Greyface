@@ -11,8 +11,8 @@ class UpdateUserHandler extends UserCommandHandler
         $user = $this->getUserById($command->getId());
 
         $user->setUsername($command->username)
-             ->setEmail($command->email)
-             ->setRole($command->role);
+            ->setEmail($command->email)
+            ->setRole($command->role);
         $this->userRepository->save($user);
     }
 }
