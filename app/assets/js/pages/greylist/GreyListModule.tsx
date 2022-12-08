@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {TableState} from 'react-table';
 
@@ -42,6 +42,16 @@ const GreyListModule: React.VFC = () => {
             }));
         setTableState(state);
     }, [storage, user, searchQuery]);
+
+    // set pageIndex to 0 whenever search query change or user
+    useEffect(() => {
+        const state = {...tableState, pageIndex: 0};
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state
+            }));
+        setTableState(state);
+    }, [storage, searchQuery, user]);
 
     const {
         isLoading,

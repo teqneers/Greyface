@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
@@ -40,6 +40,16 @@ const UserModule = () => {
             JSON.stringify({
                 ...state,
                 searchQuery: searchQuery
+            }));
+        setTableState(state);
+    }, [storage, searchQuery]);
+
+    // set pageIndex to 0 whenever search query change
+    useEffect(() => {
+        const state = {...tableState, pageIndex: 0};
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state
             }));
         setTableState(state);
     }, [storage, searchQuery]);

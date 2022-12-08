@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
 import {Route, useHistory, useRouteMatch} from 'react-router-dom';
 import {TableState} from 'react-table';
@@ -41,6 +41,16 @@ const BlacklistEmailModule: React.VFC = () => {
             }));
         setTableState(state);
     }, [storage, searchQuery]);
+
+    // set pageIndex to 0 whenever search query change
+    useEffect(() => {
+        const state = {...tableState, pageIndex: 0};
+        storage.setItem(TABLE_STATE_STORAGE_KEY,
+            JSON.stringify({
+                ...state
+            }));
+        setTableState(state);
+    }, [searchQuery]);
 
     const {
         isLoading,
