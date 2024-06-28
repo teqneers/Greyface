@@ -12,7 +12,7 @@ export interface ModalProps {
 
 const ModalTopBar: React.FC<ModalProps> = (
     {
-        title,
+        title = '',
         buttons,
         userFilter,
         searchQuery = '',
@@ -48,8 +48,5 @@ const ModalTopBar: React.FC<ModalProps> = (
     );
 };
 
-ModalTopBar.defaultProps = {
-    title: '',
-};
 
 export default ModalTopBar;

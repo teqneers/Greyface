@@ -42,7 +42,7 @@ interface UserFromProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
@@ -121,7 +121,5 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
         </Formik>
     );
 }
-
-SetPasswordForm.defaultProps = {};
 
 export default SetPasswordForm;

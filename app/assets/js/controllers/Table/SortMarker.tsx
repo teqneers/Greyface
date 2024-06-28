@@ -7,7 +7,7 @@ export interface SortMarkerProps extends HTMLAttributes<HTMLDivElement> {
     isSortedDesc?: boolean,
 }
 
-const SortMarker: React.FC<SortMarkerProps> = ({canSort, sortDescFirst, isSorted, isSortedDesc, children, ...rest}) => {
+const SortMarker: React.FC<SortMarkerProps> = ({canSort = false, sortDescFirst, isSorted, isSortedDesc, children, ...rest}) => {
     if (!canSort) {
         return <>{children}</>;
     }
@@ -25,10 +25,6 @@ const SortMarker: React.FC<SortMarkerProps> = ({canSort, sortDescFirst, isSorted
             )}
         </div>
     );
-};
-
-SortMarker.defaultProps = {
-    canSort: false,
 };
 
 export default SortMarker;

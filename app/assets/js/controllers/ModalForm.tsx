@@ -11,7 +11,7 @@ export interface ModalProps {
 
 const ModalForm: React.FC<ModalProps> = (
     {
-        show = true, title, onHide, children
+        show = true, title = '', onHide, children
     }) => {
     const {t} = useTranslation();
 
@@ -24,10 +24,6 @@ const ModalForm: React.FC<ModalProps> = (
             {children}
         </Modal>
     );
-};
-
-ModalForm.defaultProps = {
-    title: '',
 };
 
 export default ModalForm;

@@ -69,7 +69,7 @@ export interface TableProps<D extends object> extends Pick<TableBodyProps<D>, 'o
 
 function Table<D extends object>(
     {
-        idColumn,
+        idColumn = 'id',
         onRowClick,
         onRowDoubleClick,
         rowClassName,
@@ -212,9 +212,5 @@ function Table<D extends object>(
         </div>
     );
 }
-
-Table.defaultProps = {
-    idColumn: 'id',
-};
 
 export default Table;

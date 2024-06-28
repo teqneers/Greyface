@@ -8,7 +8,7 @@ export interface LoadingIndicatorProps {
 
 function LoadingIndicator(
     {
-        text
+        text = 'Loading'
     }: LoadingIndicatorProps
 ): React.ReactElement {
 
@@ -19,8 +19,5 @@ function LoadingIndicator(
     );
 }
 
-LoadingIndicator.defaultProps = {
-    text: 'Loading',
-};
 
 export default LoadingIndicator;

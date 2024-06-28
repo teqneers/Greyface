@@ -39,7 +39,7 @@ export interface CreateUserResponse {
 }
 
 // @ts-ignore
-const UpdateSchema: yup.SchemaOf<UserValues> = yup.object()
+const UpdateSchema: yup.ObjectSchema<UserValues> = yup.object()
     .noUnknown()
     .shape(
         {
@@ -69,7 +69,7 @@ interface UserFromProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
@@ -176,7 +176,5 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
         </Formik>
     );
 }
-
-UserForm.defaultProps = {};
 
 export default UserForm;

@@ -22,6 +22,4 @@ const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({
     );
 };
 
-ApplicationModuleContainer.defaultProps = {};
-
 export default ApplicationModuleContainer;

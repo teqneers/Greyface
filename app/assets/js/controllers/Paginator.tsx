@@ -61,6 +61,4 @@ const Paginator: React.VFC<PaginationProps> = (
     );
 };
 
-Paginator.defaultProps = {};
-
 export default Paginator;

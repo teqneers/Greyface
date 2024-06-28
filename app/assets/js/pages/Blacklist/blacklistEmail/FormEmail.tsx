@@ -1,64 +1,27 @@
-import {TFunction} from 'i18next';
 import React from 'react';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
-import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
 import CancelButton from '../../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../../controllers/Buttons/SubmitButton';
+import {EmailRequest, EmailSchema, EmailValues} from '../../../utils/yupSchema';
 
-export interface EmailValues {
-    email: string[]
-}
 
-export interface EmailRequest {
-    email: string[]
-}
-
-declare module 'yup' {
-    interface ArraySchema<T> {
-        unique(
-            message: string,
-            mapper?: (value: T, index?: number, list?: T[]) => T[]
-        ): ArraySchema<T>;
-    }
-}
-
-yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
-    return this.test('unique', message, function (list) {
-        return list.length === new Set(list.map(mapper)).size;
-    });
-});
-
-function Schema(t: TFunction): yup.AnySchema {
-    return yup.object()
-        .noUnknown()
-        .shape(
-            {
-                email: yup.array()
-                    .of(yup.string().required().max(128).email())
-                    .min(1)
-                    .max(5)
-                    .unique(t('errors.unique'))
-                    .default([]),
-            }
-        );
-}
 
 interface FormEmailProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
 function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
     {
-        createMode,
+        createMode = true,
         onSubmit,
         submitBtn,
         onCancel,
@@ -70,7 +33,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
     return (
         <Formik
             validateOnBlur={true}
-            validationSchema={Schema(t)}
+            validationSchema={EmailSchema(t)}
             onSubmit={((values) => {
                 let submitData = values;
                 if (!createMode) {
@@ -146,9 +109,5 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
         </Formik>
     );
 }
-
-FormEmail.defaultProps = {
-    createMode: true
-};
 
 export default FormEmail;

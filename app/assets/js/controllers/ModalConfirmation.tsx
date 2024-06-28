@@ -17,7 +17,7 @@ export interface ModalProps {
 const ModalConfirmation: React.FC<ModalProps> = (
     {
         show = true,
-        title,
+        title= '',
         onCancel,
         onConfirm,
         confirmBtn,
@@ -50,8 +50,5 @@ const ModalConfirmation: React.FC<ModalProps> = (
     );
 };
 
-ModalConfirmation.defaultProps = {
-    title: '',
-};
 
 export default ModalConfirmation;

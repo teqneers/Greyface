@@ -1,64 +1,27 @@
-import {TFunction} from 'i18next';
 import React from 'react';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
-import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
+import {DomainRequest, DomainSchema, DomainValues} from '../../../utils/yupSchema';
 import CancelButton from '../../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../../controllers/Buttons/SubmitButton';
 
-export interface DomainValues {
-    domain: string[]
-}
 
-export interface DomainRequest {
-    domain: string[]
-}
-
-declare module 'yup' {
-    interface ArraySchema<T> {
-        unique(
-            message: string,
-            mapper?: (value: T, index?: number, list?: T[]) => T[]
-        ): ArraySchema<T>;
-    }
-}
-
-yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
-    return this.test('unique', message, function (list) {
-        return list.length === new Set(list.map(mapper)).size;
-    });
-});
-
-function Schema(t: TFunction): yup.AnySchema {
-    return yup.object()
-        .noUnknown()
-        .shape(
-            {
-                domain: yup.array()
-                    .of(yup.string().required().max(128))
-                    .min(1)
-                    .max(5)
-                    .unique(t('errors.unique'))
-                    .default([]),
-            }
-        );
-}
 
 interface FormDomainProps<TValues extends object, TData, TRes, TError> {
     createMode: boolean,
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
 function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
     {
-        createMode,
+        createMode = true,
         onSubmit,
         submitBtn,
         onCancel,
@@ -70,7 +33,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
     return (
         <Formik
             validateOnBlur={true}
-            validationSchema={Schema(t)}
+            validationSchema={DomainSchema(t)}
             onSubmit={((values) => {
                 let submitData = values;
                 if (!createMode) {
@@ -147,8 +110,5 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
     );
 }
 
-FormDomain.defaultProps = {
-    createMode: true
-};
 
 export default FormDomain;

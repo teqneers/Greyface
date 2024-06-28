@@ -1,6 +1,7 @@
 import React from 'react';
 import {Nav, Navbar, NavDropdown} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
+
 import {useApplication} from './ApplicationContext';
 import ApplicationMenu from './ApplicationMenu';
 import {setSetting, SettingsLocale, useSettings} from './settings';
@@ -38,6 +39,7 @@ const ApplicationContainer: React.FC = ({children}) => {
                         {/* Language Dropdown */}
                         <NavDropdown
                             title={<><img
+                                style={{marginRight: 5}}
                                 src={require(`../../images/language/${flag}.png`)}
                                 className="d-inline-block" alt={flag}/>
                                 {t(`locale.${locale.replace('-', '_')}`)}</>}>
@@ -74,7 +76,5 @@ const ApplicationContainer: React.FC = ({children}) => {
         </>
     );
 };
-
-ApplicationContainer.defaultProps = {};
 
 export default ApplicationContainer;

@@ -20,7 +20,7 @@ export interface EmailRequest {
     source: string
 }
 
-const Schema: yup.SchemaOf<EmailValues> = yup.object()
+const Schema: yup.ObjectSchema<EmailValues> = yup.object()
     .noUnknown()
     .shape(
         {
@@ -41,7 +41,7 @@ interface FormEmailProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
@@ -129,8 +129,5 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
         </Formik>
     );
 }
-
-FormEmail.defaultProps = {
-};
 
 export default FormEmail;

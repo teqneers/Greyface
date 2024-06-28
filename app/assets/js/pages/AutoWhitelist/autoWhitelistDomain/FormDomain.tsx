@@ -18,7 +18,7 @@ export interface DomainRequest {
     source: string
 }
 
-const Schema: yup.SchemaOf<DomainValues> = yup.object()
+const Schema: yup.ObjectSchema<DomainValues> = yup.object()
     .noUnknown()
     .shape(
         {
@@ -36,7 +36,7 @@ interface FormDomainProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?:  any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
@@ -109,8 +109,5 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
         </Formik>
     );
 }
-
-FormDomain.defaultProps = {
-};
 
 export default FormDomain;

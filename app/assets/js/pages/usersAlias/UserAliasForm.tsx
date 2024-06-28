@@ -21,14 +21,6 @@ export interface UserAliasRequest {
     alias_name: string[]
 }
 
-declare module 'yup' {
-    interface ArraySchema<T> {
-        unique(
-            message: string,
-            mapper?: (value: T, index?: number, list?: T[]) => T[]
-        ): ArraySchema<T>;
-    }
-}
 
 yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -59,13 +51,13 @@ interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,
-    validationSchema?: yup.SchemaOf<any>,
+    validationSchema?: any | (() => any),
     onSubmit: UseMutationResult<TRes, TError, TData>,
 }
 
 function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasRequest>(
     {
-        createMode,
+        createMode = true,
         onSubmit,
         submitBtn,
         onCancel,
@@ -183,9 +175,5 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
         </Formik>
     );
 }
-
-UserAliasForm.defaultProps = {
-    createMode: true
-};
 
 export default UserAliasForm;
