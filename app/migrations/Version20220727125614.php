@@ -12,16 +12,9 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class Version20220727125614 extends AbstractMigration implements ContainerAwareInterface
+final class Version20220727125614 extends AbstractMigration
 {
     use  UsersMigrationHelper, UserAliasesMigrationHelper;
-
-    private ContainerInterface $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     public function getDescription(): string
     {
@@ -36,8 +29,6 @@ final class Version20220727125614 extends AbstractMigration implements Container
             'Skipping because you might forgot to import the old data!'
         );
 
-        $passHasher = $this->container->get('app.migration.password_hasher');
-
         if ($schema->hasTable('tq_user')) {
 
             /* Delete data from tables to prevent the duplicate data */
@@ -49,8 +40,7 @@ final class Version20220727125614 extends AbstractMigration implements Container
             while ($row = $selectUsers->fetchAssociative()) {
                 $userId    = (string)Uuid::uuid4();
                 $row['id'] = $userId;
-                $row['password'] = "admin";
-                $this->addUser($row, $passHasher);
+                $this->addUser($row);
 
                 /* now user conditions */
                 if ($schema->hasTable('tq_alias')) {
