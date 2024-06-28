@@ -6,7 +6,7 @@ use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmail;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmailRepository;
 use App\Messenger\Validation;
 use IteratorAggregate;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

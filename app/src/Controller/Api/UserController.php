@@ -9,7 +9,7 @@ use App\Domain\User\Command\DeleteUser;
 use App\Domain\User\Command\SetPassword;
 use App\Domain\User\Command\UpdateUser;
 use App\Messenger\Validation;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

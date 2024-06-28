@@ -1,8 +1,27 @@
 #!/usr/bin/env php
 <?php
 
+
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+
+$script = $_SERVER['SCRIPT_FILENAME'];
+if ($script[0] !== '/') {
+    if (str_starts_with($script, './')) {
+        $script = substr($script, 2);
+    }
+    $script = $_SERVER['PWD'] . '/' . $script;
+}
+$appPath = dirname($script, 3);
+
+$_SERVER['APP_PATH']            = $appPath;
+$_SERVER['APP_RUNTIME_OPTIONS'] = [
+    'project_dir' => $appPath,
+];
+
+if (!is_dir(dirname(__DIR__).'/vendor')) {
+    throw new LogicException('Dependencies are missing. Try running "composer install".');
+}
 
 if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
     throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');

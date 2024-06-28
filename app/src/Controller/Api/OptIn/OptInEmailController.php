@@ -5,7 +5,7 @@ namespace App\Controller\Api\OptIn;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmail;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmailRepository;
 use App\Messenger\Validation;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
