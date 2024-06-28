@@ -12,7 +12,7 @@ if ($script[0] !== '/') {
     }
     $script = $_SERVER['PWD'] . '/' . $script;
 }
-$appPath = dirname($script, 3);
+$appPath = dirname($script, 2);
 
 $_SERVER['APP_PATH']            = $appPath;
 $_SERVER['APP_RUNTIME_OPTIONS'] = [

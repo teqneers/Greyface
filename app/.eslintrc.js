@@ -23,9 +23,6 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:react-hooks/recommended',
     ],
-    "plugins": [
-        "react-hooks"
-    ],
     ignorePatterns: [
         '.eslintrc.js',
         'webpack.config.js',
@@ -46,7 +43,5 @@ module.exports = {
                 'object': false,
             }
         }],
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
     }
 };

@@ -152,6 +152,7 @@ $form-field-border-radius: 2px !default;
 @import "custom";
 @import "table";
 @import "modal";
+@import "form";
 
 #app, body {
   width: 100%;
@@ -245,10 +246,6 @@ body {
 
 .dropdown-menu {
   font-size: var(--font-size);
-}
-
-.form-label {
-  margin-top: 0.5rem;
 }
 
 .btn-sm {

@@ -62,7 +62,7 @@ Encore
     // enables @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
-        config.corejs = 3;
+        config.corejs = 3.23;
     })
 
     // enables Sass/SCSS support
@@ -89,10 +89,13 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
     .configureDevServerOptions((options) => {
-        options.https = {
-            key: '../docker/build/webserver/app.key',
-            cert: '../docker/build/webserver/app.crt'
-        }
+        options.server = {
+            type: 'https',
+            options: {
+                key: '../docker/build/webserver/app.key',
+                cert: '../docker/build/webserver/app.crt'
+            }
+        };
     })
 
     .copyFiles({

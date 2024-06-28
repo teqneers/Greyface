@@ -169,7 +169,7 @@ function Table<D extends object>(
                             {paginationRange.map((pageNumber, index) => {
                                 if (pageNumber === DOTS) {
                                     return (
-                                        <Pagination.Ellipsis/>
+                                        <Pagination.Ellipsis key={index}/>
                                     );
                                 }
 

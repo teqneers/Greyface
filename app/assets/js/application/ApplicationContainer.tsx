@@ -49,6 +49,7 @@ const ApplicationContainer: React.FC = ({children}) => {
                                         key={key}
                                         onClick={() => setSetting('locale', value)}>
                                         <img
+                                            style={{marginRight: 5}}
                                             src={require(`../../images/language/${langFlag}.png`)}
                                             className="d-inline-block m-1"
                                             alt={key}/>

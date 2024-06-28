@@ -22,6 +22,7 @@ function SubmitButton({
     const {t} = useTranslation();
 
     return (
+        // @ts-ignore
         <Button variant={variant ? variant : 'outline-primary'}
                 size="sm"
                 className="m-1" onClick={onClick ? onClick : null}

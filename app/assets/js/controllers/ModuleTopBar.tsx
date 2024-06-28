@@ -40,7 +40,7 @@ const ModalTopBar: React.FC<ModalProps> = (
                             value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
-                            }}/>
+                            }} autoComplete="off"/>
                     </div>
                 </Navbar.Collapse>
             </Container>
