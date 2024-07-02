@@ -1,3 +1,4 @@
+import {GreyTableState, GreyTableStateWithUser} from '../types/greylist';
 import {EventDispatcher, useSubscription} from '../utils/event';
 
 export enum SettingsLocale {
@@ -9,12 +10,104 @@ const normalSplitSize: [number, number] = [40, 60];
 
 type SettingsType = {
     locale: SettingsLocale,
-    splitViewSizes: Record<string, [number, number]> | null
+    splitViewSizes: Record<string, [number, number]> | null,
+    autoWhitelistDomain: GreyTableState,
+    autoWhitelistEmail: GreyTableState,
+    whitelistDomain: GreyTableState,
+    whilelistEmail: GreyTableState,
+    blacklistDomain: GreyTableState,
+    blacklistEmail: GreyTableState,
+    whitelistEmail: GreyTableState,
+    greyList: GreyTableStateWithUser,
+    userAlias: GreyTableStateWithUser,
+    users: GreyTableState
 };
 
 const INITIAL_SETTINGS: SettingsType = {
     locale: SettingsLocale.de_DE,
-    splitViewSizes: null
+    splitViewSizes: null,
+    autoWhitelistDomain: {
+        columnOrder: [],
+        sortBy: [{id: 'domain', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    autoWhitelistEmail: {
+        columnOrder: [],
+        sortBy: [{id: 'name', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    whitelistDomain: {
+        columnOrder: [],
+        sortBy: [{id: 'domain', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    whilelistEmail: {
+        columnOrder: [],
+        sortBy: [{id: 'name', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    blacklistDomain: {
+        columnOrder: [],
+        sortBy: [{id: 'domain', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    blacklistEmail: {
+        columnOrder: [],
+        sortBy: [{id: 'email', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    whitelistEmail: {
+        columnOrder: [],
+        sortBy: [{id: 'email', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    users: {
+        columnOrder: [],
+        sortBy: [{id: 'username', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: ''
+    },
+    greyList: {
+        columnOrder: [],
+        sortBy: [{id: 'username', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: '',
+        user: ''
+    },
+    userAlias: {
+        columnOrder: [],
+        sortBy: [{id: 'username', desc: false}],
+        filters: [],
+        pageSize: 10,
+        pageIndex: 0,
+        searchQuery: '',
+        user: ''
+    },
 };
 
 const eventDispatcher = new EventDispatcher<SettingsType>();

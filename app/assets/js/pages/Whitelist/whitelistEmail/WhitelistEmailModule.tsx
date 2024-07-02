@@ -5,52 +5,41 @@ import {TableState} from 'react-table';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
+import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {WhiteListEmail} from '../../../types/greylist';
+import {GreyTableState, WhiteListEmail} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import WhitelistEmailTable from './WhitelistEmailTable';
-
-const TABLE_STATE_STORAGE_KEY = 'greyface.whitelistEmail';
 
 const WhitelistEmailModule: React.VFC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
+    const {whitelistEmail} = useSettings();
 
-    const storage = window.localStorage;
-    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
-    const [tableState, setTableState] = useState(storage_table_state_key ?? {
-        sortBy: [{id: 'email', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    });
+    const [tableState, setTableState] = useState<GreyTableState>(whitelistEmail);
 
-    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+    const [searchQuery, setSearchQuery] = useState<string>(whitelistEmail.searchQuery ?? '');
 
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<WhiteListEmail>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
+        setSetting('whitelistEmail',
+            {
                 ...state,
                 searchQuery: searchQuery
-            }));
-        setTableState(state);
-    }, [storage, searchQuery]);
+            });
+        setTableState(prevState => ({...prevState, ...state, searchQuery: searchQuery}));
+    }, [searchQuery]);
 
     // set pageIndex to 0 whenever search query change
     useEffect(() => {
-        const state = {...tableState, pageIndex: 0};
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
-                ...state
-            }));
+        const state = {...tableState, pageIndex: 0, searchQuery: searchQuery};
+        setSetting('whitelistEmail', state);
         setTableState(state);
-    }, [storage, searchQuery]);
+    }, [searchQuery]);
 
     const {
         isLoading,

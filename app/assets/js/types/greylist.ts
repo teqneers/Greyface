@@ -1,3 +1,4 @@
+import {boolean} from 'yup';
 import {DateObject} from './common';
 
 export interface Greylist {
@@ -42,4 +43,17 @@ export interface AutoWhiteListDomain {
     source: string,
     firstSeen: DateObject,
     lastSeen: DateObject
+}
+
+export interface GreyTableState {
+    columnOrder: [],
+    filters: [],
+    sortBy: {id: string, desc?: boolean | undefined}[],
+    pageSize: number,
+    pageIndex: number,
+    searchQuery: string
+}
+
+export interface GreyTableStateWithUser extends GreyTableState {
+    user?: string
 }

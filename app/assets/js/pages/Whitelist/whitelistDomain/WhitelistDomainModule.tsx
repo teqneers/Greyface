@@ -5,51 +5,40 @@ import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
 import {useApplication} from '../../../application/ApplicationContext';
+import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {WhiteListDomain} from '../../../types/greylist';
+import {GreyTableState, WhiteListDomain} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import WhitelistDomainTable from './WhitelistDomainTable';
-
-const TABLE_STATE_STORAGE_KEY = 'greyface.whitelistDomain';
 
 const WhitelistDomainModule: React.VFC = () => {
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
+    const {whitelistDomain} = useSettings();
 
-    const storage = window.localStorage;
-    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
-    const [tableState, setTableState] = useState(storage_table_state_key ?? {
-        sortBy: [{id: 'domain', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    });
+    const [tableState, setTableState] = useState<GreyTableState>(whitelistDomain);
 
-    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+    const [searchQuery, setSearchQuery] = useState<string>(whitelistDomain.searchQuery ?? '');
 
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<WhiteListDomain>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
+        setSetting('whitelistDomain',
+            {
                 ...state,
                 searchQuery: searchQuery
-            }));
-        setTableState(state);
-    }, [storage, searchQuery]);
+            });
+        setTableState(prevState => ({...prevState, ...state, searchQuery: searchQuery}));
+    }, [searchQuery]);
 
     // set pageIndex to 0 whenever search query change
     useEffect(() => {
-        const state = {...tableState, pageIndex: 0};
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
-                ...state
-            }));
+        const state = {...tableState, pageIndex: 0, searchQuery: searchQuery};
+        setSetting('whitelistDomain',state);
         setTableState(state);
-    }, [storage, searchQuery]);
+    }, [searchQuery]);
 
     const {
         isLoading,

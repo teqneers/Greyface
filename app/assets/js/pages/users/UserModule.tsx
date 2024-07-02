@@ -5,54 +5,42 @@ import {TableState} from 'react-table';
 
 import {useApplication} from '../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import {setSetting, useSettings} from '../../application/settings';
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
-import {User} from '../../types/user';
+import {GreyTableState} from '../../types/greylist';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
 import SetPassword from './SetPassword';
 import UsersTable from './UsersTable';
 
-const TABLE_STATE_STORAGE_KEY = 'greyface.users';
-
 const UserModule = () => {
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
+    const {users} = useSettings();
+    const [tableState, setTableState] = useState<GreyTableState>(users);
 
-    const storage = window.localStorage;
-    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
-    const [tableState, setTableState] = useState(storage_table_state_key ?? {
-        sortBy: [{id: 'username', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    });
-
-    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
+    const [searchQuery, setSearchQuery] = useState<string>(users.searchQuery ?? '');
 
     // run every time the table state change
-    const onStateChange = useCallback<(state: TableState<User>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
+    const onStateChange = useCallback<(state: TableState<GreyTableState>) => void>((state) => {
+        setSetting('users',
+            {
                 ...state,
                 searchQuery: searchQuery
-            }));
-        setTableState(state);
-    }, [storage, searchQuery]);
+            });
+        setTableState(prevState => ({...prevState, ...state, searchQuery: searchQuery}));
+    }, [searchQuery]);
 
     // set pageIndex to 0 whenever search query change
     useEffect(() => {
-        const state = {...tableState, pageIndex: 0};
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
-                ...state
-            }));
+        const state = {...tableState, pageIndex: 0, searchQuery: searchQuery};
+        setSetting('users', state);
         setTableState(state);
-    }, [storage, searchQuery]);
+    }, [searchQuery]);
 
     const {
         isLoading,

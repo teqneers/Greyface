@@ -5,57 +5,46 @@ import {TableState} from 'react-table';
 
 import {useApplication} from '../../application/ApplicationContext';
 import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
+import {setSetting, useSettings} from '../../application/settings';
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import UserFilter from '../../controllers/UserFilter';
+import {GreyTableStateWithUser} from '../../types/greylist';
 import {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
 import DeleteUserAlias from './DeleteUserAlias';
 import EditUserAlias from './EditUserAlias';
 import UserAliasTable from './UserAliasTable';
 
-const TABLE_STATE_STORAGE_KEY = 'greyface.useralias';
 const UserAliasModule: React.VFC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();
+    const {userAlias} = useSettings();
+    const [tableState, setTableState] = useState<GreyTableStateWithUser>(userAlias);
 
-    const storage = window.localStorage;
-    const storage_table_state_key = JSON.parse(storage.getItem(TABLE_STATE_STORAGE_KEY));
-    const [tableState, setTableState] = useState(storage_table_state_key ?? {
-        sortBy: [{id: 'username', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: '',
-        user: ''
-    });
-
-    const [searchQuery, setSearchQuery] = useState(tableState.searchQuery ?? '');
-    const [user, setUser] = useState(tableState.user ?? '');
+    const [searchQuery, setSearchQuery] = useState<string>(userAlias.searchQuery ?? '');
+    const [user, setUser] = useState(userAlias.user ?? '');
 
     // run every time the table state change
     const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
+        setSetting('userAlias',
+            {
                 ...state,
                 searchQuery: searchQuery,
                 user: user
-            }));
-        setTableState(state);
-    }, [storage, user, searchQuery]);
+            });
+        setTableState(prevState => ({...prevState, ...state, searchQuery: searchQuery}));
+    }, [searchQuery, user]);
 
     // set pageIndex to 0 whenever search query change
     useEffect(() => {
-        const state = {...tableState, pageIndex: 0};
-        storage.setItem(TABLE_STATE_STORAGE_KEY,
-            JSON.stringify({
-                ...state
-            }));
+        const state = {...tableState, pageIndex: 0, searchQuery: searchQuery, user: user};
+        setSetting('userAlias', state);
         setTableState(state);
-    }, [storage, searchQuery, user]);
+    }, [searchQuery, user]);
 
     const {
         isLoading,
