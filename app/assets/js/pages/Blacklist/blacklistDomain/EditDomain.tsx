@@ -7,7 +7,8 @@ import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
 import {BlackListDomain} from '../../../types/greylist';
-import FormDomain , {DomainRequest, DomainValues} from './FormDomain';
+import {DomainRequest, DomainValues} from '../../../utils/yupSchema';
+import FormDomain from './FormDomain';
 
 interface EditDomainProps {
     onUpdate: () => void,

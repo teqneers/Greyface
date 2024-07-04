@@ -21,6 +21,10 @@ popd >/dev/null
 dryRun=false
 local=0
 
+
+source "${SCRIPT_PATH}/docker/common/_env_loader.sh"
+loadEnv
+
 # define color variable to be used in echo, cat, ...
 if [[ -n "${TERM:-}" && ${TERM} != "dumb" ]]; then
     readonly C_BLACK="$(tput setaf 0)"          # Black

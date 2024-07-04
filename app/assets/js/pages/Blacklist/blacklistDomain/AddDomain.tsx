@@ -5,7 +5,8 @@ import {useMutation} from 'react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
-import FormDomain , {DomainRequest, DomainValues} from './FormDomain';
+import {DomainRequest, DomainValues} from '../../../utils/yupSchema';
+import FormDomain from './FormDomain';
 
 interface AddDomainProps {
     onCancel: () => void,

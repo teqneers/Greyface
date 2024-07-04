@@ -8,10 +8,8 @@ import {DomainRequest, DomainSchema, DomainValues} from '../../../utils/yupSchem
 import CancelButton from '../../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../../controllers/Buttons/SubmitButton';
 
-
-
 interface FormDomainProps<TValues extends object, TData, TRes, TError> {
-    createMode: boolean,
+    createMode?: boolean,
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,

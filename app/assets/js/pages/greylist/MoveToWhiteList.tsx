@@ -16,6 +16,7 @@ const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
 
+    const withConfirmation = false;
     const [show, setShow] = useState(false);
 
     const moveRecord = useMutation(
@@ -44,20 +45,21 @@ const MoveToWhiteList = ({onMove, data}: MoveToWhiteListProps) => {
     return (
         <>
             {/* Move with confirmation */}
-            {/* <DefaultButton label="button.moveToWhitelist" onClick={() => setShow(true)}/>
+            {withConfirmation && <><DefaultButton label="button.moveToWhitelist" onClick={() => setShow(true)}/>
 
-            <ModalConfirmation
-                show={show}
-                confirmBtnVariant="outline-primary"
-                confirmBtn="button.moveToWhitelist"
-                onConfirm={() => moveRecord.mutateAsync(data)}
-                onCancel={() => setShow(false)}
-                title="greylist.moveToWhitelistHeader">
-                {t('greylist.moveToWhitelistMessage')}
-            </ModalConfirmation> */}
+                <ModalConfirmation
+                    show={show}
+                    confirmBtnVariant="outline-primary"
+                    confirmBtn="button.moveToWhitelist"
+                    onConfirm={() => moveRecord.mutateAsync(data)}
+                    onCancel={() => setShow(false)}
+                    title="greylist.moveToWhitelistHeader">
+                    {t('greylist.moveToWhitelistMessage')}
+                </ModalConfirmation> </>}
 
             {/* Move without confirmation */}
-            <DefaultButton label="button.moveToWhitelist" onClick={() => moveRecord.mutateAsync(data)}/>
+            {!withConfirmation &&
+                <DefaultButton label="button.moveToWhitelist" onClick={() => moveRecord.mutateAsync(data)}/>}
 
         </>
     );

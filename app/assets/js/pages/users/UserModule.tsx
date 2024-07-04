@@ -40,6 +40,7 @@ const UserModule = () => {
         const state = {...tableState, pageIndex: 0, searchQuery: searchQuery};
         setSetting('users', state);
         setTableState(state);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery]);
 
     const {

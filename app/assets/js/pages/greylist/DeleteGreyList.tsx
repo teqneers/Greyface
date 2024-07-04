@@ -16,6 +16,7 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
 
+    const withConfirmation = false;
     const [show, setShow] = useState(false);
 
     const deleteRecord = useMutation(
@@ -44,18 +45,18 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
     return (
         <>
             {/* Delete with confirmation */}
-            {/* <DeleteButton onClick={() => setShow(true)} />
+            {withConfirmation && <><DeleteButton onClick={() => setShow(true)}/>
 
-            <ModalConfirmation
-                show={show}
-                onConfirm={() => deleteRecord.mutateAsync(data)}
-                onCancel={() => setShow(false)}
-                title="greylist.deleteHeader">
-                {t('greylist.deleteMessage')}
-            </ModalConfirmation> */}
+                <ModalConfirmation
+                    show={show}
+                    onConfirm={() => deleteRecord.mutateAsync(data)}
+                    onCancel={() => setShow(false)}
+                    title="greylist.deleteHeader">
+                    {t('greylist.deleteMessage')}
+                </ModalConfirmation></>}
 
             {/* Delete without confirmation */}
-            <DeleteButton onClick={() => deleteRecord.mutateAsync(data)} />
+            {!withConfirmation && <DeleteButton onClick={() => deleteRecord.mutateAsync(data)}/>}
         </>
     );
 };

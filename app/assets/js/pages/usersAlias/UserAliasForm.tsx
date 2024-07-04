@@ -47,7 +47,7 @@ function Schema(t: TFunction): yup.AnySchema {
 }
 
 interface UserAliasFromProps<TValues extends object, TData, TRes, TError> {
-    createMode: boolean,
+    createMode?: boolean,
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,

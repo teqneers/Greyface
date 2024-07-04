@@ -11,14 +11,13 @@ const normalSplitSize: [number, number] = [40, 60];
 type SettingsType = {
     locale: SettingsLocale,
     splitViewSizes: Record<string, [number, number]> | null,
+    greyList: GreyTableStateWithUser,
     autoWhitelistDomain: GreyTableState,
     autoWhitelistEmail: GreyTableState,
     whitelistDomain: GreyTableState,
-    whilelistEmail: GreyTableState,
+    whitelistEmail: GreyTableState,
     blacklistDomain: GreyTableState,
     blacklistEmail: GreyTableState,
-    whitelistEmail: GreyTableState,
-    greyList: GreyTableStateWithUser,
     userAlias: GreyTableStateWithUser,
     users: GreyTableState
 };
@@ -50,9 +49,9 @@ const INITIAL_SETTINGS: SettingsType = {
         pageIndex: 0,
         searchQuery: ''
     },
-    whilelistEmail: {
+    whitelistEmail: {
         columnOrder: [],
-        sortBy: [{id: 'name', desc: false}],
+        sortBy: [{id: 'email', desc: false}],
         filters: [],
         pageSize: 10,
         pageIndex: 0,
@@ -67,14 +66,6 @@ const INITIAL_SETTINGS: SettingsType = {
         searchQuery: ''
     },
     blacklistEmail: {
-        columnOrder: [],
-        sortBy: [{id: 'email', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    whitelistEmail: {
         columnOrder: [],
         sortBy: [{id: 'email', desc: false}],
         filters: [],

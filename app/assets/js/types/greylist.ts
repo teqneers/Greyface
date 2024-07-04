@@ -1,4 +1,3 @@
-import {boolean} from 'yup';
 import {DateObject} from './common';
 
 export interface Greylist {

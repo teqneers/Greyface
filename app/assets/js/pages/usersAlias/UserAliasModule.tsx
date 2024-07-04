@@ -44,6 +44,7 @@ const UserAliasModule: React.VFC = () => {
         const state = {...tableState, pageIndex: 0, searchQuery: searchQuery, user: user};
         setSetting('userAlias', state);
         setTableState(state);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery, user]);
 
     const {

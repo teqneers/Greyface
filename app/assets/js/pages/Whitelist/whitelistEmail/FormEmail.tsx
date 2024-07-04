@@ -9,7 +9,7 @@ import SubmitButton from '../../../controllers/Buttons/SubmitButton';
 import {EmailRequest, EmailSchema, EmailValues} from '../../../utils/yupSchema';
 
 interface FormEmailProps<TValues extends object, TData, TRes, TError> {
-    createMode: boolean,
+    createMode?: boolean,
     submitBtn?: string | null,
     onCancel?: () => void,
     initialValues: TValues,

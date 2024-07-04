@@ -12,7 +12,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.19",
         "jms/serializer-bundle": "^5.4",
-        "knpuniversity/oauth2-client-bundle": "^2.10",
         "nyholm/psr7": "^1.5",
         "ramsey/uuid": "^4.3",
         "stof/doctrine-extensions-bundle": "^1.11",
@@ -101,9 +100,6 @@
             "allow-contrib": false,
             "require": "7.1.*",
             "docker": false
-        },
-        "runtime": {
-            "dotenv_path": "../.env"
         }
     }
 }

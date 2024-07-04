@@ -5,7 +5,8 @@ import {useMutation} from 'react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
-import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
+import FormEmail from './FormEmail';
+import {EmailRequest, EmailValues} from '../../../utils/yupSchema';
 
 interface AddEmailProps {
     onCancel: () => void,

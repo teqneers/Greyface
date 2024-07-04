@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
@@ -12,7 +11,7 @@ if ($script[0] !== '/') {
     }
     $script = $_SERVER['PWD'] . '/' . $script;
 }
-$appPath = dirname($script, 2);
+$appPath = dirname($script, 3);
 
 $_SERVER['APP_PATH']            = $appPath;
 $_SERVER['APP_RUNTIME_OPTIONS'] = [
@@ -27,10 +26,10 @@ if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
     throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
 }
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+require_once dirname(__DIR__) . '/vendor/autoload_runtime.php';
 
-return function (array $context) {
-    $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+return static function (array $context) {
+    $kernel = new Kernel($context['APP_ENV'], (bool)$context['APP_DEBUG']);
 
     return new Application($kernel);
 };

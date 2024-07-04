@@ -7,7 +7,8 @@ import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
 import {BlackListEmail} from '../../../types/greylist';
-import FormEmail, {EmailRequest, EmailValues} from './FormEmail';
+import {EmailRequest, EmailValues} from '../../../utils/yupSchema';
+import FormEmail from './FormEmail';
 
 interface EditEmailProps {
     onUpdate: () => void,

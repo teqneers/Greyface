@@ -40,6 +40,7 @@ const GreyListModule: React.VFC = () => {
         const state = {...tableState, pageIndex: 0, searchQuery: searchQuery, user: user};
         setSetting('greyList', state);
         setTableState(state);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery, user]);
 
     const {

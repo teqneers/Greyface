@@ -38,6 +38,7 @@ const AutoDomainModule: React.VFC = () => {
         const state = {...tableState, pageIndex: 0, searchQuery: searchQuery};
         setSetting('autoWhitelistDomain',state);
         setTableState(state);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery]);
 
     const {
