@@ -196,7 +196,7 @@ if [[ ! -e "${clone}/app/var" ]]; then
     mkdir -p "${cacheDir}"
     mkdir -p "${logDir}"
 
-    git add "${clone}/app/var"
+    git add -f "${clone}/app/var"
     git commit -a -m "added var folder"
 fi
 
