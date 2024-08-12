@@ -9,8 +9,6 @@ use App\Doctrine\Migration\UsersMigrationHelper;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class Version20220727125614 extends AbstractMigration
 {

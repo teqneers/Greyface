@@ -9,9 +9,6 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Uuid;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20220718125037 extends AbstractMigration
 {
     use UsersMigrationHelper;
