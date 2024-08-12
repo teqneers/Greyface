@@ -197,7 +197,7 @@ if [[ ! -e "${clone}/app/var" ]]; then
     mkdir -p "${logDir}"
 
     git add -f "${clone}/app/var"
-    git commit -a -m "added var folder"
+    git commit -m "added var folder"
 fi
 
 echo -e "\n- generate new build artifacts"
