@@ -5,15 +5,14 @@ namespace App\Controller\Api\OptIn;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmail;
 use App\Domain\Entity\OptIn\OptInEmail\OptInEmailRepository;
 use App\Messenger\Validation;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use IteratorAggregate;
+use OutOfBoundsException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use OutOfBoundsException;
-use IteratorAggregate;
 
 #[Route('/api/opt-in/emails')]
 class OptInEmailController

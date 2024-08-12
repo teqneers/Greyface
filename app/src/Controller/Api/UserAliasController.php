@@ -9,8 +9,8 @@ use App\Domain\UserAlias\Command\DeleteUserAlias;
 use App\Domain\UserAlias\Command\UpdateUserAlias;
 use App\Messenger\Validation;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,8 +70,8 @@ class UserAliasController
 
     #[Route('/{alias}', requirements: ['alias' => '%routing.uuid%'], methods: ['GET'])]
     #[IsGranted('USER_ALIAS_SHOW', subject: 'alias')]
-    #[ParamConverter('alias', class: UserAlias::class, converter: 'app.alias')]
     public function show(
+        #[ValueResolver('app.alias')]
         UserAlias $alias
     ): Response
     {
@@ -130,8 +130,8 @@ class UserAliasController
 
     #[Route('/{alias}', requirements: ['alias' => '%routing.uuid%'], methods: ['PUT'])]
     #[IsGranted('USER_ALIAS_EDIT', subject: 'alias')]
-    #[ParamConverter('alias', class: UserAlias::class, converter: 'app.alias')]
     public function edit(
+        #[ValueResolver('app.alias')]
         UserAlias           $alias,
         Request             $request,
         ValidatorInterface  $validator,
@@ -156,8 +156,8 @@ class UserAliasController
 
     #[Route('/{alias}', requirements: ['alias' => '%routing.uuid%'], methods: ['DELETE'])]
     #[IsGranted('USER_ALIAS_DELETE', subject: 'alias')]
-    #[ParamConverter('alias', class: UserAlias::class, converter: 'app.alias')]
     public function delete(
+        #[ValueResolver('app.alias')]
         UserAlias           $alias,
         MessageBusInterface $commandBus,
     ): Response

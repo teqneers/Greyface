@@ -20,9 +20,7 @@ services:
   App\Domain\User\Validator\UniqueUsernameValidator:
   App\Domain\User\Validator\RoleValidValidator:
 
-  App\Domain\User\Request\UserParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.user }
+  App\Domain\User\Request\UserValueResolver:
 
   App\Domain\User\Security\UserVoter:
   App\Domain\User\Security\ChangePasswordVoter:

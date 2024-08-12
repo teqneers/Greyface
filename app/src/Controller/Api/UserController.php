@@ -9,8 +9,8 @@ use App\Domain\User\Command\DeleteUser;
 use App\Domain\User\Command\SetPassword;
 use App\Domain\User\Command\UpdateUser;
 use App\Messenger\Validation;
+use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,8 +60,8 @@ class UserController
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['GET'])]
     #[IsGranted('USER_SHOW', subject: 'user')]
-    #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function show(
+        #[ValueResolver('app.user')]
         User $user
     ): Response
     {
@@ -116,8 +116,8 @@ class UserController
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['PUT'])]
     #[IsGranted('USER_EDIT', subject: 'user')]
-    #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function edit(
+        #[ValueResolver('app.user')]
         User                $user,
         Request             $request,
         ValidatorInterface  $validator,
@@ -143,9 +143,9 @@ class UserController
 
     #[Route('/{user}/password', requirements: ['user' => '%routing.uuid%'], methods: ['PUT'])]
     #[IsGranted('USER_EDIT', subject: 'user')]
-    #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function setPassword(
         MessageBusInterface $commandBus,
+        #[ValueResolver('app.user')]
         User $user,
         Request             $request,
         ValidatorInterface  $validator
@@ -166,8 +166,8 @@ class UserController
 
     #[Route('/{user}', requirements: ['user' => '%routing.uuid%'], methods: ['DELETE'])]
     #[IsGranted('USER_DELETE', subject: 'user')]
-    #[ParamConverter('user', class: User::class, converter: 'app.user')]
     public function delete(
+        #[ValueResolver('app.user')]
         User                $user,
         MessageBusInterface $commandBus,
     ): Response

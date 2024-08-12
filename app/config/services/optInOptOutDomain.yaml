@@ -8,22 +8,6 @@ services:
   App\Domain\Entity\OptIn\OptInEmail\OptInEmailRepository:
   App\Domain\Entity\OptOut\OptOutEmail\OptOutEmailRepository:
 
-  App\Domain\OptIn\OptInDomain\Request\OptInDomainParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.optInDomain }
-
-  App\Domain\OptOut\OptOutDomain\Request\OptOutDomainParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.optOutDomain }
-
-  App\Domain\OptIn\OptInEmail\Request\OptInEmailParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.optInEmail }
-
-  App\Domain\OptOut\OptOutEmail\Request\OptOutEmailParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.optOutEmail }
-
   App\Domain\OptIn\OptInDomain\Validator\UniqueDomainValidator:
   App\Domain\OptOut\OptOutDomain\Validator\UniqueDomainValidator:
   App\Domain\OptOut\OptOutEmail\Validator\UniqueEmailValidator:

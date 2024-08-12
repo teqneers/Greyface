@@ -17,9 +17,7 @@ services:
     tags:
       - { name: messenger.message_handler, bus: event.bus }
 
-  App\Domain\UserAlias\Request\UserAliasParamConverter:
-    tags:
-      - { name: request.param_converter, converter: app.alias }
+  App\Domain\UserAlias\Request\UserAliasValueResolver:
 
   App\Domain\UserAlias\Security\UserAliasVoter:
   App\Domain\UserAlias\Validator\UniqueEntryValidator:
