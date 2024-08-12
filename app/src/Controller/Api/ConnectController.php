@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListRepository;
+use App\Domain\Entity\Connect\Connect;
 use App\Domain\Entity\Connect\ConnectRepository;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\UserInterface;
@@ -72,11 +73,6 @@ class ConnectController
         $source = $data['source'] ?? '';
         $rcpt = $data['rcpt'] ?? '';
 
-        $isAlreadyInWhitelist = $emailAutoWhiteListRepository->find([
-            'name' => $name,
-            'domain' => $domain,
-            'source' => $source
-        ]);
         $greylist = $connectRepository->find([
             'name' => $name,
             'domain' => $domain,
@@ -89,10 +85,16 @@ class ConnectController
             );
         }
 
+        [$sender_domain, $deverp_sender_name] = $this->normalize_sender($greylist);
+        $isAlreadyInWhitelist = $emailAutoWhiteListRepository->find([
+            'name' => $deverp_sender_name,
+            'domain' => $sender_domain,
+            'source' => $greylist->getSource()
+        ]);
         if (!$isAlreadyInWhitelist) {
             $emailAwl = EmailAutoWhiteList::create(
-                $greylist->getName(),
-                $greylist->getDomain(),
+                $deverp_sender_name, // sqlgrey is normalize_sender in from_awl table
+                $sender_domain,
                 $greylist->getSource(),
                 $greylist->getFirstSeen(),
                 $greylist->getFirstSeen());
@@ -155,5 +157,37 @@ class ConnectController
             return new JsonResponse('Domain deleted successfully!');
         }
         return new JsonResponse('Date is missing!', 500);
+    }
+
+    // check https://github.com/jessereynolds/sqlgrey/blob/master/sqlgrey#L1166
+    private function normalize_sender(Connect $greylist): array
+    {
+        $user = $greylist->getName();
+        $domain = $greylist->getDomain();
+        $rcpt = $greylist->getRcpt();
+
+        return [
+            substr($domain, 0, 255),
+            substr($this->deverp_user($user, $rcpt), 0, 64)
+        ];
+    }
+
+    // check https://github.com/jessereynolds/sqlgrey/blob/master/sqlgrey#L1166
+    private function deverp_user(string $user, string $rcpt): string
+    {
+        // Try to match single-use addresses
+        // SRS (first and subsequent levels of forwarding)
+        $user = preg_replace('/^srs0=[^=]+=[^=]+=([^=]+)=([^=]+)$/', 'srs0=#=#=$1=$2', $user);
+        $user = preg_replace('/^srs1=[^=]+=([^=]+)(=+)[^=]+=[^=]+=([^=]+)=([^=]+)$/', 'srs1=#=$1$2#=#=$3=$4', $user);
+
+        // Strip extension, used sometimes for mailing-list VERP
+        $user = preg_replace('/\+.*$/', '', $user);
+
+        // Strip frequently used bounce/return masks
+        $user = preg_replace('/((bo|bounce|notice-return|notice-reply)[\._-])[0-9a-z-_\.]+$/', '$1#', $user);
+
+        // Strip hexadecimal sequences
+        // At the beginning only if user will contain at least 4 consecutive alpha chars
+        return preg_replace('/^[0-9a-f]{2,}(?=[._\/=-].*[a-z]{4,})|(?<=[._\/=-])[0-9a-f]+(?=[._\/=-]|$)/', '#', $user);
     }
 }
