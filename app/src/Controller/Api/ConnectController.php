@@ -184,7 +184,7 @@ class ConnectController
         $user = preg_replace('/\+.*$/', '', $user);
 
         // Strip frequently used bounce/return masks
-        $user = preg_replace('/((bo|bounce|notice-return|notice-reply)[\._-])[0-9a-z-_\.]+$/', '$1#', $user);
+        $user = preg_replace('/((bo|bounce|notice-return|notice-reply)[._-])[0-9a-z-_.]+$/', '$1#', $user);
 
         // Strip hexadecimal sequences
         // At the beginning only if user will contain at least 4 consecutive alpha chars
