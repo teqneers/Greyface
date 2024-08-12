@@ -187,6 +187,19 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
     composer install -d "${clone}/app"
 fi
 
+if [[ ! -e "${clone}/app/var" ]]; then
+    echo -e "\n-- create var folder"
+    varDir="${clone}/app/var"
+    cacheDir="${varDir}/cache"
+    logDir="${varDir}/log"
+    mkdir -p "${varDir}"
+    mkdir -p "${cacheDir}"
+    mkdir -p "${logDir}"
+
+    git add "${clone}/app/var"
+    git commit -a -m "added var folder"
+fi
+
 echo -e "\n- generate new build artifacts"
 "${clone}"/app/files/deploy/make.sh
 
