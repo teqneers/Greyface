@@ -14,7 +14,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -77,20 +77,19 @@ class ConnectController
             'domain' => $domain,
             'source' => $source
         ]);
+        $greylist = $connectRepository->find([
+            'name' => $name,
+            'domain' => $domain,
+            'source' => $source,
+            'rcpt' => $rcpt
+        ]);
+        if (!$greylist) {
+            throw new OutOfBoundsException(
+                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
+            );
+        }
 
         if (!$isAlreadyInWhitelist) {
-            $greylist = $connectRepository->find([
-                'name' => $name,
-                'domain' => $domain,
-                'source' => $source,
-                'rcpt' => $rcpt
-            ]);
-            if (!$greylist) {
-                throw new OutOfBoundsException(
-                    'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
-                );
-            }
-
             $emailAwl = EmailAutoWhiteList::create(
                 $greylist->getName(),
                 $greylist->getDomain(),
@@ -104,8 +103,8 @@ class ConnectController
             }
 
             $emailAutoWhiteListRepository->save($emailAwl);
-            $connectRepository->delete($greylist);
         }
+        $connectRepository->delete($greylist);
         return new JsonResponse('Data have been moved to whitelist!');
     }
 
