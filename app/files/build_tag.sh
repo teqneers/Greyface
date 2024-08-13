@@ -185,6 +185,8 @@ hash=$(git rev-parse --verify HEAD)
 if [[ ! -e "${clone}/app/vendor" ]]; then
     echo -e "\n-- composer install"
     composer install -d "${clone}/app"
+    echo -e "\n- commiting vendor folder"
+    git add -v -f "${clone}"/app/vendor
 fi
 
 echo -e "\n- generate new build artifacts"
