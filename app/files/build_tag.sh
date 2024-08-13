@@ -188,27 +188,15 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
 fi
 
 
-varDir="${clone}/var"
-cacheDir="${varDir}/cache"
-logDir="${varDir}/log"
-# Check if the var directory exists
-if [[ -d "${varDir}" ]]; then
-    # Remove the var directory and its contents
-    rm -rf "${varDir}"
-fi
-
+if [[ ! -e "${clone}/var" ]]; then
     echo -e "\n-- create var folder"
-
-    # Create the var directory and subdirectories
+    varDir="${clone}/var"
+    cacheDir="${varDir}/cache"
+    logDir="${varDir}/log"
+    mkdir -p "${varDir}"
     mkdir -p "${cacheDir}"
     mkdir -p "${logDir}"
-
-    # Set writable permissions
-    chmod 777 "${varDir}"
-    chmod 777 "${cacheDir}"
-    chmod 777 "${logDir}"
-
-
+fi
 
 echo -e "\n- generate new build artifacts"
 "${clone}"/app/files/deploy/make.sh
