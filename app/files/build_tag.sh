@@ -187,17 +187,10 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
     composer install -d "${clone}/app"
 fi
 
-echo -e "\n- generate new build artifacts"
-"${clone}"/app/files/deploy/make.sh
 
-echo -e "\n-- creating release tag"
-${dryRun} || git tag -a "${release}" -m "created version ${tag} @ ${hash}"
-${dryRun} || git push origin "${release}"
-
-
-if [[ ! -e "${clone}/app/var" ]]; then
+if [[ ! -e "${clone}/var" ]]; then
     echo -e "\n-- create var folder"
-    varDir="${clone}/app/var"
+    varDir="${clone}/var"
     cacheDir="${varDir}/cache"
     logDir="${varDir}/log"
     mkdir -p "${varDir}"
@@ -206,9 +199,15 @@ if [[ ! -e "${clone}/app/var" ]]; then
 fi
 
 echo -e "\n- commiting and pushing var folder"
-git add -v -f "${clone}"/app/var
-
+git add -v -f "${clone}"/var
 git commit -a -m "adds var folder for version ${tag} (${NOW})"
+
+echo -e "\n- generate new build artifacts"
+"${clone}"/app/files/deploy/make.sh
+
+echo -e "\n-- creating release tag"
+${dryRun} || git tag -a "${release}" -m "created version ${tag} @ ${hash}"
+${dryRun} || git push origin "${release}"
 
 echo -e "\n- commiting and pushing artifacts"
 git add -v -f "${clone}"/app/public/build
@@ -226,7 +225,7 @@ ${dryRun} || git push origin "${deploy}"
 
 if [[ "${local}" -eq 0 ]]; then
     echo -e "\n- cleaning up"
-    cleanup
+   # cleanup
 fi
 
 ${dryRun} && echo -e "\n${C_YELLOW}This was a DRY-RUN and no tags have been created!${C_RESET}"
