@@ -213,7 +213,7 @@ ${dryRun} || git push origin "${deploy}"
 
 if [[ "${local}" -eq 0 ]]; then
     echo -e "\n- cleaning up"
-   # cleanup
+    cleanup
 fi
 
 ${dryRun} && echo -e "\n${C_YELLOW}This was a DRY-RUN and no tags have been created!${C_RESET}"
