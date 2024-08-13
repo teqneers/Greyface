@@ -207,6 +207,7 @@ rm -rf "${clone}/app/files/"
 git commit -a -m "removed all files not needed for production for version ${tag} (${NOW})"
 
 echo -e "\n- creating deploy tag"
+${dryRun} || git config http.postBuffer 524288000
 ${dryRun} || git tag -a "${deploy}" -m "created build ${deploy} for version ${tag}"
 ${dryRun} || git push origin "${deploy}"
 
