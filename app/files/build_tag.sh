@@ -187,6 +187,14 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
     composer install -d "${clone}/app"
 fi
 
+echo -e "\n- generate new build artifacts"
+"${clone}"/app/files/deploy/make.sh
+
+echo -e "\n-- creating release tag"
+${dryRun} || git tag -a "${release}" -m "created version ${tag} @ ${hash}"
+${dryRun} || git push origin "${release}"
+
+
 if [[ ! -e "${clone}/app/var" ]]; then
     echo -e "\n-- create var folder"
     varDir="${clone}/app/var"
@@ -195,17 +203,7 @@ if [[ ! -e "${clone}/app/var" ]]; then
     mkdir -p "${varDir}"
     mkdir -p "${cacheDir}"
     mkdir -p "${logDir}"
-
-    git add -f "${clone}/app/var"
-    git commit -m "added var folder"
 fi
-
-echo -e "\n- generate new build artifacts"
-"${clone}"/app/files/deploy/make.sh
-
-echo -e "\n-- creating release tag"
-${dryRun} || git tag -a "${release}" -m "created version ${tag} @ ${hash}"
-${dryRun} || git push origin "${release}"
 
 echo -e "\n- commiting and pushing artifacts"
 git add -v -f "${clone}"/app/public/build
@@ -215,10 +213,6 @@ git commit -a -m "adds built javascript application for version ${tag} (${NOW})"
 echo -e "\n- remove all files not needed for production"
 rm -rf "${clone}/app/tests/"
 rm -rf "${clone}/app/files/"
-rm -f "${clone}/.editorconfig"
-rm -f "${clone}/Jenkinsfile"*
-rm -f "${clone}/.gitlab-ci.yml"
-rm -f "${clone}/local_config."*
 git commit -a -m "removed all files not needed for production for version ${tag} (${NOW})"
 
 echo -e "\n- creating deploy tag"
