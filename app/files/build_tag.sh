@@ -198,10 +198,6 @@ if [[ ! -e "${clone}/var" ]]; then
     mkdir -p "${logDir}"
 fi
 
-echo -e "\n- commiting and pushing var folder"
-git add -v -f "${clone}"/var
-git commit -a -m "adds var folder for version ${tag} (${NOW})"
-
 echo -e "\n- generate new build artifacts"
 "${clone}"/app/files/deploy/make.sh
 
@@ -213,6 +209,10 @@ echo -e "\n- commiting and pushing artifacts"
 git add -v -f "${clone}"/app/public/build
 
 git commit -a -m "adds built javascript application for version ${tag} (${NOW})"
+
+echo -e "\n- commiting and pushing var folder"
+git add -v -f "${clone}"/var
+git commit -a -m "adds var folder for version ${tag} (${NOW})"
 
 echo -e "\n- remove all files not needed for production"
 rm -rf "${clone}/app/tests/"
