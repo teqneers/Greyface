@@ -187,6 +187,29 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
     composer install -d "${clone}/app"
 fi
 
+
+varDir="${clone}/var"
+cacheDir="${varDir}/cache"
+logDir="${varDir}/log"
+# Check if the var directory exists
+if [[ -d "${varDir}" ]]; then
+    # Remove the var directory and its contents
+    rm -rf "${varDir}"
+fi
+
+    echo -e "\n-- create var folder"
+
+    # Create the var directory and subdirectories
+    mkdir -p "${cacheDir}"
+    mkdir -p "${logDir}"
+
+    # Set writable permissions
+    chmod 777 "${varDir}"
+    chmod 777 "${cacheDir}"
+    chmod 777 "${logDir}"
+
+
+
 echo -e "\n- generate new build artifacts"
 "${clone}"/app/files/deploy/make.sh
 
@@ -200,24 +223,6 @@ git add -v -f "${clone}"/app/public/build
 git commit -a -m "adds built javascript application for version ${tag} (${NOW})"
 
 echo -e "\n- commiting and pushing var folder"
-varDir="${clone}/var"
-cacheDir="${varDir}/cache"
-logDir="${varDir}/log"
-
-# Check if the var directory exists
-if [[ -d "${varDir}" ]]; then
-    # Remove the var directory and its contents
-    rm -rf "${varDir}"
-fi
-
-# Create the var directory and subdirectories
-mkdir -p "${cacheDir}"
-mkdir -p "${logDir}"
-
-# Set writable permissions
-chmod 777 "${varDir}"
-chmod 777 "${cacheDir}"
-chmod 777 "${logDir}"
 git add -v -f "${clone}"/var
 git commit -a -m "adds var folder for version ${tag} (${NOW})"
 
