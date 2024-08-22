@@ -18,7 +18,7 @@ handleError() {
 }
 
 scriptPath="$(cd "$(dirname "$0")" && pwd -P)"
-public_path=${0}
+public_path=${1}
 
 
 if [ -z "${public_path}" ]; then
