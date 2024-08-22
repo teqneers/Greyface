@@ -128,7 +128,7 @@ if [[ ! "${version}" =~ [.0-9]+ ]]; then
 fi
 
 if [ -z "${public_path}" ]; then
-    public_path="/build"
+    public_path="/greyface/build"
 fi
 
 #
