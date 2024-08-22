@@ -120,10 +120,15 @@ fi
 
 source=${1}
 version=${2}
+public_path=${3}
 
 if [[ ! "${version}" =~ [.0-9]+ ]]; then
     echo >&2 "ERROR: invalid tag name ${version}.\n"
     exit 2
+fi
+
+if [ -z "${public_path}" ]; then
+    public_path="/build"
 fi
 
 #
@@ -190,7 +195,7 @@ if [[ ! -e "${clone}/app/vendor" ]]; then
 fi
 
 echo -e "\n- generate new build artifacts"
-"${clone}"/app/files/deploy/make.sh
+"${clone}"/app/files/deploy/make.sh "${public_path}"
 
 echo -e "\n-- creating release tag"
 ${dryRun} || git tag -a "${release}" -m "created version ${tag} @ ${hash}"

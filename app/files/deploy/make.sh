@@ -18,6 +18,12 @@ handleError() {
 }
 
 scriptPath="$(cd "$(dirname "$0")" && pwd -P)"
+public_path=${0}
+
+
+if [ -z "${public_path}" ]; then
+    public_path="/greyface/build"
+fi
 
 #
 # Greyface
@@ -29,6 +35,7 @@ fi
 if [ -d node_modules ]; then
     rm -rf node_modules/*
 fi
-npm install --verbose && npm run build
+
+PUBLIC_PATH=${public_path} npm install  --verbose && PUBLIC_PATH=${public_path} npm run  build
 
 # vim: syntax=sh ts=4 sw=4 sts=4 sr noet
