@@ -1,0 +1,21 @@
+doctrine:
+    orm:
+        dql:
+            datetime_functions:
+                second: DoctrineExtensions\Query\Oracle\Second
+                minute: DoctrineExtensions\Query\Oracle\Minute
+                hour: DoctrineExtensions\Query\Oracle\Hour
+                day: DoctrineExtensions\Query\Oracle\Day
+                month: DoctrineExtensions\Query\Oracle\Month
+                year: DoctrineExtensions\Query\Oracle\Year
+                to_char: DoctrineExtensions\Query\Oracle\ToChar
+                trunc: DoctrineExtensions\Query\Oracle\Trunc
+
+            string_functions:
+                nvl: DoctrineExtensions\Query\Oracle\Nvl
+                listagg: DoctrineExtensions\Query\Oracle\Listagg
+                to_date: DoctrineExtensions\Query\Oracle\ToDate
+
+            numeric_functions:
+                ceil: DoctrineExtensions\Query\Oracle\Ceil
+                floor: DoctrineExtensions\Query\Oracle\Floor
