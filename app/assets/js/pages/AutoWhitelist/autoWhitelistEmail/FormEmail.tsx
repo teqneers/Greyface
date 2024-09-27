@@ -86,6 +86,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
                                     isInvalid={!!errors.name}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.name}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -100,6 +101,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
                                     isInvalid={!!errors.domain}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.domain}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -113,6 +115,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
                                     onChange={handleChange}
                                     isInvalid={!!errors.source}/>
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.source}
                                 </Form.Control.Feedback>
                             </Form.Group>

@@ -86,7 +86,7 @@ const UserAliasModule: React.FC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? (//@ts-ignore
                 <div>Error: {error}</div>
             ) : (<UserAliasTable
                 data={data.results}

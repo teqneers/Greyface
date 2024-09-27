@@ -252,3 +252,12 @@ body {
   padding: 0.2rem 0.4rem;
   font-size: 0.775rem;
 }
+
+.btn-outline-primary, .btn-outline-warning, .btn-outline-danger {
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-color: #ffffff;
+}
+
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 1px rgba(171, 121, 103, 0.25);
+}

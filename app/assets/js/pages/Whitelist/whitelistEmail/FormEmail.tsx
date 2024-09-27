@@ -81,6 +81,7 @@ function FormEmail<TValues extends EmailValues, TData extends EmailRequest>(
                                                         </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
+                                                            {/*// @ts-ignore*/}
                                                             {(errors.email instanceof Array) ? errors.email?.[index] : errors.email}
                                                         </Form.Control.Feedback>
                                                     </InputGroup>

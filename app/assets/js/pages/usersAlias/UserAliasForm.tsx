@@ -116,6 +116,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                     })}
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.user_id}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -149,6 +150,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                                         </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
+                                                            {/*// @ts-ignore*/}
                                                             {(errors.alias_name instanceof Array) ? errors.alias_name?.[index] : errors.alias_name}
                                                         </Form.Control.Feedback>
                                                     </InputGroup>

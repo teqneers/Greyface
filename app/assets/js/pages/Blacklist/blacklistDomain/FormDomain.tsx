@@ -81,6 +81,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                                                         </Button>}
 
                                                         <Form.Control.Feedback type="invalid">
+                                                            {/*// @ts-ignore*/}
                                                             {(errors.domain instanceof Array) ? errors.domain?.[index] : errors.domain}
                                                         </Form.Control.Feedback>
                                                     </InputGroup>

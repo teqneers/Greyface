@@ -112,6 +112,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                                     isInvalid={!!errors.username}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.username}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -125,6 +126,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                                     onChange={handleChange}
                                     isInvalid={!!errors.email}/>
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.email}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -143,6 +145,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                                     })}
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.role}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -159,6 +162,7 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                                     isInvalid={!!errors.password}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.password}
                                 </Form.Control.Feedback>
                             </Form.Group>)}

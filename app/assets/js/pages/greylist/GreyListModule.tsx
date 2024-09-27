@@ -83,7 +83,7 @@ const GreyListModule: React.FC = () => {
             {!isAdministrator() && <ModuleTopBar title="greylist.header"
                                                  setSearchQuery={setSearchQuery}/>}
 
-            {isError ? (
+            {isError ? (//@ts-ignore
                 <div>Error: {error}</div>
             ) : (<GreyListTable
                 data={data.results}

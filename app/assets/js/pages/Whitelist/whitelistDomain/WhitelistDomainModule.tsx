@@ -73,7 +73,7 @@ const WhitelistDomainModule: React.FC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? ( //@ts-ignore
                 <div>Error: {error}</div>
             ) : (<WhitelistDomainTable
                 data={data.results}

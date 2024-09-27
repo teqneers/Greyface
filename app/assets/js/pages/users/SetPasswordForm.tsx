@@ -30,8 +30,8 @@ function Schema(t: TFunction): yup.AnySchema {
                 passwordConfirmation: yup.string()
                     .required()
                     .when('password', {
-                        is: password => (password && password.length > 0),
-                        then: yup.string().oneOf([yup.ref('password')], t('errors.passNotMatch'))
+                        is: (password: string) => !!password && password.length > 0,
+                        then: (schema) => schema.oneOf([yup.ref('password')], t('errors.passNotMatch'))
                     })
             }
         );
@@ -89,6 +89,7 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                                     isInvalid={!!errors.password}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.password}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -104,6 +105,7 @@ function SetPasswordForm<TValues extends SetPasswordValues, TData extends SetPas
                                     isInvalid={!!errors.passwordConfirmation}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.passwordConfirmation}
                                 </Form.Control.Feedback>
                             </Form.Group>

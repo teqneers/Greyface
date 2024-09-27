@@ -75,7 +75,7 @@ const AutoEmailModule: React.FC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? ( //@ts-ignore
                 <div>Error: {error}</div>
             ) : (<AutoWhitelistEmailTable
                 data={data.results}

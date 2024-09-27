@@ -94,8 +94,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                                     onChange={handleChange}
                                     isInvalid={!!errors.source}/>
                                 <Form.Control.Feedback type="invalid">
-                                    {/*// @ts-ignore*/}
-                                    {errors.source}
+                                    {errors.source as ReactNode}
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Row>

@@ -74,7 +74,7 @@ const BlacklistEmailModule: React.FC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? (//@ts-ignore
                 <div>Error: {error}</div>
             ) : (<BlacklistEmailTable
                 data={data.results}

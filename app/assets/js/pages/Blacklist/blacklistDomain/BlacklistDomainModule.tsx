@@ -74,7 +74,7 @@ const BlacklistDomainModule: React.FC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? (//@ts-ignore
                 <div>Error: {error}</div>
             ) : (<BlacklistDomainTable
                 data={data.results}

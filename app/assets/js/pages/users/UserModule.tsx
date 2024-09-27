@@ -74,7 +74,7 @@ const UserModule = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? (//@ts-ignore
                 <div>Error: {error}</div>
             ) : (<UsersTable
                 data={data.results}

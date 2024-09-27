@@ -34,8 +34,8 @@
             "search": "Search",
             "searchByText": "Search by Text",
             "user": "User",
-            "noData": "Keine Daten gefunden",
-            "sortBy": "Sortieren nach",
+            "noData": "No Data",
+            "sortBy": "Sort by",
             "addMore": "Add another",
             "showAll": "Show All",
             "showUnassigned": "Show Unassigned"
