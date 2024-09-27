@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 
 export interface ApplicationModuleContainerProps {
     title: string,
+    children?: React.ReactNode,
 }
 
 const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({title, children}) => {
@@ -13,7 +14,6 @@ const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({
 
     return (
         <Container fluid className="module-container mt-4">
-            {/* @ts-ignore */}
             <Helmet>
                 <title>{t(title)}</title>
             </Helmet>

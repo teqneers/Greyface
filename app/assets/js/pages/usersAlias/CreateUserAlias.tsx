@@ -12,7 +12,7 @@ interface CreateUserAliasProps {
     onCreate: () => void,
 }
 
-const CreateUserAlias: React.VFC<CreateUserAliasProps> = ({onCancel, onCreate}) => {
+const CreateUserAlias: React.FC<CreateUserAliasProps> = ({onCancel, onCreate}) => {
     const {user} = useApplication();
     const {apiUrl} = useApplication();
     const [error, setError] = useState<string | null>(null);

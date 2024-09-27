@@ -12,7 +12,7 @@ interface AddDomainProps {
     onCreate: () => void,
 }
 
-const AddDomain: React.VFC<AddDomainProps> = ({onCancel, onCreate}) => {
+const AddDomain: React.FC<AddDomainProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();

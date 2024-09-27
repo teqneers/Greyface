@@ -7,6 +7,7 @@ export interface ModalProps {
     show?: boolean,
     title: string,
     onHide: () => void,
+    children?: React.ReactNode,
 }
 
 const ModalForm: React.FC<ModalProps> = (

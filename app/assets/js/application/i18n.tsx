@@ -1,23 +1,23 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import * as DateFns from 'date-fns';
 import dateFns_de from 'date-fns/locale/de';
 import dateFns_en from 'date-fns/locale/en-US';
 
-import {EventDispatcher, useSubscription} from '../utils/event';
-
-import {SettingsLocale, useSettings} from './settings';
+import i18n from 'i18next';
 
 import numeral from 'numeral';
 import 'numeral/locales/de';
+import React, {ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {initReactI18next} from 'react-i18next';
 
 import * as yup from 'yup';
-
-import i18n from 'i18next';
-import {initReactI18next} from 'react-i18next';
 // @ts-ignore
 import translation_de from '../../translations/de.json';
 // @ts-ignore
 import translation_en from '../../translations/en.json';
+
+import {EventDispatcher, useSubscription} from '../utils/event';
+
+import {SettingsLocale, useSettings} from './settings';
 
 const eventDispatcher = new EventDispatcher<string>();
 let [currentLanguage] = navigator.language.split('-');
@@ -94,6 +94,7 @@ interface Localization {
     locale: string,
     timezone: string,
 }
+
 const dateLocales = {
     en: dateFns_en,
     de: dateFns_de,
@@ -145,7 +146,7 @@ export function useI18n(): Localization {
     return useContext(I18nContext);
 }
 
-const I18n: React.FC = ({children}) => {
+const I18n: React.FC<{ children?: ReactNode }> = ({children}) => {
     const {locale: settingsLocale} = useSettings();
     const [localization, setLocalization] = useState<Localization>(getEffectiveLocalization(settingsLocale));
     useEffect(() => {

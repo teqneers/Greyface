@@ -13,7 +13,7 @@ import {AutoWhiteListEmail, GreyTableState} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import AutoWhitelistEmailTable from './AutoWhitelistEmailTable';
 
-const AutoEmailModule: React.VFC = () => {
+const AutoEmailModule: React.FC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();

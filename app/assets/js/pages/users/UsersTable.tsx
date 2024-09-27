@@ -18,7 +18,7 @@ interface UsersTableProps {
     onStateChange?: (state: TableState<UserAlias>) => void,
 }
 
-const UsersTable: React.VFC<UsersTableProps> = (
+const UsersTable: React.FC<UsersTableProps> = (
     {
         data,
         isFetching,

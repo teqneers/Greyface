@@ -17,7 +17,7 @@ import DeleteUserAlias from './DeleteUserAlias';
 import EditUserAlias from './EditUserAlias';
 import UserAliasTable from './UserAliasTable';
 
-const UserAliasModule: React.VFC = () => {
+const UserAliasModule: React.FC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();

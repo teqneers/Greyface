@@ -13,7 +13,7 @@ import {Greylist, GreyTableStateWithUser} from '../../types/greylist';
 import DeleteByDate from './DeleteByDate';
 import GreyListTable from './GreyListTable';
 
-const GreyListModule: React.VFC = () => {
+const GreyListModule: React.FC = () => {
 
     const {apiUrl} = useApplication();
 

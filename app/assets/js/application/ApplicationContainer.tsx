@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {Nav, Navbar, NavDropdown} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
 
@@ -6,7 +6,7 @@ import {useApplication} from './ApplicationContext';
 import ApplicationMenu from './ApplicationMenu';
 import {setSetting, SettingsLocale, useSettings} from './settings';
 
-const ApplicationContainer: React.FC = ({children}) => {
+const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) => {
     const {t} = useTranslation();
     const {locale} = useSettings();
     const {user, changePasswordUrl, logoutUrl, baseUrl} = useApplication();

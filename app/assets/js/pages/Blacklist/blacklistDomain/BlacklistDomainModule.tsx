@@ -13,7 +13,7 @@ import { BlackListDomain, GreyTableState} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import BlacklistDomainTable from './BlacklistDomainTable';
 
-const BlacklistDomainModule: React.VFC = () => {
+const BlacklistDomainModule: React.FC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();

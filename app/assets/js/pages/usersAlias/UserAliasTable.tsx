@@ -17,7 +17,7 @@ interface UserAliasTableProps {
     onStateChange?: (state: TableState<UserAlias>) => void,
 }
 
-const UserAliasTable: React.VFC<UserAliasTableProps> = (
+const UserAliasTable: React.FC<UserAliasTableProps> = (
     {
         data,
         pageCount,

@@ -13,7 +13,7 @@ import {GreyTableState, WhiteListEmail} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import WhitelistEmailTable from './WhitelistEmailTable';
 
-const WhitelistEmailModule: React.VFC = () => {
+const WhitelistEmailModule: React.FC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();

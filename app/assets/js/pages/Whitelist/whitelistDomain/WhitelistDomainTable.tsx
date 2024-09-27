@@ -17,7 +17,7 @@ interface WhitelistDomainTableProps {
     onStateChange?: (state: TableState<WhiteListDomain>) => void,
 }
 
-const WhitelistDomainTable: React.VFC<WhitelistDomainTableProps> = (
+const WhitelistDomainTable: React.FC<WhitelistDomainTableProps> = (
     {
         data,
         refetch,

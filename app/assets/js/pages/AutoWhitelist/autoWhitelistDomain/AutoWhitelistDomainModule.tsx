@@ -13,7 +13,7 @@ import {AutoWhiteListDomain, GreyTableState} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import AutoWhitelistDomainTable from './AutoWhitelistDomainTable';
 
-const AutoDomainModule: React.VFC = () => {
+const AutoDomainModule: React.FC = () => {
     const {apiUrl} = useApplication();
     const history = useHistory();
     const {path, url} = useRouteMatch();
@@ -73,7 +73,7 @@ const AutoDomainModule: React.VFC = () => {
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
-            {isError ? (
+            {isError ? (    // @ts-ignore
                 <div>Error: {error}</div>
             ) : (<AutoWhitelistDomainTable
                 data={data.results}

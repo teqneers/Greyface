@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import {Col, Form, Modal, Row} from 'react-bootstrap';
 import {UseMutationResult} from 'react-query';
 import * as yup from 'yup';
@@ -80,6 +80,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                                     isInvalid={!!errors.domain}/>
 
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.domain}
                                 </Form.Control.Feedback>
                             </Form.Group>
@@ -93,6 +94,7 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                                     onChange={handleChange}
                                     isInvalid={!!errors.source}/>
                                 <Form.Control.Feedback type="invalid">
+                                    {/*// @ts-ignore*/}
                                     {errors.source}
                                 </Form.Control.Feedback>
                             </Form.Group>

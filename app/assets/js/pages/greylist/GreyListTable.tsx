@@ -20,7 +20,7 @@ interface GreyListTableProps {
     onStateChange?: (state: TableState<Greylist>) => void,
 }
 
-const GreyListTable: React.VFC<GreyListTableProps> = (
+const GreyListTable: React.FC<GreyListTableProps> = (
     {
         data,
         refetch,

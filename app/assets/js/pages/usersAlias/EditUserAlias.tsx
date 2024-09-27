@@ -14,7 +14,7 @@ interface EditUserAliasProps {
     onUpdate: () => void,
 }
 
-const EditUserAlias: React.VFC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
+const EditUserAlias: React.FC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const queryClient = useQueryClient();

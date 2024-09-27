@@ -11,7 +11,8 @@ export interface ModalProps {
     onCancel: () => void,
     onConfirm: () => void,
     confirmBtn?: string,
-    confirmBtnVariant?: string
+    confirmBtnVariant?: string,
+    children?: React.ReactNode,
 }
 
 const ModalConfirmation: React.FC<ModalProps> = (

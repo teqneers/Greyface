@@ -17,7 +17,7 @@ interface BlacklistDomainTableProps {
     onStateChange?: (state: TableState<BlackListDomain>) => void,
 }
 
-const BlacklistDomainTable: React.VFC<BlacklistDomainTableProps> = (
+const BlacklistDomainTable: React.FC<BlacklistDomainTableProps> = (
     {
         data,
         refetch,

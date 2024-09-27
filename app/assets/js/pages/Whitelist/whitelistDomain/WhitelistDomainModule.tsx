@@ -13,7 +13,7 @@ import {GreyTableState, WhiteListDomain} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import WhitelistDomainTable from './WhitelistDomainTable';
 
-const WhitelistDomainModule: React.VFC = () => {
+const WhitelistDomainModule: React.FC = () => {
     const history = useHistory();
     const {apiUrl} = useApplication();
     const {path, url} = useRouteMatch();

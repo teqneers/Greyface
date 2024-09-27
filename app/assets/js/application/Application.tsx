@@ -1,5 +1,4 @@
 import React from 'react';
-import {hot} from 'react-hot-loader/root';
 import {Helmet, HelmetProvider} from 'react-helmet-async';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -21,9 +20,7 @@ function Application({baseUrl, ...rest}: ApplicationProps): React.ReactElement {
     return (
         <React.StrictMode>
             <I18n>
-            {/* @ts-ignore */}
             <HelmetProvider>
-                {/* @ts-ignore */}
                 <Helmet defaultTitle={'Greyface by TEQneers GmbH & Co KG'}
                         titleTemplate={'%s | Greyface by TEQneers GmbH & Co KG'}/>
                 <Router basename={baseUrl}>
@@ -55,4 +52,4 @@ function Application({baseUrl, ...rest}: ApplicationProps): React.ReactElement {
     );
 }
 
-export default hot(Application);
+export default Application;

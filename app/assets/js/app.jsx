@@ -1,6 +1,5 @@
-import 'react-hot-loader';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import ReactModal from 'react-modal';
 
 import Application from './application/Application';
@@ -18,6 +17,6 @@ if (root !== null) {
     ReactModal.setAppElement(root);
 
     initI18n().then(() => {
-        ReactDOM.render(<Application {...config}/>, root);
+        createRoot(root).render(<Application {...config}/>);
     });
 }

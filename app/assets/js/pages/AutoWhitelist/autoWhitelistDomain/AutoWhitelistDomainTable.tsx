@@ -19,7 +19,7 @@ interface AutoDomainTableProps {
     onStateChange?: (state: TableState<AutoWhiteListDomain>) => void,
 }
 
-const AutoDomainTable: React.VFC<AutoDomainTableProps> = (
+const AutoDomainTable: React.FC<AutoDomainTableProps> = (
     {
         data,
         refetch,

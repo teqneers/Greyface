@@ -11,7 +11,7 @@ interface DeleteUserProps {
     onDelete: () => void,
 }
 
-const DeleteUser: React.VFC<DeleteUserProps> = ({onCancel, onDelete}) => {
+const DeleteUser: React.FC<DeleteUserProps> = ({onCancel, onDelete}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();

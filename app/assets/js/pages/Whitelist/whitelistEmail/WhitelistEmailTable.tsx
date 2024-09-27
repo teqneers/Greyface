@@ -17,7 +17,7 @@ interface WhitelistEmailTableProps {
     onStateChange?: (state: TableState<WhiteListEmail>) => void,
 }
 
-const WhitelistEmailTable: React.VFC<WhitelistEmailTableProps> = (
+const WhitelistEmailTable: React.FC<WhitelistEmailTableProps> = (
     {
         data,
         refetch,

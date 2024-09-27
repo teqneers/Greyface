@@ -1,4 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -51,10 +52,9 @@ Encore
     .configureBabel(
         (babelConfig) => {
             if (!Encore.isProduction()) {
-                babelConfig.plugins.push('react-hot-loader/babel');
+                babelConfig.plugins.push('react-refresh/babel');
             }
             babelConfig.plugins.push('babel-plugin-styled-components');
-            //babelConfig.plugins.push('@babel/plugin-proposal-class-properties');
             babelConfig.plugins.push('@babel/plugin-transform-runtime');
         }
     )
@@ -106,7 +106,7 @@ Encore
 const config = Encore.getWebpackConfig();
 if (!Encore.isProduction()) {
     config.devtool = 'cheap-module-source-map';
-    config.resolve.alias['react-dom'] = '@hot-loader/react-dom';
+    config.plugins.push(new ReactRefreshWebpackPlugin({overlay: false}));
 }
 
 // required because content-disposition requires these node modules

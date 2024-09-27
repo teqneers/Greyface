@@ -15,7 +15,7 @@ interface EditUserProps {
     onUpdate: (id: string) => void,
 }
 
-const EditUser: React.VFC<EditUserProps> = ({onCancel, onUpdate}) => {
+const EditUser: React.FC<EditUserProps> = ({onCancel, onUpdate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();

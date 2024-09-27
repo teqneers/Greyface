@@ -19,7 +19,7 @@ interface AutoEmailTableProps {
     onStateChange?: (state: TableState<AutoWhiteListEmail>) => void,
 }
 
-const AutoEmailTable: React.VFC<AutoEmailTableProps> = (
+const AutoEmailTable: React.FC<AutoEmailTableProps> = (
     {
         data,
         refetch,

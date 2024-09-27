@@ -17,7 +17,7 @@ interface BlacklistEmailTableProps {
     onStateChange?: (state: TableState<BlackListEmail>) => void,
 }
 
-const BlacklistEmailTable: React.VFC<BlacklistEmailTableProps> = (
+const BlacklistEmailTable: React.FC<BlacklistEmailTableProps> = (
     {
         data,
         refetch,

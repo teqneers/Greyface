@@ -13,7 +13,7 @@ import {BlackListEmail, GreyTableState} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import BlacklistEmailTable from './BlacklistEmailTable';
 
-const BlacklistEmailModule: React.VFC = () => {
+const BlacklistEmailModule: React.FC = () => {
 
     const history = useHistory();
     const {apiUrl} = useApplication();

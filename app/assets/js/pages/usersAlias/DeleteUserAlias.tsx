@@ -11,7 +11,7 @@ interface DeleteUserAliasProps {
     onDelete: () => void,
 }
 
-const DeleteUserAlias: React.VFC<DeleteUserAliasProps> = ({onCancel, onDelete}) => {
+const DeleteUserAlias: React.FC<DeleteUserAliasProps> = ({onCancel, onDelete}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();

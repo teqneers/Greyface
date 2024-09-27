@@ -11,7 +11,7 @@ interface UserDetailProps {
     onBack: () => void
 }
 
-const UserDetail: React.VFC<UserDetailProps> = ({onBack}) => {
+const UserDetail: React.FC<UserDetailProps> = ({onBack}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const {params: {id}} = useRouteMatch<{ id: string }>();

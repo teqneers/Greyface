@@ -10,7 +10,7 @@ interface PaginationProps {
     setCurrentMaxResults: (value: number) => void,
 }
 
-const Paginator: React.VFC<PaginationProps> = (
+const Paginator: React.FC<PaginationProps> = (
     {
         query,
         currentIndex,

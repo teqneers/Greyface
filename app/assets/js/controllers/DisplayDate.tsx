@@ -9,7 +9,7 @@ interface DisplayDateProps {
     format?: string
 }
 
-const DisplayDate: React.VFC<DisplayDateProps> = ({date, format = DATE_TIME_FORMAT}) => {
+const DisplayDate: React.FC<DisplayDateProps> = ({date, format = DATE_TIME_FORMAT}) => {
 
     const d = parseISO(date?.date);
 

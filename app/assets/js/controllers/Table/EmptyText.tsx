@@ -1,7 +1,7 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 
-const EmptyText: React.VFC = () => {
+const EmptyText: React.FC = () => {
     const {t} = useTranslation();
 
     return (

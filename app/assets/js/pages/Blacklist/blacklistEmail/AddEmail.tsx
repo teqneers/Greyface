@@ -13,7 +13,7 @@ interface AddEmailProps {
     onCreate: () => void,
 }
 
-const AddEmail: React.VFC<AddEmailProps> = ({onCancel, onCreate}) => {
+const AddEmail: React.FC<AddEmailProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();

@@ -12,7 +12,7 @@ interface CreateUserProps {
     onCreate: (id: string) => void,
 }
 
-const CreateUser: React.VFC<CreateUserProps> = ({onCancel, onCreate}) => {
+const CreateUser: React.FC<CreateUserProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();

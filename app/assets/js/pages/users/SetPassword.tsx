@@ -13,7 +13,7 @@ interface SetPasswordProps {
     onUpdate: (id: string) => void,
 }
 
-const SetPassword: React.VFC<SetPasswordProps> = ({onCancel, onUpdate}) => {
+const SetPassword: React.FC<SetPasswordProps> = ({onCancel, onUpdate}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const {user, logoutUrl} = useApplication();

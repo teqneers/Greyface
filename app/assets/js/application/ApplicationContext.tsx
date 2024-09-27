@@ -7,7 +7,8 @@ export interface ApplicationConfigProps {
     apiUrl: string,
     logoutUrl: string,
     baseUrl: string,
-    changePasswordUrl: string | null
+    changePasswordUrl: string | null,
+    children?: React.ReactNode,
 }
 
 const ApplicationContext = React.createContext<ApplicationConfigProps>({} as ApplicationConfigProps);
