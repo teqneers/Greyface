@@ -1,0 +1,24 @@
+doctrine:
+    orm:
+        dql:
+            datetime_functions:
+                second: DoctrineExtensions\Query\Postgresql\Second
+                minute: DoctrineExtensions\Query\Postgresql\Minute
+                hour: DoctrineExtensions\Query\Postgresql\Hour
+                day: DoctrineExtensions\Query\Postgresql\Day
+                month: DoctrineExtensions\Query\Postgresql\Month
+                year: DoctrineExtensions\Query\Postgresql\Year
+                date_format: DoctrineExtensions\Query\Postgresql\DateFormat
+                at_time_zone: DoctrineExtensions\Query\Postgresql\AtTimeZoneFunction
+                date_part: DoctrineExtensions\Query\Postgresql\DatePart
+                extract: DoctrineExtensions\Query\Postgresql\ExtractFunction
+                date_trunc: DoctrineExtensions\Query\Postgresql\DateTrunc
+                date: DoctrineExtensions\Query\Postgresql\Date
+
+            string_functions:
+                str_to_date: DoctrineExtensions\Query\Postgresql\StrToDate
+                count_filter: DoctrineExtensions\Query\Postgresql\CountFilterFunction
+                string_agg: DoctrineExtensions\Query\Postgresql\StringAgg
+                greatest: DoctrineExtensions\Query\Postgresql\Greatest
+                least: DoctrineExtensions\Query\Postgresql\Least
+                regexp_replace: DoctrineExtensions\Query\Postgresql\RegexpReplace

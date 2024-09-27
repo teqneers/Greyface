@@ -1,0 +1,73 @@
+{
+    "name": "jms/serializer-bundle",
+    "type": "symfony-bundle",
+    "description": "Allows you to easily serialize, and deserialize data of any complexity",
+    "keywords": [
+        "serialization",
+        "deserialization",
+        "json",
+        "xml"
+    ],
+    "homepage": "http://jmsyst.com/bundles/JMSSerializerBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johannes M. Schmitt",
+            "email": "schmittjoh@gmail.com"
+        },
+        {
+            "name": "Asmir Mustafic",
+            "email": "goetas@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "jms/serializer": "^3.28",
+        "jms/metadata": "^2.6",
+        "symfony/config": "^5.4 || ^6.0 || ^7.0",
+        "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+        "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0"
+    },
+    "require-dev": {
+        "doctrine/coding-standard": "^8.1",
+        "doctrine/orm": "^2.14",
+        "phpunit/phpunit": "^8.0 || ^9.0",
+        "symfony/expression-language": "^5.4 || ^6.0 || ^7.0",
+        "symfony/finder": "^5.4 || ^6.0 || ^7.0",
+        "symfony/form": "^5.4 || ^6.0 || ^7.0",
+        "symfony/stopwatch": "^5.4 || ^6.0 || ^7.0",
+        "symfony/templating": "^5.4 || ^6.0",
+        "symfony/twig-bundle": "^5.4 || ^6.0 || ^7.0",
+        "symfony/uid": "^5.4 || ^6.0 || ^7.0",
+        "symfony/validator": "^5.4 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
+    },
+    "suggest": {
+        "symfony/expression-language": "Required for opcache preloading ^5.4 || ^6.0 || ^7.0",
+        "symfony/finder": "Required for cache warmup, supported versions ^5.4 || ^6.0 || ^7.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "JMS\\SerializerBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JMS\\SerializerBundle\\Tests\\": "Tests"
+        }
+    }
+}

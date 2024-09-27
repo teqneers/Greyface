@@ -1,0 +1,36 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/greyface/build/runtime.bbb5eca5.js",
+        "/greyface/build/896.ec67aa17.js",
+        "/greyface/build/app.a9020873.js"
+      ],
+      "css": [
+        "/greyface/build/233.0a4df539.css",
+        "/greyface/build/896.c6a4f9e0.css",
+        "/greyface/build/app.df69b1e5.css"
+      ]
+    },
+    "page": {
+      "js": [
+        "/greyface/build/runtime.bbb5eca5.js",
+        "/greyface/build/page.01c749c3.js"
+      ],
+      "css": [
+        "/greyface/build/233.0a4df539.css",
+        "/greyface/build/page.aac21603.css"
+      ]
+    }
+  },
+  "integrity": {
+    "/greyface/build/runtime.bbb5eca5.js": "sha384-6H4Z0nuAgMSVJwr8adPNZ5DwEaCOHfzThkwUCWXcZGiIHYyhgfo5e0v+Aq73luyq",
+    "/greyface/build/896.ec67aa17.js": "sha384-GNvATqY2efC6Rx9dJ1bNPCEmpIAUBXUzXwB4fkVbOqOpPoCyURArzISCmIvqOT/h",
+    "/greyface/build/app.a9020873.js": "sha384-7wmSz7vHMmggoWa7u8HzDkUef9L/LcbSx2rrY1BfF1utr61s4lur0Uj5mGrqHUJg",
+    "/greyface/build/233.0a4df539.css": "sha384-zuHx8MeNu/NO+DjnzSR5GpF7a91YQ4e+15Xr126lce2rV/BSITZbgmLo/GweqT05",
+    "/greyface/build/896.c6a4f9e0.css": "sha384-z/jrbyqjyXq/JXS6hg/EBrNpIkh4otEN69zvBnPWFzcA4k8RjtlhkM3XVhr6IdId",
+    "/greyface/build/app.df69b1e5.css": "sha384-oKjVdtFc8RixLIDZJthYhaYrSWgNeMzx09uXJUQPg9wNU35Ph1FC5RwxtBk9Dklg",
+    "/greyface/build/page.01c749c3.js": "sha384-NXB4HXMecMOKO3q93aVnS4JbbCHmfpVTbrn2aq5b/JHN6hEZep1JEH34FL3V7ud+",
+    "/greyface/build/page.aac21603.css": "sha384-EHRly8isbbzmpvBvQrbrC0RIxeaLBm9RrJi4n0BCEArFw7KHwpblpNIZF/+0l+8O"
+  }
+}
