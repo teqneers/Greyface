@@ -77,14 +77,13 @@ jobs:
               continue-on-error: true
               run: composer audit
 
-            # The test bootstrap reads DATABASE_URL from the repository root, and
-            # .env.local is deliberately ignored when APP_ENV=test, so the
-            # override has to go in .env.test.local.
-            - name: Point the test suite at the service container
-              run: echo 'DATABASE_URL=mysql://root@127.0.0.1:3306/greyface_test' > .env.test.local
-
+            # A real environment variable beats every .env file, so this needs
+            # no .env.test.local — which would otherwise be picked up by the
+            # compose stack too and point it at the wrong host.
             - name: Run the test suite
               working-directory: app
+              env:
+                  DATABASE_URL: mysql://root@127.0.0.1:3306/greyface_test
               run: bin/phpunit --coverage-clover=coverage.xml
 
             - name: Enforce the coverage ratchet

@@ -1,0 +1,44 @@
+# Caddy configuration for the Greyface development container.
+#
+# The document root is <repository root>/app/public. That path matters: the
+# front controller computes APP_PATH as dirname($script, 3), so the application
+# must sit three levels below the project root for caches and logs to be written
+# to <root>/var rather than somewhere unexpected.
+
+{
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp
+
+	# php_server has to win over the static file server, otherwise index.php is
+	# offered as a download instead of executed.
+	order php_server before file_server
+
+	# Caddy listens on exactly the ports compose publishes, rather than on 80/443
+	# behind a port mapping. It builds its HTTP->HTTPS redirect from these values,
+	# so if they did not match the host, every redirect would drop the port and
+	# send the browser to https://localhost/ instead of https://localhost:18443/.
+	http_port {$HTTP_PORT:18080}
+	https_port {$HTTPS_PORT:18443}
+}
+
+# Both schemes are served, on the same ports compose publishes. The addresses
+# carry their port explicitly: Caddy builds redirects from the site address, so
+# a bare "localhost" here would send browsers to https://localhost/ — dropping
+# the port and landing them on nothing.
+https://{$SERVER_NAME:localhost}:{$HTTPS_PORT:18443},
+http://{$SERVER_NAME:localhost}:{$HTTP_PORT:18080} {
+	root {$SERVER_ROOT:/srv/greyface/app/public}
+
+	encode zstd br gzip
+
+	# Long-lived caching for the hashed Encore bundles; everything else is
+	# served fresh, which is what you want while developing.
+	@encoreAssets path /build/*
+	header @encoreAssets Cache-Control "public, max-age=31536000, immutable"
+
+	php_server {
+		# Symfony routes everything that is not a real file through index.php.
+		try_files {path} index.php
+	}
+}

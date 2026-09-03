@@ -70,7 +70,7 @@ The latest version of Greyface can be found on https://github.com/teqneers/Greyf
 1. PHP 8.3 or higher, with the `ctype`, `iconv` and `pdo_mysql` extensions
 2. Composer 2
 3. Yarn
-4. Docker, for the development database
+4. Docker and the Compose plugin
 
 > MariaDB is required rather than MySQL. The SQLGrey tables use
 > `DEFAULT "0000-00-00 00:00:00"`, which MySQL rejects under its default
@@ -97,14 +97,15 @@ The Symfony application lives in `app/`, but the *project root* is the repositor
 root: `.env` is read from there, and caches and logs are written to
 `<root>/var/`.
 
-### 2. Start the database
+### 2. Start the stack
 
 ```bash
-docker compose up -d database
+docker compose up -d
 ```
 
-This brings up MariaDB 11.2 as a service named `database`, matching the
-hostnames already committed in `.env` and `.env.test`.
+This brings up FrankenPHP (Caddy + PHP in one container) and MariaDB 11.2 as a
+service named `database`, matching the hostnames already committed in `.env` and
+`.env.test`. See [docker/README.md](docker/README.md) for the details.
 
 ### 3. dotenv configuration
 
@@ -124,16 +125,21 @@ Ensure that `var/cache` and `var/log` in the repository root are writable.
 ### 4. Install dependencies
 
 ```bash
-cd app
-composer install
-yarn install
+docker compose exec php composer install
+cd app && yarn install && yarn build   # the frontend still builds on the host
 ```
 
 ### 5. Database migrations
 
 ```bash
-php bin/console doctrine:migrations:migrate
+docker compose exec php bin/console doctrine:migrations:migrate
 ```
+
+The application is now at <http://localhost:18080>, and on HTTPS at
+<https://localhost:18443>. HTTPS will warn about the certificate the first time;
+`docker/README.md` explains how to trust Caddy's local CA once and be done with
+it. Note that the "remember me" cookie is marked `secure`, so it is only issued
+over HTTPS.
 
 This creates Greyface's own tables and, if they do not already exist, the
 SQLGrey tables — so an empty database is enough for development, with no
@@ -145,28 +151,31 @@ repository.
 
 ## Running the tests
 
+Inside the container the committed `.env.test` already works — nothing to
+configure:
+
 ```bash
-docker compose up -d database   # from the repository root
-cd app
-bin/phpunit                                              # the whole suite
-bin/phpunit tests/Domain/User/Security/UserVoterTest.php # one file
-bin/phpunit --filter testDeniesDeletingTheLastAdministrator
-DISABLE_DB_SETUP=1 bin/phpunit                           # skip the schema rebuild
-bin/phpunit --coverage-text                              # with coverage (needs pcov or xdebug)
+docker compose exec php bin/phpunit                              # the whole suite
+docker compose exec php bin/phpunit tests/Domain/User/Security/UserVoterTest.php
+docker compose exec php bin/phpunit --filter testDeniesDeletingTheLastAdministrator
+docker compose exec php bin/phpunit --coverage-text
+docker compose exec -e DISABLE_DB_SETUP=1 php bin/phpunit         # skip the schema rebuild
 ```
+
+To run them from the host instead, pass the database URL as a real environment
+variable — it beats every `.env` file:
+
+```bash
+cd app
+DATABASE_URL='mysql://root@127.0.0.1:13306/greyface_test' bin/phpunit
+```
+
+Do **not** put that in a `.env.test.local`: the repository root is bind-mounted
+into the container, so a host-shaped override would be read there too and send
+the container to a host it cannot reach.
 
 The suite **drops and recreates** the database named in `DATABASE_URL` before it
 runs, so that value must always point at a throw-away database.
-
-To run the tests from the host against the compose database, create a
-`.env.test.local` in the repository root:
-
-```dotenv
-DATABASE_URL=mysql://root@127.0.0.1:3306/greyface_test
-```
-
-Note that `.env.local` is deliberately **ignored** when `APP_ENV=test`, so
-`.env.test.local` is the only file that can override the test database.
 
 CI enforces a minimum line coverage; see the threshold passed to
 `php bin/check-coverage.php` in `.github/workflows/ci.yml`. It is a ratchet —

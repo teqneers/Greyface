@@ -1,34 +1,92 @@
-# Local development and test database for Greyface.
+# Development and test environment for Greyface.
 #
-#   docker compose up -d database
-#   cd app && bin/phpunit
+#   docker compose up -d
+#   docker compose exec php composer install
+#   docker compose exec php bin/phpunit
 #
-# MariaDB is required, not MySQL. Migration Version20220721081217 creates
-# `domain_awl` and `from_awl` with `last_seen timestamp NOT NULL DEFAULT
-# "0000-00-00 00:00:00"`. MySQL 5.7/8.0 enable NO_ZERO_DATE + STRICT_TRANS_TABLES
-# by default and reject those CREATE TABLE statements. The version here also
-# matches `server_version` in app/config/packages/doctrine.yaml.
+# then open https://localhost:18443 (accept the certificate the first time, or
+# trust Caddy's local CA — see docker/README.md).
 #
-# The service is named `database` so the hostnames committed in .env and
-# .env.test resolve without any local override. To run the test suite from the
-# host instead of from inside a container, create a .env.test.local next to .env
-# with a DATABASE_URL pointing at 127.0.0.1:3306 — note that .env.local is
-# deliberately ignored when APP_ENV=test, so .env.test.local is the only file
-# that works for tests.
+# Published ports use a 1xxxx prefix so this stack can run alongside the other
+# project stacks on the same machine. Override any of them in a .env file next
+# to this one if they still collide.
+#
+# This covers development and testing only. Production still ships through
+# app/files/build_tag.sh; there is deliberately no production stack here.
+#
+# The repository root is mounted at /srv/greyface, not the app/ directory:
+# public/index.php derives APP_PATH as dirname($script, 3), so the application
+# has to sit at <root>/app/public for caches and logs to land in <root>/var.
 
 services:
+    php:
+        build:
+            context: .
+            dockerfile: docker/frankenphp/Dockerfile
+        depends_on:
+            database:
+                condition: service_healthy
+        environment:
+            # Caddy issues a locally-trusted certificate from its internal CA for
+            # this name. Override it (and add a hosts entry) if you prefer the
+            # greyface.test hostname the frontend dev-server expects.
+            SERVER_NAME: ${SERVER_NAME:-localhost}
+            # Caddy binds these directly, and they are published 1:1 below, so
+            # the redirects it generates carry the right port.
+            HTTP_PORT: ${HTTP_PORT:-18080}
+            HTTPS_PORT: ${HTTPS_PORT:-18443}
+            # APP_ENV is deliberately NOT set here. PHP runs with
+            # variables_order=EGPCS, so a container environment variable lands in
+            # $_ENV — and Symfony's KernelTestCase reads $_ENV before the $_SERVER
+            # value phpunit.xml.dist forces, which would silently run the whole
+            # test suite in the dev environment. The committed .env already
+            # selects dev for normal requests; leave it to do its job.
+            # Xdebug is installed but idle unless this says otherwise. Leave it
+            # off while running coverage — pcov does that job far faster.
+            XDEBUG_MODE: ${XDEBUG_MODE:-off}
+        ports:
+            # Published 1:1 on purpose — see HTTP_PORT/HTTPS_PORT above.
+            - '${HTTP_PORT:-18080}:${HTTP_PORT:-18080}'
+            - '${HTTPS_PORT:-18443}:${HTTPS_PORT:-18443}'
+        volumes:
+            - .:/srv/greyface
+            # Mounted as well as baked into the image, so editing the server or
+            # PHP config only needs `docker compose restart php`, not a rebuild.
+            - ./docker/frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
+            - ./docker/frankenphp/conf.d/app.ini:/usr/local/etc/php/conf.d/zz-greyface.ini:ro
+            # var/ gets its own volume rather than being shared with the host.
+            # Symfony bakes absolute paths into the compiled container, so a
+            # cache built at /Users/... is invalid at /srv/greyface and vice
+            # versa: sharing the directory makes the host and the container
+            # rebuild over each other's work, and a half-written cache produces
+            # confusing "file not found" errors.
+            #   docker compose exec php cat ../var/log/dev.log
+            - app_var:/srv/greyface/var
+            # Persist the internal CA so the certificate stays trusted across
+            # rebuilds instead of being regenerated every time.
+            - caddy_data:/data
+            - caddy_config:/config
+        # On Linux the container writes var/cache and var/log as root. If that
+        # gets in the way, run as yourself instead:
+        #   user: "${UID:-1000}:${GID:-1000}"
+
     database:
+        # MariaDB, not MySQL. Migration Version20220721081217 creates the SQLGrey
+        # tables with `DEFAULT "0000-00-00 00:00:00"`, which MySQL rejects under
+        # its default NO_ZERO_DATE / STRICT_TRANS_TABLES sql_mode. The version
+        # also matches server_version in app/config/packages/doctrine.yaml.
         image: mariadb:11.2
         environment:
-            # .env.test connects as root with no password and needs to be able to
-            # DROP and CREATE the greyface_test database on every test run.
+            # .env.test connects as root with no password and needs to DROP and
+            # CREATE the greyface_test database on every test run.
             MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
             # Matches DATABASE_URL in .env for the dev environment.
             MARIADB_DATABASE: greyface
             MARIADB_USER: greyface
             MARIADB_PASSWORD: greyface
         ports:
-            - '3306:3306'
+            # Published so the test suite can also be run from the host.
+            - '${DATABASE_PORT:-13306}:3306'
         volumes:
             - database_data:/var/lib/mysql
         healthcheck:
@@ -40,3 +98,6 @@ services:
 
 volumes:
     database_data:
+    app_var:
+    caddy_data:
+    caddy_config:

@@ -4,14 +4,11 @@
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-$script = $_SERVER['SCRIPT_FILENAME'];
-if ($script[0] !== '/') {
-    if (str_starts_with($script, './')) {
-        $script = substr($script, 2);
-    }
-    $script = $_SERVER['PWD'] . '/' . $script;
-}
-$appPath = dirname($script, 3);
+// The repository root is the Symfony project dir, two levels above this script.
+// Derived from __DIR__ rather than SCRIPT_FILENAME + $_SERVER['PWD']: PWD is only
+// set by interactive shells, so the old form broke under `docker compose exec`,
+// cron and systemd, resolving the project dir to "/" and failing on "//.env".
+$appPath = dirname(__DIR__, 2);
 
 $_SERVER['APP_PATH']            = $appPath;
 $_SERVER['APP_RUNTIME_OPTIONS'] = [
