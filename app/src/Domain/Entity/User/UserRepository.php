@@ -38,7 +38,7 @@ class UserRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(bool $allowDeleted = false, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(bool $allowDeleted = false, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder($allowDeleted);
 
@@ -90,13 +90,13 @@ class UserRepository extends ServiceEntityRepository
 
     public function save(User $user): User
     {
-        $this->_em->persist($user);
+        $this->getEntityManager()->persist($user);
         return $user;
     }
 
     public function delete(User $user): void
     {
-        $this->_em->remove($user);
+        $this->getEntityManager()->remove($user);
     }
 
 }

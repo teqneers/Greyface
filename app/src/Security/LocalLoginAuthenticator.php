@@ -45,6 +45,12 @@ class LocalLoginAuthenticator extends AbstractLoginFormAuthenticator
     public function authenticate(Request $request): Passport
     {
         $username = trim($request->request->get('username', ''));
+        if ($username === '') {
+            // Passing an empty identifier to UserBadge is deprecated in Symfony
+            // 7.2 and throws in 8.0. The outcome is unchanged: an empty username
+            // has always ended up as bad credentials, just via a lookup miss.
+            throw new BadCredentialsException('Invalid username.');
+        }
         if (strlen($username) > UserBadge::MAX_USERNAME_LENGTH) {
             throw new BadCredentialsException('Invalid username.');
         }
@@ -92,7 +98,11 @@ class LocalLoginAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // check URL or request parameter first
-        $targetPath = $request->get('redirect_to');
+        // Request::get() is deprecated since Symfony 7.4; read the bags directly.
+        // Both are checked because the old call searched attributes, query and
+        // body, and nothing here guarantees which one carries redirect_to.
+        $targetPath = $request->request->get('redirect_to')
+            ?? $request->query->get('redirect_to');
 
         if (!$targetPath
             && $request->hasSession()

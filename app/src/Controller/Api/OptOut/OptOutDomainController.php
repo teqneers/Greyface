@@ -30,7 +30,7 @@ class OptOutDomainController
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $domains = $optOutDomainRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
+        $domains = $optOutDomainRepository->findFiltered($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($domains) ? count($domains) : $domains->count();
 

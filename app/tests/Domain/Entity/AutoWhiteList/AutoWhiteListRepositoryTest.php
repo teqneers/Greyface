@@ -51,7 +51,7 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $domains = self::domainsOf($this->domainRepository()->findAll('needle'));
+        $domains = self::domainsOf($this->domainRepository()->findFiltered('needle'));
 
         self::assertContains('needle.awl.test', $domains);
         self::assertContains('other.awl.test', $domains);
@@ -69,7 +69,7 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
 
         self::assertSame(
             ['sort-a.awl.test', 'sort-b.awl.test', 'sort-c.awl.test'],
-            self::domainsOf($this->domainRepository()->findAll('sort-'))
+            self::domainsOf($this->domainRepository()->findFiltered('sort-'))
         );
     }
 
@@ -81,10 +81,10 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $bySource = self::domainsOf($this->domainRepository()->findAll('map-', null, 20, 'source'));
+        $bySource = self::domainsOf($this->domainRepository()->findFiltered('map-', null, 20, 'source'));
         self::assertSame(['map-b.awl.test', 'map-a.awl.test'], $bySource);
 
-        $byDomainDesc = self::domainsOf($this->domainRepository()->findAll('map-', null, 20, 'domain', true));
+        $byDomainDesc = self::domainsOf($this->domainRepository()->findFiltered('map-', null, 20, 'domain', true));
         self::assertSame(['map-b.awl.test', 'map-a.awl.test'], $byDomainDesc);
     }
 
@@ -98,8 +98,8 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
 
         // Only asserts the queries build and run — the seeded timestamps are
         // written by the database default, so their order is not deterministic.
-        self::assertCount(2, $this->domainRepository()->findAll('time-', null, 20, 'firstSeen'));
-        self::assertCount(2, $this->domainRepository()->findAll('time-', null, 20, 'lastSeen', true));
+        self::assertCount(2, $this->domainRepository()->findFiltered('time-', null, 20, 'firstSeen'));
+        self::assertCount(2, $this->domainRepository()->findFiltered('time-', null, 20, 'lastSeen', true));
     }
 
     public function testReturnsAPaginatorOnlyWhenAStartIsGiven(): void
@@ -107,8 +107,8 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         self::initializeDatabaseWithEntities(self::createAutoWhiteListDomain('pager.awl.test', '10.5.0.1'));
         self::clearEntityManager();
 
-        self::assertIsArray($this->domainRepository()->findAll('pager'));
-        self::assertInstanceOf(Paginator::class, $this->domainRepository()->findAll('pager', '0'));
+        self::assertIsArray($this->domainRepository()->findFiltered('pager'));
+        self::assertInstanceOf(Paginator::class, $this->domainRepository()->findFiltered('pager', '0'));
     }
 
     public function testPagesThroughResults(): void
@@ -121,13 +121,13 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $firstPage = $this->domainRepository()->findAll('page-', '0', 2);
+        $firstPage = $this->domainRepository()->findFiltered('page-', '0', 2);
         self::assertCount(4, $firstPage);
         self::assertSame(['page-1.awl.test', 'page-2.awl.test'], self::domainsOf($firstPage));
 
         self::assertSame(
             ['page-3.awl.test', 'page-4.awl.test'],
-            self::domainsOf($this->domainRepository()->findAll('page-', '1', 2))
+            self::domainsOf($this->domainRepository()->findFiltered('page-', '1', 2))
         );
     }
 
@@ -143,7 +143,7 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $entries = $this->domainRepository()->findAll('stamped.awl.test');
+        $entries = $this->domainRepository()->findFiltered('stamped.awl.test');
         self::assertCount(1, $entries);
 
         $entry = $entries[0];
@@ -160,11 +160,11 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
 
         self::initializeDatabase(function (): void {
             $repository = $this->domainRepository();
-            $repository->delete($repository->findAll('doomed.awl.test')[0]);
+            $repository->delete($repository->findFiltered('doomed.awl.test')[0]);
         });
         self::clearEntityManager();
 
-        self::assertCount(0, $this->domainRepository()->findAll('doomed.awl.test'));
+        self::assertCount(0, $this->domainRepository()->findFiltered('doomed.awl.test'));
     }
 
     public function testEmailAutoWhiteListSearchesAndSortsIndependently(): void
@@ -176,7 +176,7 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $matches = $this->emailRepository()->findAll('email-needle');
+        $matches = $this->emailRepository()->findFiltered('email-needle');
         self::assertCount(2, $matches);
 
         $names = array_map(static fn(object $entry): string => $entry->getName(), $matches);
@@ -192,7 +192,7 @@ class AutoWhiteListRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $page = $this->emailRepository()->findAll('email-page', '0', 2);
+        $page = $this->emailRepository()->findFiltered('email-page', '0', 2);
 
         self::assertInstanceOf(Paginator::class, $page);
         self::assertCount(3, $page);

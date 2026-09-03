@@ -38,13 +38,18 @@ class ConnectRepository extends ServiceEntityRepository
             ->andWhere('c.domain = :domain')
             ->andWhere('c.source = :source')
             ->andWhere('c.rcpt = :rcpt')
-            ->setParameters(['name' => $name, 'domain' => $domain, 'source' => $source, 'rcpt' => $rcpt])
+            // QueryBuilder::setParameters() takes only an ArrayCollection in ORM 3;
+            // individual setParameter() calls are equivalent and clearer.
+            ->setParameter('name', $name)
+            ->setParameter('domain', $domain)
+            ->setParameter('source', $source)
+            ->setParameter('rcpt', $rcpt)
             ->getQuery()
             ->getResult();
     }
 
     #[ArrayShape(['count' => "mixed", 'results' => "mixed"])]
-    public function findAll(User|string $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(User|string|null $user = null, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $count = null;
 
@@ -93,7 +98,7 @@ class ConnectRepository extends ServiceEntityRepository
     private
     function createDefaultQueryBuilder(User|string|null $user = null): QueryBuilder
     {
-        $qb = $this->_em->createQueryBuilder()
+        $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('c as connect', 'ua.aliasName', 'u.username', 'u.id as userID')
             ->from(Connect::class, 'c')
             ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
@@ -115,7 +120,7 @@ class ConnectRepository extends ServiceEntityRepository
     public
     function deleteByDate(string $date): int
     {
-        return $this->_em->createQueryBuilder()
+        return $this->getEntityManager()->createQueryBuilder()
             ->delete(Connect::class, 'c')
             ->where('DATE(c.firstSeen) <= :date')
             ->setParameter('date', $date)
@@ -126,16 +131,16 @@ class ConnectRepository extends ServiceEntityRepository
     public
     function save(Connect $domain): Connect
     {
-        $this->_em->persist($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($domain);
+        $this->getEntityManager()->flush();
         return $domain;
     }
 
     public
     function delete(Connect $domain): void
     {
-        $this->_em->remove($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($domain);
+        $this->getEntityManager()->flush();
     }
 
 }

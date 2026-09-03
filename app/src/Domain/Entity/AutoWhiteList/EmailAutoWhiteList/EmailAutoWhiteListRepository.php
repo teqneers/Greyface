@@ -28,7 +28,7 @@ class EmailAutoWhiteListRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $mapping = [
             'name' => 'e.name',
@@ -69,15 +69,15 @@ class EmailAutoWhiteListRepository extends ServiceEntityRepository
 
     public function save(EmailAutoWhiteList $domain): EmailAutoWhiteList
     {
-        $this->_em->persist($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($domain);
+        $this->getEntityManager()->flush();
         return $domain;
     }
 
     public function delete(EmailAutoWhiteList $domain): void
     {
-        $this->_em->remove($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($domain);
+        $this->getEntityManager()->flush();
     }
 
 }

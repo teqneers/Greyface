@@ -38,7 +38,7 @@ class OptInDomainRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
 
@@ -74,15 +74,15 @@ class OptInDomainRepository extends ServiceEntityRepository
 
     public function save(OptInDomain $optInDomain): OptInDomain
     {
-        $this->_em->persist($optInDomain);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($optInDomain);
+        $this->getEntityManager()->flush();
         return $optInDomain;
     }
 
     public function delete(OptInDomain $optInDomain): void
     {
-        $this->_em->remove($optInDomain);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($optInDomain);
+        $this->getEntityManager()->flush();
     }
 
 }

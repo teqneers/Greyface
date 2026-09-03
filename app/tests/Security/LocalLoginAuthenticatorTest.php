@@ -133,11 +133,31 @@ class LocalLoginAuthenticatorTest extends TestCase
         self::assertSame('secret', $credentials->getPassword());
     }
 
-    public function testDefaultsToEmptyCredentialsWhenNothingIsSubmitted(): void
+    /**
+     * An empty identifier is deprecated in Symfony 7.2 and throws in 8.0, so it
+     * is rejected up front. The visible outcome is unchanged — an empty username
+     * has always failed as bad credentials, previously via a lookup miss.
+     */
+    public function testRejectsAnEmptyUsername(): void
     {
-        $passport = $this->authenticator->authenticate(self::loginRequest());
+        $this->userRepository->expects(self::never())->method('findByUsername');
 
-        self::assertSame('', $passport->getBadge(UserBadge::class)->getUserIdentifier());
+        $this->expectException(BadCredentialsException::class);
+        $this->expectExceptionMessage('Invalid username.');
+
+        $this->authenticator->authenticate(self::loginRequest());
+    }
+
+    public function testRejectsAWhitespaceOnlyUsername(): void
+    {
+        $this->expectException(BadCredentialsException::class);
+        $this->authenticator->authenticate(self::loginRequest(['username' => "   \t ", 'password' => 'secret']));
+    }
+
+    public function testDefaultsToAnEmptyPasswordWhenNoneIsSubmitted(): void
+    {
+        $passport = $this->authenticator->authenticate(self::loginRequest(['username' => 'admin']));
+
         self::assertSame('', $passport->getBadge(PasswordCredentials::class)->getPassword());
     }
 

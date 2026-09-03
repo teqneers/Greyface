@@ -57,7 +57,7 @@ whitelist.
 
 TECHNICAL REALIZATION
 =====================
-Greyface is written in Symfony 7.1 and PHP 8.3, offering a connection to the supplied database of SQLGrey.
+Greyface is written in Symfony 7.4 LTS and PHP 8.3, offering a connection to the supplied database of SQLGrey.
 It uses React 18 for the user interface, which keeps the application responsive and quick to work in.
 
 

@@ -39,7 +39,7 @@ class OptInEmailRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
 
@@ -75,15 +75,15 @@ class OptInEmailRepository extends ServiceEntityRepository
 
     public function save(OptInEmail $optInEmail): OptInEmail
     {
-        $this->_em->persist($optInEmail);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($optInEmail);
+        $this->getEntityManager()->flush();
         return $optInEmail;
     }
 
     public function delete(OptInEmail $optInEmail): void
     {
-        $this->_em->remove($optInEmail);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($optInEmail);
+        $this->getEntityManager()->flush();
     }
 
 }

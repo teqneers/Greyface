@@ -16,7 +16,7 @@ trait DatabaseTestTrait
     {
         $container = static::getContainer();
         $em        = $container->get(EntityManagerInterface::class);
-        $em->transactional(
+        $em->wrapInTransaction(
             static function (EntityManagerInterface $entityManager) use ($init, $container): void {
                 $init($container, $entityManager);
             }

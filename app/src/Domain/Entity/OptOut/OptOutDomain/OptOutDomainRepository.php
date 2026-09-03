@@ -37,7 +37,7 @@ class OptOutDomainRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
 
@@ -73,15 +73,15 @@ class OptOutDomainRepository extends ServiceEntityRepository
 
     public function save(OptOutDomain $optOutDomain): OptOutDomain
     {
-        $this->_em->persist($optOutDomain);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($optOutDomain);
+        $this->getEntityManager()->flush();
         return $optOutDomain;
     }
 
     public function delete(OptOutDomain $optOutDomain): void
     {
-        $this->_em->remove($optOutDomain);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($optOutDomain);
+        $this->getEntityManager()->flush();
     }
 
 }

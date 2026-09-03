@@ -30,7 +30,7 @@ class OptInEmailController
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $emails = $optInEmailRepository->findAll($query, $start, $max, $sortBy, boolval($desc));
+        $emails = $optInEmailRepository->findFiltered($query, $start, $max, $sortBy, boolval($desc));
 
         $count = is_array($emails) ? count($emails) : $emails->count();
 

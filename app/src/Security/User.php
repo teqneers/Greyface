@@ -92,6 +92,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Equatab
         return $this->password;
     }
 
+    /**
+     * Nothing to erase: the password hash is needed for the lifetime of the
+     * object and is never written anywhere else.
+     */
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
     }

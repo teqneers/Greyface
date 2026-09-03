@@ -95,11 +95,11 @@ class UserRepositoryTest extends KernelTestCase
         self::initializeDatabaseWithEntities($active, $deleted);
         self::clearEntityManager();
 
-        $names = self::usernamesOf($this->repository()->findAll());
+        $names = self::usernamesOf($this->repository()->findFiltered());
         self::assertContains('zactive', $names);
         self::assertNotContains('zdeleted', $names);
 
-        $namesWithDeleted = self::usernamesOf($this->repository()->findAll(true));
+        $namesWithDeleted = self::usernamesOf($this->repository()->findFiltered(true));
         self::assertContains('zdeleted', $namesWithDeleted);
     }
 
@@ -111,7 +111,7 @@ class UserRepositoryTest extends KernelTestCase
         self::initializeDatabaseWithEntities($byName, $byEmail, $other);
         self::clearEntityManager();
 
-        $names = self::usernamesOf($this->repository()->findAll(false, 'needle'));
+        $names = self::usernamesOf($this->repository()->findFiltered(false, 'needle'));
 
         self::assertContains('needle-user', $names);
         self::assertContains('unrelated-user', $names);
@@ -128,7 +128,7 @@ class UserRepositoryTest extends KernelTestCase
         self::clearEntityManager();
 
         $names = array_values(array_filter(
-            self::usernamesOf($this->repository()->findAll(false, 'sort-')),
+            self::usernamesOf($this->repository()->findFiltered(false, 'sort-')),
             static fn(string $name): bool => str_starts_with($name, 'sort-')
         ));
 
@@ -143,10 +143,10 @@ class UserRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $ascending = self::usernamesOf($this->repository()->findAll(false, 'order-', null, 20, 'email'));
+        $ascending = self::usernamesOf($this->repository()->findFiltered(false, 'order-', null, 20, 'email'));
         self::assertSame(['order-y', 'order-x'], $ascending);
 
-        $descending = self::usernamesOf($this->repository()->findAll(false, 'order-', null, 20, 'email', true));
+        $descending = self::usernamesOf($this->repository()->findFiltered(false, 'order-', null, 20, 'email', true));
         self::assertSame(['order-x', 'order-y'], $descending);
     }
 
@@ -155,12 +155,12 @@ class UserRepositoryTest extends KernelTestCase
         self::initializeDatabaseWithEntities(self::createUser('page-a', 'page-a@greyface.test'));
         self::clearEntityManager();
 
-        self::assertIsArray($this->repository()->findAll(false, 'page-'));
-        self::assertInstanceOf(Paginator::class, $this->repository()->findAll(false, 'page-', '0'));
+        self::assertIsArray($this->repository()->findFiltered(false, 'page-'));
+        self::assertInstanceOf(Paginator::class, $this->repository()->findFiltered(false, 'page-', '0'));
     }
 
     /**
-     * Pins the surprising offset arithmetic in findAll(): `start` is treated as a
+     * Pins the surprising offset arithmetic in findFiltered(): `start` is treated as a
      * page index (start * max), except when it is 0, where it is used as a raw
      * offset. Documented here so the ORM upgrade cannot change it unnoticed.
      */
@@ -174,11 +174,11 @@ class UserRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $firstPage = self::usernamesOf($this->repository()->findAll(false, 'page-', '0', 2));
+        $firstPage = self::usernamesOf($this->repository()->findFiltered(false, 'page-', '0', 2));
         self::assertSame(['page-1', 'page-2'], $firstPage);
 
         // start=1 with max=2 skips 1 * 2 = 2 rows, i.e. the second page.
-        $secondPage = self::usernamesOf($this->repository()->findAll(false, 'page-', '1', 2));
+        $secondPage = self::usernamesOf($this->repository()->findFiltered(false, 'page-', '1', 2));
         self::assertSame(['page-3', 'page-4'], $secondPage);
     }
 
@@ -191,7 +191,7 @@ class UserRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $paginator = $this->repository()->findAll(false, 'count-', '0', 2);
+        $paginator = $this->repository()->findFiltered(false, 'count-', '0', 2);
 
         self::assertCount(3, $paginator);
         self::assertCount(2, iterator_to_array($paginator));

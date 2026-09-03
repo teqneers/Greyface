@@ -37,7 +37,7 @@ class UserAliasRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findAll(User $user = null, string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?User $user = null, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder($user);
 
@@ -80,8 +80,8 @@ class UserAliasRepository extends ServiceEntityRepository
 
     public function save(UserAlias $user): UserAlias
     {
-        $this->_em->persist($user);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
         return $user;
     }
 
@@ -92,8 +92,8 @@ class UserAliasRepository extends ServiceEntityRepository
             $count++;
             $this->save($user);
             if (($count % $batchSize) === 0) {
-                $this->_em->flush();
-                $this->_em->clear(); // Detaches all objects from Doctrine!
+                $this->getEntityManager()->flush();
+                $this->getEntityManager()->clear(); // Detaches all objects from Doctrine!
                 return true;
             }
             return false;
@@ -102,7 +102,7 @@ class UserAliasRepository extends ServiceEntityRepository
 
     public function delete(UserAlias $user): void
     {
-        $this->_em->remove($user);
+        $this->getEntityManager()->remove($user);
     }
 
 }

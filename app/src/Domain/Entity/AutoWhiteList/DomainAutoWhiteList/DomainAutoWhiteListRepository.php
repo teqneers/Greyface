@@ -28,7 +28,7 @@ class DomainAutoWhiteListRepository extends ServiceEntityRepository
         return null;
     }
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
 
@@ -67,15 +67,15 @@ class DomainAutoWhiteListRepository extends ServiceEntityRepository
 
     public function save(DomainAutoWhiteList $domain): DomainAutoWhiteList
     {
-        $this->_em->persist($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($domain);
+        $this->getEntityManager()->flush();
         return $domain;
     }
 
     public function delete(DomainAutoWhiteList $domain): void
     {
-        $this->_em->remove($domain);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($domain);
+        $this->getEntityManager()->flush();
     }
 
 }

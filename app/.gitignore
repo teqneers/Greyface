@@ -4,6 +4,8 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
+# Auto-generated on cache warmup as an IDE helper for config array-shapes.
+/config/reference.php
 /public/bundles/
 /var/
 /vendor/

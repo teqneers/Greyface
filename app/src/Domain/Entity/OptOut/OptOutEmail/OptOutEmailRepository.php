@@ -38,7 +38,7 @@ class OptOutEmailRepository extends ServiceEntityRepository
     }
 
 
-    public function findAll(string $query = null, string $start = null, string|int $max = 20, string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder();
 
@@ -73,15 +73,15 @@ class OptOutEmailRepository extends ServiceEntityRepository
 
     public function save(OptOutEmail $optOutEmail): OptOutEmail
     {
-        $this->_em->persist($optOutEmail);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($optOutEmail);
+        $this->getEntityManager()->flush();
         return $optOutEmail;
     }
 
     public function delete(OptOutEmail $optOutEmail): void
     {
-        $this->_em->remove($optOutEmail);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($optOutEmail);
+        $this->getEntityManager()->flush();
     }
 
 }

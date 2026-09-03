@@ -45,7 +45,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $result = $this->repository()->findAll();
+        $result = $this->repository()->findFiltered();
 
         self::assertArrayHasKey('count', $result);
         self::assertArrayHasKey('results', $result);
@@ -70,7 +70,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $recipients = self::recipientsOf($this->repository()->findAll($user));
+        $recipients = self::recipientsOf($this->repository()->findFiltered($user));
 
         self::assertContains('mine@greyface.test', $recipients);
         self::assertNotContains(
@@ -92,7 +92,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $recipients = self::recipientsOf($this->repository()->findAll('show_unassigned'));
+        $recipients = self::recipientsOf($this->repository()->findFiltered('show_unassigned'));
 
         self::assertContains('orphan@greyface.test', $recipients);
         self::assertNotContains('claimed@greyface.test', $recipients);
@@ -108,7 +108,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $recipients = self::recipientsOf($this->repository()->findAll(null, 'needle'));
+        $recipients = self::recipientsOf($this->repository()->findFiltered(null, 'needle'));
 
         self::assertContains('a@greyface.test', $recipients);
         self::assertContains('b@greyface.test', $recipients);
@@ -125,7 +125,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $result = $this->repository()->findAll(null, 'paged.test', '0', 2);
+        $result = $this->repository()->findFiltered(null, 'paged.test', '0', 2);
 
         self::assertSame(3, (int)$result['count'], 'count must ignore the page size');
         self::assertCount(2, $result['results']);
@@ -139,7 +139,7 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $result = $this->repository()->findAll(null, 'unpaged.test');
+        $result = $this->repository()->findFiltered(null, 'unpaged.test');
 
         self::assertSame(2, $result['count']);
         self::assertCount(2, $result['results']);
@@ -153,10 +153,10 @@ class ConnectRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $ascending = $this->repository()->findAll(null, 'sorted.test', null, 20, 'name');
+        $ascending = $this->repository()->findFiltered(null, 'sorted.test', null, 20, 'name');
         self::assertSame(['a@greyface.test', 'b@greyface.test'], self::recipientsOf($ascending));
 
-        $descending = $this->repository()->findAll(null, 'sorted.test', null, 20, 'name', true);
+        $descending = $this->repository()->findFiltered(null, 'sorted.test', null, 20, 'name', true);
         self::assertSame(['b@greyface.test', 'a@greyface.test'], self::recipientsOf($descending));
     }
 
@@ -188,7 +188,7 @@ class ConnectRepositoryTest extends KernelTestCase
         $deleted = $this->repository()->deleteByDate((new \DateTimeImmutable('tomorrow'))->format('Y-m-d'));
 
         self::assertGreaterThanOrEqual(1, $deleted);
-        self::assertSame([], self::recipientsOf($this->repository()->findAll(null, 'todelete.test')));
+        self::assertSame([], self::recipientsOf($this->repository()->findFiltered(null, 'todelete.test')));
     }
 
     public function testKeepsEntriesNewerThanTheGivenDate(): void
@@ -202,7 +202,7 @@ class ConnectRepositoryTest extends KernelTestCase
 
         self::assertContains(
             'keep@greyface.test',
-            self::recipientsOf($this->repository()->findAll(null, 'tokeep.test'))
+            self::recipientsOf($this->repository()->findFiltered(null, 'tokeep.test'))
         );
     }
 }

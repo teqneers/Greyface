@@ -80,7 +80,7 @@ class UserAliasRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $names = self::aliasNamesOf($this->repository()->findAll($owner));
+        $names = self::aliasNamesOf($this->repository()->findFiltered($owner));
 
         self::assertSame(['mine@greyface.test'], $names);
     }
@@ -98,7 +98,7 @@ class UserAliasRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $names = self::aliasNamesOf($this->repository()->findAll(null, 'needle'));
+        $names = self::aliasNamesOf($this->repository()->findFiltered(null, 'needle'));
 
         self::assertContains('byuser@greyface.test', $names);
         self::assertContains('needle@greyface.test', $names);
@@ -118,7 +118,7 @@ class UserAliasRepositoryTest extends KernelTestCase
 
         self::assertSame(
             ['sort-a@greyface.test', 'sort-b@greyface.test', 'sort-c@greyface.test'],
-            self::aliasNamesOf($this->repository()->findAll($user))
+            self::aliasNamesOf($this->repository()->findFiltered($user))
         );
     }
 
@@ -132,7 +132,7 @@ class UserAliasRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $descending = $this->repository()->findAll($user, null, null, 20, 'aliasName', true);
+        $descending = $this->repository()->findFiltered($user, null, null, 20, 'aliasName', true);
 
         self::assertSame(
             ['order-b@greyface.test', 'order-a@greyface.test'],
@@ -146,8 +146,8 @@ class UserAliasRepositoryTest extends KernelTestCase
         self::initializeDatabaseWithEntities($user, self::createUserAlias($user, 'page@greyface.test'));
         self::clearEntityManager();
 
-        self::assertIsArray($this->repository()->findAll($user));
-        self::assertInstanceOf(Paginator::class, $this->repository()->findAll($user, null, '0'));
+        self::assertIsArray($this->repository()->findFiltered($user));
+        self::assertInstanceOf(Paginator::class, $this->repository()->findFiltered($user, null, '0'));
     }
 
     public function testPagesThroughResults(): void
@@ -162,11 +162,11 @@ class UserAliasRepositoryTest extends KernelTestCase
         );
         self::clearEntityManager();
 
-        $firstPage = $this->repository()->findAll($user, null, '0', 2);
+        $firstPage = $this->repository()->findFiltered($user, null, '0', 2);
         self::assertCount(4, $firstPage, 'the paginator counts every match');
         self::assertSame(['p1@greyface.test', 'p2@greyface.test'], self::aliasNamesOf($firstPage));
 
-        $secondPage = $this->repository()->findAll($user, null, '1', 2);
+        $secondPage = $this->repository()->findFiltered($user, null, '1', 2);
         self::assertSame(['p3@greyface.test', 'p4@greyface.test'], self::aliasNamesOf($secondPage));
     }
 

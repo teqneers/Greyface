@@ -88,13 +88,4 @@ class UserTest extends TestCase
         );
     }
 
-    public function testErasingCredentialsIsANoOp(): void
-    {
-        $user = User::fromUser(self::createUser());
-        $password = $user->getPassword();
-
-        $user->eraseCredentials();
-
-        self::assertSame($password, $user->getPassword());
-    }
 }

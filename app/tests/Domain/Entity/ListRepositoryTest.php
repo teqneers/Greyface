@@ -96,7 +96,7 @@ class ListRepositoryTest extends KernelTestCase
         self::clearEntityManager();
 
         $repository = self::getContainer()->get($repositoryClass);
-        $values = self::valuesOf($repository->findAll('needle-'), $getter);
+        $values = self::valuesOf($repository->findFiltered('needle-'), $getter);
 
         self::assertCount(2, $values);
         self::assertContains(self::value($sortField, 'needle-one'), $values);
@@ -121,7 +121,7 @@ class ListRepositoryTest extends KernelTestCase
                 self::value($sortField, 'sort-b'),
                 self::value($sortField, 'sort-c'),
             ],
-            self::valuesOf($repository->findAll('sort-'), $getter)
+            self::valuesOf($repository->findFiltered('sort-'), $getter)
         );
     }
 
@@ -138,7 +138,7 @@ class ListRepositoryTest extends KernelTestCase
 
         self::assertSame(
             [self::value($sortField, 'desc-b'), self::value($sortField, 'desc-a')],
-            self::valuesOf($repository->findAll('desc-', null, 20, $sortField, true), $getter)
+            self::valuesOf($repository->findFiltered('desc-', null, 20, $sortField, true), $getter)
         );
     }
 
@@ -150,8 +150,8 @@ class ListRepositoryTest extends KernelTestCase
 
         $repository = self::getContainer()->get($repositoryClass);
 
-        self::assertIsArray($repository->findAll('pager'));
-        self::assertInstanceOf(Paginator::class, $repository->findAll('pager', '0'));
+        self::assertIsArray($repository->findFiltered('pager'));
+        self::assertInstanceOf(Paginator::class, $repository->findFiltered('pager', '0'));
     }
 
     /**
@@ -170,7 +170,7 @@ class ListRepositoryTest extends KernelTestCase
 
         $repository = self::getContainer()->get($repositoryClass);
 
-        $firstPage = $repository->findAll('page-', '0', 2);
+        $firstPage = $repository->findFiltered('page-', '0', 2);
         self::assertCount(4, $firstPage, 'the paginator counts every match');
         self::assertSame(
             [self::value($sortField, 'page-1'), self::value($sortField, 'page-2')],
@@ -179,7 +179,7 @@ class ListRepositoryTest extends KernelTestCase
 
         self::assertSame(
             [self::value($sortField, 'page-3'), self::value($sortField, 'page-4')],
-            self::valuesOf($repository->findAll('page-', '1', 2), $getter)
+            self::valuesOf($repository->findFiltered('page-', '1', 2), $getter)
         );
     }
 

@@ -42,7 +42,7 @@ class UserAliasController
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $userAliases = $userAliasRepository->findAll($user, $query, $start, $max, $sortBy, boolval($desc));
+        $userAliases = $userAliasRepository->findFiltered($user, $query, $start, $max, $sortBy, boolval($desc));
         $data = [];
         if ($userAliases) {
             foreach ($userAliases as $alias) {
