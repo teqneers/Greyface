@@ -28,7 +28,7 @@ Especially after a customer discussion you do not want to wait for the customer 
 The other way would be perhaps the incoming e -mails will be permanently placed on the whitelist.
 But each time addressing the system administrator would be time and cost intensive.
 
-This administration takes over the Gray Facebook application!
+Greyface takes this administration off their hands.
 
 
 
@@ -57,9 +57,8 @@ whitelist.
 
 TECHNICAL REALIZATION
 =====================
-Greyface is written in Symfony 6.1 and PHP 8.1, offering a connection to the supplied database of SQLGrey.
-The use of the latest web technologies using the React framework 17.0.2, increases usability and makes it fit for
-the future.
+Greyface is written in Symfony 7.1 and PHP 8.3, offering a connection to the supplied database of SQLGrey.
+It uses React 18 for the user interface, which keeps the application responsive and quick to work in.
 
 
 
@@ -68,9 +67,14 @@ INTERESTED?
 The latest version of Greyface can be found on https://github.com/teqneers/Greyface
 
 ## Technical Requirements
-1. PHP 8.1 or higher
-2. Composer
+1. PHP 8.3 or higher, with the `ctype`, `iconv` and `pdo_mysql` extensions
+2. Composer 2
 3. Yarn
+4. MariaDB 10.11 or newer
+
+> MariaDB is required rather than MySQL. The SQLGrey tables use
+> `DEFAULT "0000-00-00 00:00:00"`, which MySQL rejects under its default
+> `NO_ZERO_DATE` / `STRICT_TRANS_TABLES` sql_mode.
 
 ## Setup
 
@@ -82,40 +86,59 @@ download and install sqlgrey in a php/mysql environment!
 0.2 Provide a mySQL installation and combine it with sqlgrey.
 
 
-### 1. Clone project
-`git clone https://github.com/teqneers/Greyface.git`
+### 1. Clone the project
 
-`cd app`
+```bash
+git clone https://github.com/teqneers/Greyface.git
+cd Greyface
+```
 
-`yarn install`
+The Symfony application lives in `app/`, but the *project root* is the repository
+root: `.env` is read from there, and caches and logs are written to
+`<root>/var/`.
 
-`yarn build`
+### 2. dotenv configuration
 
-### 2. dotenv configurations
-Create a `.env.local` next to `.env` and set
-your configuration variables there, e.g.:
+Create a `.env.local` next to `.env` in the repository root and set your
+configuration there:
 
 ```dotenv
 APP_ENV=prod
 APP_SECRET=<<the application secret>> # http://nux.net/secret
-DATABASE_URL=DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
 ```
 
-Set the `DATABASE_URL` to the database URL where the backend database is located.
+**Always set your own `APP_SECRET`.** The value committed in `.env` is a
+placeholder, and it also signs the "remember me" cookies — leaving it in place
+means anyone who can read this repository can forge a login.
 
-Ensure that both `/cache` and `/log` are writable by the console user and the php processes.
+Set `DATABASE_URL` to the database SQLGrey uses.
 
-### 3. Install Symfony dependencies
-Inside the project folder run the below command to install the dependencies 
+Ensure that `var/cache` and `var/log` in the repository root are writable by both
+the console user and the PHP processes.
 
-`composer install`
+### 3. Install dependencies and build the frontend
+
+```bash
+cd app
+composer install --no-dev --optimize-autoloader
+yarn install
+yarn build
+```
 
 ### 4. Database migrations
-Finally run the database updates using \
-`php bin/console doctrine:migrations:migrate` 
 
-We have created a new admin user **(usr:admin, pwd: admin)**, Please use this to login.
-Do not forget to change the password after installation!
+```bash
+php bin/console doctrine:migrations:migrate
+```
+
+This creates Greyface's own tables and, if they do not already exist, the
+SQLGrey tables.
+
+A first administrator is created with the username **admin** and the password
+**admin**. Change it immediately after installation — the password hash is
+public in this repository, so any installation that keeps the default is open to
+anyone.
 
 ### 5. Web server configurations
 Please follow the below document link to configure your web server. \

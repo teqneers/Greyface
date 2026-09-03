@@ -1,0 +1,120 @@
+name: CI
+
+on:
+    push:
+        branches: [ master ]
+        paths-ignore: [ '**.md', 'LICENSE' ]
+    pull_request:
+        branches: [ master ]
+        paths-ignore: [ '**.md', 'LICENSE' ]
+
+# Third-party actions are pinned to a commit SHA rather than a floating major
+# tag: a mutable tag can be repointed at any time, and Dependabot cannot tell
+# which patch a runner will actually get.
+jobs:
+    backend:
+        name: PHP ${{ matrix.php-version }}
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: [ '8.3', '8.4' ]
+
+        services:
+            # MariaDB, not MySQL: migration Version20220721081217 creates columns
+            # with `DEFAULT "0000-00-00 00:00:00"`, which MySQL rejects under its
+            # default NO_ZERO_DATE sql_mode.
+            database:
+                image: mariadb:11.2
+                env:
+                    MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+                    MARIADB_DATABASE: greyface
+                ports:
+                    - 3306:3306
+                options: >-
+                    --health-cmd="healthcheck.sh --connect --innodb_initialized"
+                    --health-interval=5s
+                    --health-timeout=5s
+                    --health-retries=20
+
+        steps:
+            - name: Check out the repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+            - name: Set up PHP
+              uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+              with:
+                  php-version: ${{ matrix.php-version }}
+                  extensions: ctype, iconv, pdo_mysql
+                  tools: composer:v2
+                  coverage: pcov
+
+            - name: Get the composer cache directory
+              id: composer-cache
+              working-directory: app
+              run: echo "dir=$(composer config cache-dir)" >> "$GITHUB_OUTPUT"
+
+            - name: Cache composer dependencies
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-php${{ matrix.php-version }}-composer-${{ hashFiles('app/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-php${{ matrix.php-version }}-composer-
+
+            - name: Validate composer.json
+              working-directory: app
+              run: composer validate --no-check-publish
+
+            - name: Install dependencies
+              working-directory: app
+              run: composer install --prefer-dist --no-progress --no-interaction
+
+            - name: Audit dependencies for known vulnerabilities
+              working-directory: app
+              # Reported, not enforced: the suite has to keep running while the
+              # Symfony 7.1 -> 7.4 upgrade is still outstanding.
+              continue-on-error: true
+              run: composer audit
+
+            # The test bootstrap reads DATABASE_URL from the repository root, and
+            # .env.local is deliberately ignored when APP_ENV=test, so the
+            # override has to go in .env.test.local.
+            - name: Point the test suite at the service container
+              run: echo 'DATABASE_URL=mysql://root@127.0.0.1:3306/greyface_test' > .env.test.local
+
+            - name: Run the test suite
+              working-directory: app
+              run: bin/phpunit --coverage-clover=coverage.xml
+
+            - name: Enforce the coverage ratchet
+              working-directory: app
+              # Raise this as coverage improves; never lower it to make a build pass.
+              run: php bin/check-coverage.php coverage.xml 92
+
+    frontend:
+        name: Frontend
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out the repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+            - name: Set up Node
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+              with:
+                  node-version: '20'
+                  cache: yarn
+                  cache-dependency-path: app/yarn.lock
+
+            - name: Install dependencies
+              working-directory: app
+              run: yarn install --frozen-lockfile
+
+            - name: Lint
+              working-directory: app
+              run: yarn lint
+
+            - name: Build
+              working-directory: app
+              run: yarn build:ci

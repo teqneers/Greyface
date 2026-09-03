@@ -5,9 +5,8 @@ namespace App\Tests\Security;
 use App\Security\UserChecker;
 use App\Test\SecurityUserTrait;
 use App\Test\UserDomainTrait;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\Exception\DisabledException;
-use Symfony\Component\Security\Core\Exception\LockedException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -34,13 +33,25 @@ class UserCheckerTest extends TestCase
         };
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[DoesNotPerformAssertions]
     public function testSkipsNonAppUsersOnPreAuth(): void
     {
         $checker = new UserChecker();
         $checker->checkPreAuth(self::createArbitraryUser());
+    }
+
+    #[DoesNotPerformAssertions]
+    public function testAcceptsAppUsersOnPreAuth(): void
+    {
+        $checker = new UserChecker();
+        $checker->checkPreAuth(self::createSecurityUser(self::createUser()));
+    }
+
+    #[DoesNotPerformAssertions]
+    public function testAcceptsAppUsersOnPostAuth(): void
+    {
+        $checker = new UserChecker();
+        $checker->checkPostAuth(self::createSecurityUser(self::createUser()));
     }
 
     public function testThrowsExceptionOnNonAppUsersOnPostAuth(): void

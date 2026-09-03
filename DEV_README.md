@@ -28,7 +28,7 @@ Especially after a customer discussion you do not want to wait for the customer 
 The other way would be perhaps the incoming e -mails will be permanently placed on the whitelist.
 But each time addressing the system administrator would be time and cost intensive.
 
-This administration takes over the Gray Facebook application!
+Greyface takes this administration off their hands.
 
 
 
@@ -57,9 +57,8 @@ whitelist.
 
 TECHNICAL REALIZATION
 =====================
-Greyface is written in Symfony 6.1 and PHP 8.1, offering a connection to the supplied database of SQLGrey.
-The use of the latest web technologies using the React framework 17.0.2, increases usability and makes it fit for
-the future.
+Greyface is written in Symfony 7.1 and PHP 8.3, offering a connection to the supplied database of SQLGrey.
+It uses React 18 for the user interface, which keeps the application responsive and quick to work in.
 
 
 
@@ -68,9 +67,14 @@ INTERESTED?
 The latest version of Greyface can be found on https://github.com/teqneers/Greyface
 
 ## Technical Requirements
-1. Install PHP 8.1 or higher
-2. Install Composer
-3. Install Yarn
+1. PHP 8.3 or higher, with the `ctype`, `iconv` and `pdo_mysql` extensions
+2. Composer 2
+3. Yarn
+4. Docker, for the development database
+
+> MariaDB is required rather than MySQL. The SQLGrey tables use
+> `DEFAULT "0000-00-00 00:00:00"`, which MySQL rejects under its default
+> `NO_ZERO_DATE` / `STRICT_TRANS_TABLES` sql_mode.
 
 ## Setup
 
@@ -82,40 +86,91 @@ download and install sqlgrey in a php/mysql environment!
 0.2 Provide a mySQL installation and combine it with sqlgrey.
 
 
-### 1. Clone project
-`git clone https://github.com/teqneers/Greyface.git`
+### 1. Clone the project
 
-`cd app`
+```bash
+git clone https://github.com/teqneers/Greyface.git
+cd Greyface
+```
 
-`yarn install`
+The Symfony application lives in `app/`, but the *project root* is the repository
+root: `.env` is read from there, and caches and logs are written to
+`<root>/var/`.
 
-`yarn start`
+### 2. Start the database
 
-### 2. dotenv configurations
-Create a `.env.local` next to `.env` and set
-your configuration variables there, e.g.:
+```bash
+docker compose up -d database
+```
+
+This brings up MariaDB 11.2 as a service named `database`, matching the
+hostnames already committed in `.env` and `.env.test`.
+
+### 3. dotenv configuration
+
+Create a `.env.local` next to `.env` in the repository root:
 
 ```dotenv
 APP_ENV=dev
 APP_SECRET=<<the application secret>> # http://nux.net/secret
-DATABASE_URL=DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+DATABASE_URL=mysql://greyface:greyface@127.0.0.1:3306/greyface
 ```
 
-Set the `DATABASE_URL` to the database URL where the backend database is located.
+Use the hostname `database` instead of `127.0.0.1` when PHP itself runs inside
+Docker.
 
-Ensure that both `/cache` and `/log` are writable by the console user and the php processes.
+Ensure that `var/cache` and `var/log` in the repository root are writable.
 
-### 3. Install Symfony dependencies
-Inside the project folder run the below command to install the dependencies 
+### 4. Install dependencies
 
-`composer install`
+```bash
+cd app
+composer install
+yarn install
+```
 
-### 4. Database migrations
-Finally run the database updates using \
-`php bin/console doctrine:migrations:migrate` 
+### 5. Database migrations
 
-We have created a new admin user **(usr:admin, pwd: admin)**, Please use this to login.
-Do not forget to change the password after installation!
+```bash
+php bin/console doctrine:migrations:migrate
+```
+
+This creates Greyface's own tables and, if they do not already exist, the
+SQLGrey tables — so an empty database is enough for development, with no
+SQLGrey installation required.
+
+A first administrator is created with the username **admin** and the password
+**admin**. Change it immediately — the password hash is public in this
+repository.
+
+## Running the tests
+
+```bash
+docker compose up -d database   # from the repository root
+cd app
+bin/phpunit                                              # the whole suite
+bin/phpunit tests/Domain/User/Security/UserVoterTest.php # one file
+bin/phpunit --filter testDeniesDeletingTheLastAdministrator
+DISABLE_DB_SETUP=1 bin/phpunit                           # skip the schema rebuild
+bin/phpunit --coverage-text                              # with coverage (needs pcov or xdebug)
+```
+
+The suite **drops and recreates** the database named in `DATABASE_URL` before it
+runs, so that value must always point at a throw-away database.
+
+To run the tests from the host against the compose database, create a
+`.env.test.local` in the repository root:
+
+```dotenv
+DATABASE_URL=mysql://root@127.0.0.1:3306/greyface_test
+```
+
+Note that `.env.local` is deliberately **ignored** when `APP_ENV=test`, so
+`.env.test.local` is the only file that can override the test database.
+
+CI enforces a minimum line coverage; see the threshold passed to
+`php bin/check-coverage.php` in `.github/workflows/ci.yml`. It is a ratchet —
+raise it as coverage improves, never lower it to make a build pass.
 
 ### 5. Start server
 

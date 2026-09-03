@@ -11,7 +11,7 @@ trait UserAliasTrait
     use UserDomainTrait;
 
     public static function createUserAlias(
-        User $user = null,
+        ?User $user = null,
         string $aliasName = 'alias@example.de',
     ): UserAlias {
         return new UserAlias(

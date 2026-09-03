@@ -1,0 +1,42 @@
+# Local development and test database for Greyface.
+#
+#   docker compose up -d database
+#   cd app && bin/phpunit
+#
+# MariaDB is required, not MySQL. Migration Version20220721081217 creates
+# `domain_awl` and `from_awl` with `last_seen timestamp NOT NULL DEFAULT
+# "0000-00-00 00:00:00"`. MySQL 5.7/8.0 enable NO_ZERO_DATE + STRICT_TRANS_TABLES
+# by default and reject those CREATE TABLE statements. The version here also
+# matches `server_version` in app/config/packages/doctrine.yaml.
+#
+# The service is named `database` so the hostnames committed in .env and
+# .env.test resolve without any local override. To run the test suite from the
+# host instead of from inside a container, create a .env.test.local next to .env
+# with a DATABASE_URL pointing at 127.0.0.1:3306 — note that .env.local is
+# deliberately ignored when APP_ENV=test, so .env.test.local is the only file
+# that works for tests.
+
+services:
+    database:
+        image: mariadb:11.2
+        environment:
+            # .env.test connects as root with no password and needs to be able to
+            # DROP and CREATE the greyface_test database on every test run.
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+            # Matches DATABASE_URL in .env for the dev environment.
+            MARIADB_DATABASE: greyface
+            MARIADB_USER: greyface
+            MARIADB_PASSWORD: greyface
+        ports:
+            - '3306:3306'
+        volumes:
+            - database_data:/var/lib/mysql
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            interval: 5s
+            timeout: 5s
+            retries: 20
+            start_period: 30s
+
+volumes:
+    database_data:
