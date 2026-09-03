@@ -1,0 +1,27 @@
+# The build context is the repository root, so that docker/compose.yaml can
+# reach both docker/ and the application tree. Without this file every build
+# ships vendor/ and node_modules/ to the daemon — hundreds of megabytes for an
+# image that only needs a Dockerfile, a Caddyfile and a php.ini.
+#
+# None of this is COPYed into the image anyway: the source is bind-mounted at
+# runtime (see docker/compose.yaml).
+
+.git
+.github
+.idea
+
+app/vendor
+app/node_modules
+app/public/build
+app/.phpunit.cache
+app/coverage.xml
+
+var/cache
+var/log
+data
+
+# Local secrets and overrides never belong in a build context.
+.env.local
+.env.*.local
+greyface.ini
+docker/build

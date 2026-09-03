@@ -1,8 +1,14 @@
 # Development and test environment for Greyface.
 #
-#   docker compose up -d
-#   docker compose exec php composer install
-#   docker compose exec php bin/phpunit
+# From the repository root:
+#
+#   docker compose -f docker/compose.yaml up -d
+#   docker compose -f docker/compose.yaml exec php composer install
+#   docker compose -f docker/compose.yaml exec php bin/phpunit
+#
+# Or `cd docker` first and drop the -f flag — Compose finds this file there.
+# Note that Compose reads its own .env for ${...} substitution from *this*
+# directory, which keeps it clear of Symfony's .env in the repository root.
 #
 # then open https://localhost:18443 (accept the certificate the first time, or
 # trust Caddy's local CA — see docker/README.md).
@@ -18,10 +24,18 @@
 # public/index.php derives APP_PATH as dirname($script, 3), so the application
 # has to sit at <root>/app/public for caches and logs to land in <root>/var.
 
+# Compose derives the project name from the directory holding this file, which
+# would make everything "docker-*" now that it lives here. Pin it so container
+# and volume names stay stable.
+name: greyface
+
 services:
     php:
         build:
-            context: .
+            # The repository root, so the Dockerfile can reach both docker/ and
+            # the application tree. .dockerignore keeps vendor/ and node_modules/
+            # out of the build context.
+            context: ..
             dockerfile: docker/frankenphp/Dockerfile
         depends_on:
             database:
@@ -49,11 +63,11 @@ services:
             - '${HTTP_PORT:-18080}:${HTTP_PORT:-18080}'
             - '${HTTPS_PORT:-18443}:${HTTPS_PORT:-18443}'
         volumes:
-            - .:/srv/greyface
+            - ..:/srv/greyface
             # Mounted as well as baked into the image, so editing the server or
             # PHP config only needs `docker compose restart php`, not a rebuild.
-            - ./docker/frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
-            - ./docker/frankenphp/conf.d/app.ini:/usr/local/etc/php/conf.d/zz-greyface.ini:ro
+            - ./frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
+            - ./frankenphp/conf.d/app.ini:/usr/local/etc/php/conf.d/zz-greyface.ini:ro
             # var/ gets its own volume rather than being shared with the host.
             # Symfony bakes absolute paths into the compiled container, so a
             # cache built at /Users/... is invalid at /srv/greyface and vice

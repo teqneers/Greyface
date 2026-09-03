@@ -100,7 +100,7 @@ root: `.env` is read from there, and caches and logs are written to
 ### 2. Start the stack
 
 ```bash
-docker compose up -d
+docker compose -f docker/compose.yaml up -d
 ```
 
 This brings up FrankenPHP (Caddy + PHP in one container) and MariaDB 11.2 as a
@@ -125,14 +125,14 @@ Ensure that `var/cache` and `var/log` in the repository root are writable.
 ### 4. Install dependencies
 
 ```bash
-docker compose exec php composer install
+docker compose -f docker/compose.yaml exec php composer install
 cd app && yarn install && yarn build   # the frontend still builds on the host
 ```
 
 ### 5. Database migrations
 
 ```bash
-docker compose exec php bin/console doctrine:migrations:migrate
+docker compose -f docker/compose.yaml exec php bin/console doctrine:migrations:migrate
 ```
 
 The application is now at <http://localhost:18080>, and on HTTPS at
@@ -155,11 +155,11 @@ Inside the container the committed `.env.test` already works — nothing to
 configure:
 
 ```bash
-docker compose exec php bin/phpunit                              # the whole suite
-docker compose exec php bin/phpunit tests/Domain/User/Security/UserVoterTest.php
-docker compose exec php bin/phpunit --filter testDeniesDeletingTheLastAdministrator
-docker compose exec php bin/phpunit --coverage-text
-docker compose exec -e DISABLE_DB_SETUP=1 php bin/phpunit         # skip the schema rebuild
+docker compose -f docker/compose.yaml exec php bin/phpunit                              # the whole suite
+docker compose -f docker/compose.yaml exec php bin/phpunit tests/Domain/User/Security/UserVoterTest.php
+docker compose -f docker/compose.yaml exec php bin/phpunit --filter testDeniesDeletingTheLastAdministrator
+docker compose -f docker/compose.yaml exec php bin/phpunit --coverage-text
+docker compose -f docker/compose.yaml exec -e DISABLE_DB_SETUP=1 php bin/phpunit         # skip the schema rebuild
 ```
 
 To run them from the host instead, pass the database URL as a real environment

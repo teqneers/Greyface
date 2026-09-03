@@ -14,10 +14,14 @@ docker/
 
 ## Getting started
 
+All commands below are written to run from the **repository root**. If you
+`cd docker` first, Compose finds this directory's `compose.yaml` on its own and
+you can drop the `-f docker/compose.yaml` flag.
+
 ```bash
-docker compose up -d
-docker compose exec php composer install
-docker compose exec php bin/console doctrine:migrations:migrate
+docker compose -f docker/compose.yaml up -d
+docker compose -f docker/compose.yaml exec php composer install
+docker compose -f docker/compose.yaml exec php bin/console doctrine:migrations:migrate
 ```
 
 Then open <http://localhost:18080> and log in with `admin` / `admin`.
@@ -31,7 +35,7 @@ HTTPS will warn about the certificate the first time. Caddy issues it from its
 own local CA, which you can trust once to make the warning go away:
 
 ```bash
-docker compose cp php:/data/caddy/pki/authorities/local/root.crt /tmp/greyface-ca.crt
+docker compose -f docker/compose.yaml cp php:/data/caddy/pki/authorities/local/root.crt /tmp/greyface-ca.crt
 # macOS
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /tmp/greyface-ca.crt
 ```
@@ -74,9 +78,9 @@ exist. The site addresses in the Caddyfile carry their port for the same reason.
 points at `database:3306`, which resolves here, so nothing else is needed:
 
 ```bash
-docker compose exec php bin/phpunit
-docker compose exec php bin/phpunit --filter testDeniesDeletingTheLastAdministrator
-docker compose exec php bin/phpunit --coverage-text
+docker compose -f docker/compose.yaml exec php bin/phpunit
+docker compose -f docker/compose.yaml exec php bin/phpunit --filter testDeniesDeletingTheLastAdministrator
+docker compose -f docker/compose.yaml exec php bin/phpunit --coverage-text
 ```
 
 **From the host.** Pass the URL as a real environment variable — it beats every
@@ -112,7 +116,7 @@ at `/srv/greyface` and vice versa. Sharing the directory makes the two rebuild
 over each other's work. Read the container's logs with:
 
 ```bash
-docker compose exec php cat ../var/log/dev.log
+docker compose -f docker/compose.yaml exec php cat ../var/log/dev.log
 ```
 
 ## Path layout
