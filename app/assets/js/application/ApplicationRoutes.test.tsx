@@ -16,12 +16,9 @@ const stub = (name: string) => ({
 vi.mock('../pages/greylist/GreyListModule', () => stub('greylist'));
 vi.mock('../pages/users/UserModule', () => stub('users'));
 vi.mock('../pages/usersAlias/UserAliasModule', () => stub('users-aliases'));
-vi.mock('../pages/Blacklist/blacklistDomain/BlacklistDomainModule', () => stub('opt-in/domains'));
-vi.mock('../pages/Blacklist/blacklistEmail/BlacklistEmailModule', () => stub('opt-in/emails'));
-vi.mock('../pages/Whitelist/whitelistDomain/WhitelistDomainModule', () => stub('opt-out/domains'));
-vi.mock('../pages/Whitelist/whitelistEmail/WhitelistEmailModule', () => stub('opt-out/emails'));
-vi.mock('../pages/AutoWhitelist/autoWhitelistDomain/AutoWhitelistDomainModule', () => stub('awl/domains'));
-vi.mock('../pages/AutoWhitelist/autoWhitelistEmail/AutoWhitelistEmailModule', () => stub('awl/emails'));
+vi.mock('../pages/lists/WhitelistModule', () => stub('whitelist'));
+vi.mock('../pages/lists/BlacklistModule', () => stub('blacklist'));
+vi.mock('../pages/lists/AutoWhitelistModule', () => stub('auto-whitelist'));
 
 async function renderAt(route: string): Promise<string> {
     renderWithProviders(
@@ -39,13 +36,18 @@ describe('ApplicationRoutes', () => {
         ['/greylist', 'greylist'],
         ['/users', 'users'],
         ['/users-aliases', 'users-aliases'],
-        ['/awl/emails', 'awl/emails'],
-        ['/awl/domains', 'awl/domains'],
-        ['/opt-out/emails', 'opt-out/emails'],
-        ['/opt-out/domains', 'opt-out/domains'],
-        ['/opt-in/emails', 'opt-in/emails'],
-        ['/opt-in/domains', 'opt-in/domains'],
+        ['/whitelist/emails', 'whitelist'],
+        ['/blacklist/domains/create', 'blacklist'],
+        ['/auto-whitelist', 'auto-whitelist'],
     ])('routes %s to the %s module', async (route, expected) => {
+        expect(await renderAt(route)).toBe(expected);
+    });
+
+    it.each([
+        ['/opt-out/emails', 'whitelist'],
+        ['/opt-in/domains', 'blacklist'],
+        ['/awl/emails', 'auto-whitelist'],
+    ])('redirects the old path %s to the %s module', async (route, expected) => {
         expect(await renderAt(route)).toBe(expected);
     });
 
@@ -62,8 +64,8 @@ describe('ApplicationRoutes', () => {
     it.each([
         ['/users/create', 'users'],
         ['/users/some-id/edit', 'users'],
-        ['/awl/domains/some-id/edit', 'awl/domains'],
-        ['/opt-in/emails/some-id/delete', 'opt-in/emails'],
+        ['/auto-whitelist/domains/create', 'auto-whitelist'],
+        ['/blacklist/emails/create', 'blacklist'],
     ])('keeps %s on the %s module', async (route, expected) => {
         expect(await renderAt(route)).toBe(expected);
     });

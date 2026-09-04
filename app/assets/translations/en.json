@@ -48,7 +48,10 @@
       "min": "Must be at least {{ min }} characters",
       "passNotMatch": "Password does not match",
       "forbidden": "You are not allowed to open that page.",
-      "loadFailed": "The data could not be loaded."
+      "loadFailed": "The data could not be loaded.",
+      "email": "Not a valid email address",
+      "domain": "Not a valid domain name",
+      "max": "Must be at most {{max}} characters"
     },
     "paging": {
       "previous": "Previous page",
@@ -192,7 +195,8 @@
         "editHeader": "Edit Whitelist Email",
         "deleteHeader": "Delete Whitelist Email",
         "deleteMessage": "Do you really want to delete this?",
-        "email": "Email"
+        "email": "Email",
+        "emptyDescription": "No sender addresses are whitelisted yet."
       },
       "domain": {
         "header": "Whitelist Domain",
@@ -200,8 +204,10 @@
         "editHeader": "Edit Whitelist Domain",
         "deleteHeader": "Delete Whitelist Domain",
         "deleteMessage": "Do you really want to delete this?",
-        "domain": "Domain"
-      }
+        "domain": "Domain",
+        "emptyDescription": "No sender domains are whitelisted yet."
+      },
+      "description": "Senders that are always accepted without greylisting."
     },
     "blacklist": {
       "header": "Blacklist",
@@ -211,7 +217,8 @@
         "editHeader": "Edit Blacklist Email",
         "deleteHeader": "Delete Blacklist Email",
         "deleteMessage": "Do you really want to delete this?",
-        "email": "Email"
+        "email": "Email",
+        "emptyDescription": "No sender addresses are blacklisted."
       },
       "domain": {
         "header": "Blacklist Domain",
@@ -219,8 +226,10 @@
         "editHeader": "Edit Blacklist Domain",
         "deleteHeader": "Delete Blacklist Domain",
         "deleteMessage": "Do you really want to delete this?",
-        "domain": "Domain"
-      }
+        "domain": "Domain",
+        "emptyDescription": "No sender domains are blacklisted."
+      },
+      "description": "Senders that are always greylisted, even if SQLGrey already knows them."
     },
     "autoWhitelist": {
       "header": "Auto Whitelist",
@@ -234,7 +243,8 @@
         "domain": "Domain",
         "source": "Source",
         "firstSeen": "First Seen",
-        "lastSeen": "Last Seen"
+        "lastSeen": "Last Seen",
+        "emptyDescription": "SQLGrey has not auto-whitelisted any sender yet."
       },
       "domain": {
         "header": "Auto Whitelist Domain",
@@ -245,8 +255,10 @@
         "domain": "Domain",
         "source": "Source",
         "firstSeen": "First Seen",
-        "lastSeen": "Last Seen"
-      }
+        "lastSeen": "Last Seen",
+        "emptyDescription": "SQLGrey has not auto-whitelisted any domain yet."
+      },
+      "description": "Senders SQLGrey has learned to trust because they retried correctly. Entries expire on their own when a sender stays quiet."
     },
     "theme": {
       "label": "Appearance",
@@ -266,6 +278,32 @@
       "selected_other": "{{count}} selected",
       "clearSelection": "Clear",
       "actions": "Actions"
+    },
+    "lists": {
+      "created": "Added.",
+      "updated": "Saved.",
+      "deleted": "Entry deleted.",
+      "editEntry": "Edit {{label}}",
+      "deleteEntry": "Delete {{label}}",
+      "deleteMessage": "{{label}} will be removed from the list.",
+      "bulkDelete": "Delete selected",
+      "bulkDeleteTitle": "Delete selected entries",
+      "bulkDeleteMessage_one": "{{count}} entry will be removed from the list.",
+      "bulkDeleteMessage_other": "{{count}} entries will be removed from the list.",
+      "bulkDeleteConfirm_one": "Delete {{count}} entry",
+      "bulkDeleteConfirm_other": "Delete {{count}} entries",
+      "bulkDeleted_one": "{{count}} entry deleted.",
+      "bulkDeleted_other": "{{count}} entries deleted.",
+      "bulkDeletedPartial": "{{count}} of {{total}} entries deleted; the rest failed.",
+      "removeValue": "Remove value {{index}}",
+      "empty": {
+        "title": "This list is empty",
+        "filtered": "No entries match the current search."
+      },
+      "add": {
+        "emails": "Add email",
+        "domains": "Add domain"
+      }
     }
   }
 }
