@@ -31,7 +31,7 @@
         "symfony/twig-bundle": "7.4.*",
         "symfony/validator": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "webmozart/assert": "^1.11"
+        "webmozart/assert": "^2.4"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "*",
