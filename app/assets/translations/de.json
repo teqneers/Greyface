@@ -347,6 +347,9 @@
         "empty_one": "Keine Aktivität am letzten Tag.",
         "empty_other": "Keine Aktivität in den letzten {{count}} Tagen."
       }
+    },
+    "version": {
+      "label": "Version {{version}}"
     }
   }
 }

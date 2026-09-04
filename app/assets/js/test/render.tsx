@@ -87,6 +87,8 @@ export function renderWithProviders(ui: ReactElement, options: RenderOptions = {
                     baseUrl="/"
                     logoutUrl="/logout"
                     changePasswordUrl="/password/change"
+                    version="test"
+                    build="test"
                 >
                     <TooltipProvider>{children}</TooltipProvider>
                 </ApplicationProvider>

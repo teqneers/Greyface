@@ -38,6 +38,10 @@ function bootstrapDatabase(): void
         ['command' => 'doctrine:database:drop', '--if-exists' => '1', '--force' => '1'],
         ['command' => 'doctrine:database:create'],
         ['command' => 'doctrine:migrations:migrate', '--allow-no-migration' => '1', '--no-interaction' => '1'],
+        // The migrations only create Greyface's own tables. SQLGrey's schema, the
+        // five sample greylist entries the controller tests count, and the admin
+        // account they log in as all come from the fixtures.
+        ['command' => 'greyface:fixtures:load'],
     ];
 
     foreach ($commands as $command) {

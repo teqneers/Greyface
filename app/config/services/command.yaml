@@ -1,0 +1,18 @@
+# Console commands. services.yaml registers only App\Controller\ by glob, so
+# everything else is declared per aggregate — these are the operator-facing
+# commands the container entrypoint and the install documentation rely on.
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Command\CheckConfigCommand:
+    arguments:
+      $environment: '%kernel.environment%'
+      $secret: '%kernel.secret%'
+
+  App\Command\CreateUserCommand:
+
+  App\Command\LoadFixturesCommand:
+    arguments:
+      $environment: '%kernel.environment%'
