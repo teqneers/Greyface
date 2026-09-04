@@ -1,0 +1,57 @@
+# Example stack for running Greyface next to an existing SQLGrey installation.
+#
+# Copy this next to a .env holding your own values and run:
+#   docker compose -f compose.example.yaml up -d
+#
+# Greyface does not ship a database. It reads and writes SQLGrey's own tables, so
+# DATABASE_URL points at the database SQLGrey already uses. Nothing here creates,
+# alters or seeds a SQLGrey table; the container refuses to start if it cannot
+# find them, rather than quietly creating an empty schema.
+
+services:
+    greyface:
+        image: ghcr.io/teqneers/greyface:3
+        restart: unless-stopped
+
+        environment:
+            # The database SQLGrey uses. Greyface adds its own tables to it
+            # (tq_users, tq_aliases) and leaves SQLGrey's alone.
+            DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in your .env}
+
+            # Signs session and remember-me cookies. Generate once and keep it:
+            #   openssl rand -hex 32
+            # Changing it logs everyone out. The container refuses to start
+            # without it, and refuses the placeholder value from the repository.
+            APP_SECRET: ${APP_SECRET:?set APP_SECRET in your .env}
+
+            # Only used on a fresh database, to create the first administrator.
+            # Nothing happens once an account exists, and you can remove these
+            # afterwards. Greyface ships no default credentials.
+            GREYFACE_ADMIN_USER: ${GREYFACE_ADMIN_USER:-}
+            GREYFACE_ADMIN_PASSWORD: ${GREYFACE_ADMIN_PASSWORD:-}
+
+            # Greyface's own tables are migrated on start. Set this to false to
+            # run `doctrine:migrations:migrate` yourself when upgrading.
+            GREYFACE_AUTO_MIGRATE: ${GREYFACE_AUTO_MIGRATE:-true}
+
+            # Leave unset to serve plain HTTP on port 80, which is what you want
+            # behind an existing reverse proxy — set TRUSTED_PROXIES too, or
+            # Greyface will not know the request arrived over HTTPS and the
+            # secure session cookie will not stick.
+            #
+            # Set it to a public hostname instead and Caddy obtains a certificate
+            # itself, serving HTTPS on 443. That needs port 443 published and the
+            # caddy_data volume below, so the certificate survives a restart.
+            # SERVER_NAME: greyface.example.com
+            TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
+
+        ports:
+            - '${HTTP_PORT:-8080}:80'
+            # - '443:443'   # only when SERVER_NAME is set
+
+        volumes:
+            # Only needed when Caddy manages certificates itself.
+            - caddy_data:/data
+
+volumes:
+    caddy_data:

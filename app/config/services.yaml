@@ -10,6 +10,10 @@ parameters:
     routing.uuid: '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}'
     app.path: '%env(APP_PATH)%'
     env(TRUSTED_PROXIES): ''
+    # mailer.yaml resolves %env(MAILER_DSN)% and nothing else supplies a default,
+    # so anything that touches the mailer — including a production cache warmup —
+    # would die with EnvNotFoundException. Greyface sends no mail today.
+    env(MAILER_DSN): 'null://null'
 
 services:
     # default configuration for services in *this* file

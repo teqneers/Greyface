@@ -1,0 +1,8 @@
+# Shipped inside the production image as /srv/greyface/.env.
+#
+# Symfony's Dotenv requires this file to exist, so it does — but it holds no
+# configuration. DATABASE_URL, APP_SECRET and everything else come from the
+# container's environment, and real environment variables override anything
+# written here. greyface:check-config refuses to start if the important ones
+# are missing, so a misconfigured container fails immediately and says why.
+APP_ENV=prod
