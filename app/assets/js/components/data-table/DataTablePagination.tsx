@@ -25,13 +25,13 @@ export function DataTablePagination(
     const last = page >= pageCount - 1;
 
     return (
-        <nav aria-label={t('paging.label')} className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <nav aria-label={t('paging.label')} className="flex flex-col gap-3 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <p className="text-muted-foreground" aria-live="polite">
                 {t('paging.range', {from, to, count: rowCount})}
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <label className="flex items-center gap-2 text-muted-foreground">
-                    <span>{t('paging.itemsPerPage')}</span>
+                    <span className="whitespace-nowrap">{t('paging.itemsPerPage')}</span>
                     <Select value={String(pageSize)} onValueChange={(value) => onPageSizeChange(Number(value))}>
                         <SelectTrigger size="sm" className="w-18" aria-label={t('paging.itemsPerPage')}>
                             <SelectValue/>
@@ -43,7 +43,7 @@ export function DataTablePagination(
                         </SelectContent>
                     </Select>
                 </label>
-                <span className="text-muted-foreground">
+                <span className="whitespace-nowrap text-muted-foreground">
                     {t('paging.pageOf', {page: page + 1, count: pageCount})}
                 </span>
                 <div className="flex items-center gap-1">

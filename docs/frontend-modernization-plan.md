@@ -122,4 +122,4 @@ primitive. The dashboard goes last because it is the only piece with backend wor
 - [x] 4b Whitelist, blacklist, auto-whitelist
 - [x] 4c Users, aliases
 - [x] 5 Dashboard
-- [ ] 6 Polish
+- [x] 6 Polish
