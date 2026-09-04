@@ -2,13 +2,7 @@
  * Greyface design tokens. Tailwind 4 + shadcn/ui conventions: every colour is a
  * CSS variable on :root (light) and .dark, and @theme inline maps them onto the
  * Tailwind palette (bg-background, text-muted-foreground, ...).
- *
- * The "legacy" layer at the bottom of the order holds the Bootstrap CSS the
- * not-yet-rebuilt screens still need. Layered CSS always loses to later
- * layers, so Tailwind utilities win wherever both apply. Drop the layer when
- * the last react-bootstrap screen is gone.
  */
-@layer legacy, theme, base, components, utilities;
 
 @import "tailwindcss";
 @import "@fontsource-variable/inter";

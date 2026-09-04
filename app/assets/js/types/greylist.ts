@@ -44,15 +44,3 @@ export interface AutoWhiteListDomain {
     lastSeen: DateObject
 }
 
-export interface GreyTableState {
-    columnOrder: [],
-    filters: [],
-    sortBy: {id: string, desc?: boolean | undefined}[],
-    pageSize: number,
-    pageIndex: number,
-    searchQuery: string
-}
-
-export interface GreyTableStateWithUser extends GreyTableState {
-    user?: string
-}

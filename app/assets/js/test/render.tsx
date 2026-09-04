@@ -7,6 +7,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 
 import {ApplicationProvider} from '../application/ApplicationContext';
+import {TooltipProvider} from '../components/ui/tooltip';
 import type {User} from '../types/user';
 
 import translation_en from '../../translations/en.json';
@@ -87,7 +88,7 @@ export function renderWithProviders(ui: ReactElement, options: RenderOptions = {
                     logoutUrl="/logout"
                     changePasswordUrl="/password/change"
                 >
-                    {children}
+                    <TooltipProvider>{children}</TooltipProvider>
                 </ApplicationProvider>
             </QueryClientProvider>
         </MemoryRouter>

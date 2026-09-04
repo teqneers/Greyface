@@ -1,4 +1,3 @@
-import type {GreyTableState, GreyTableStateWithUser} from '../types/greylist';
 import {EventDispatcher, useSubscription} from '../utils/event';
 
 export enum SettingsLocale {
@@ -6,103 +5,16 @@ export enum SettingsLocale {
     en_US = 'en-US',
 }
 
-const normalSplitSize: [number, number] = [40, 60];
-
 export type ThemeSetting = 'light' | 'dark' | 'system';
 
 type SettingsType = {
     locale: SettingsLocale,
     theme: ThemeSetting,
-    splitViewSizes: Record<string, [number, number]> | null,
-    greyList: GreyTableStateWithUser,
-    autoWhitelistDomain: GreyTableState,
-    autoWhitelistEmail: GreyTableState,
-    whitelistDomain: GreyTableState,
-    whitelistEmail: GreyTableState,
-    blacklistDomain: GreyTableState,
-    blacklistEmail: GreyTableState,
-    userAlias: GreyTableStateWithUser,
-    users: GreyTableState
 };
 
 const INITIAL_SETTINGS: SettingsType = {
     locale: SettingsLocale.de_DE,
     theme: 'system',
-    splitViewSizes: null,
-    autoWhitelistDomain: {
-        columnOrder: [],
-        sortBy: [{id: 'domain', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    autoWhitelistEmail: {
-        columnOrder: [],
-        sortBy: [{id: 'name', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    whitelistDomain: {
-        columnOrder: [],
-        sortBy: [{id: 'domain', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    whitelistEmail: {
-        columnOrder: [],
-        sortBy: [{id: 'email', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    blacklistDomain: {
-        columnOrder: [],
-        sortBy: [{id: 'domain', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    blacklistEmail: {
-        columnOrder: [],
-        sortBy: [{id: 'email', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    users: {
-        columnOrder: [],
-        sortBy: [{id: 'username', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: ''
-    },
-    greyList: {
-        columnOrder: [],
-        sortBy: [{id: 'username', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: '',
-        user: ''
-    },
-    userAlias: {
-        columnOrder: [],
-        sortBy: [{id: 'username', desc: false}],
-        filters: [],
-        pageSize: 10,
-        pageIndex: 0,
-        searchQuery: '',
-        user: ''
-    },
 };
 
 const eventDispatcher = new EventDispatcher<SettingsType>();
@@ -159,23 +71,3 @@ export function useSettings(): SettingsType {
     return useSubscription<SettingsType>(currentSettings, eventDispatcher);
 }
 
-
-export function getSplitViewSizes(moduleKey: string, defaultValues?: [number, number]): [number, number] {
-    const settings = getCurrentSettings();
-    const currentSizes = settings.splitViewSizes;
-    if (currentSizes && currentSizes[moduleKey]) {
-        return currentSizes[moduleKey];
-    } else {
-        return defaultValues ? defaultValues : normalSplitSize;
-    }
-
-}
-
-export function setSplitViewSizes(sizes: [number, number], moduleKey: string): SettingsType {
-    const settings = getCurrentSettings();
-    const currentSizes = settings.splitViewSizes;
-    return setSetting('splitViewSizes', {
-        ...currentSizes,
-        [moduleKey]: sizes
-    });
-}

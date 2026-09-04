@@ -158,7 +158,7 @@
       "editHeader": "Benutzer bearbeiten",
       "setPassword": "Neues Passwort festlegen",
       "deleteHeader": "Benutzer löschen",
-      "deleteMessage": "Möchten Sie diesen Benutzer wirklich löschen?",
+      "deleteMessage": "{{username}} kann sich danach nicht mehr anmelden. Die Aliase bleiben bestehen.",
       "unDeleteHeader": "Benutzer wiederherstellen",
       "unDeleteMessage": "Möchten Sie diesen Benutzer wirklich wieder herstellen?",
       "username": "Benutzername",
@@ -166,7 +166,7 @@
       "role": "Rolle",
       "password": "Passwort",
       "passwordRetype": "Passwort wiederholen",
-      "createdAt": "Zugewiesen am",
+      "createdAt": "Angelegt am",
       "roles": {
         "admin": "Administrator",
         "user": "Benutzer"
@@ -176,16 +176,32 @@
         "locked": "Gesperrt",
         "enabled": "Aktiviert",
         "deleted": "Deleted"
-      }
+      },
+      "description": "Wer sich bei Greyface anmelden kann. Administratoren sehen alles; Benutzer sehen die zurückgehaltenen E-Mails für ihre eigenen Adressen und Aliase.",
+      "emptyDescription": "Keine Benutzer passen zur aktuellen Suche.",
+      "created": "Benutzer angelegt.",
+      "updated": "Benutzer gespeichert.",
+      "deleted": "Benutzer gelöscht.",
+      "passwordSet": "Passwort geändert.",
+      "editUser": "{{username}} bearbeiten",
+      "deleteUser": "{{username}} löschen",
+      "setPasswordFor": "Neues Passwort für {{username}} setzen"
     },
     "alias": {
       "header": "Benutzeraliase",
       "createHeader": "Neuen Alias erstellen",
       "editHeader": "Alias bearbeiten",
       "deleteHeader": "Alias löschen",
-      "deleteMessage": "Möchten Sie diesen Alias wirklich löschen?",
+      "deleteMessage": "{{alias}} wird entfernt. Der Benutzer sieht danach keine E-Mails für diese Adresse mehr.",
       "aliasName": "Alias",
-      "user": "Benutzer"
+      "user": "Benutzer",
+      "description": "Welche E-Mail-Adressen zu welchem Benutzer gehören. Ein Benutzer sieht nur greygelistete E-Mails an einen seiner Aliase.",
+      "formIntro": "Jeder Alias ist eine vollständige E-Mail-Adresse.",
+      "chooseUser": "Benutzer wählen",
+      "emptyDescription": "Noch keine Aliase. Benutzer ohne Alias sehen eine leere Greylist.",
+      "created": "Alias hinzugefügt.",
+      "updated": "Alias gespeichert.",
+      "deleted": "Alias gelöscht."
     },
     "whitelist": {
       "header": "Whitelist",

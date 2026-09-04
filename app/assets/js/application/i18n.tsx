@@ -9,7 +9,6 @@ import React, {useCallback, useContext, useEffect, useMemo, useState} from 'reac
 import type {ReactNode} from 'react';
 import {initReactI18next} from 'react-i18next';
 
-import * as yup from 'yup';
 import translation_de from '../../translations/de.json';
 import translation_en from '../../translations/en.json';
 
@@ -40,29 +39,9 @@ function updateLanguageAsync(locale: string): Promise<string> {
 }
 
 // Re-applies locale-dependent configuration after a language change.
-// Only yup needs this now that numeral is gone.
 function updateDependencies(): void {
-    yup.setLocale({
-        mixed: {
-            default: i18n.t('errors.default'),
-            required: i18n.t('errors.required'),
-            // @ts-ignore
-            typeError: i18n.t('errors.typeError'),
-        },
-        array: {
-            min: i18n.t('errors.tooLess'),
-            max: i18n.t('errors.tooMany')
-        },
-        number: {
-            min: i18n.t('errors.min'),
-            max: i18n.t('errors.max')
-        },
-        string: {
-            length: i18n.t('errors.length'),
-            min: i18n.t('errors.min'),
-            max: i18n.t('errors.max')
-        },
-    });
+    // Validation messages are translated where the schemas are built (zod);
+    // nothing else needs to be told about a language change.
 }
 
 export async function initI18n(): Promise<void> {
