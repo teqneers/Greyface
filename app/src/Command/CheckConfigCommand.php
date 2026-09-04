@@ -34,6 +34,22 @@ class CheckConfigCommand extends Command
      */
     private const PLACEHOLDER_SECRET = 'ff7cb5c00e05226de5813f3fe4efc70a';
 
+    /**
+     * SQLGrey's tables that Greyface maps entities onto. Greyface no longer
+     * creates these — they belong to SQLGrey — so their absence means this
+     * database is not a SQLGrey database, and every screen would fail with a
+     * "table doesn't exist" error at the first request.
+     */
+    private const SQLGREY_TABLES = [
+        'connect',
+        'domain_awl',
+        'from_awl',
+        'optin_domain',
+        'optin_email',
+        'optout_domain',
+        'optout_email',
+    ];
+
     public function __construct(
         private readonly Connection $connection,
         private readonly string $environment,
@@ -80,6 +96,16 @@ class CheckConfigCommand extends Command
             } catch (DbalException $exception) {
                 $problems[] = sprintf('Cannot reach the database: %s', $exception->getMessage());
             }
+
+            $missing = $this->missingSqlgreyTables();
+            if ($missing !== []) {
+                $problems[] = sprintf(
+                    "SQLGrey's tables are missing from this database: %s. Greyface is an interface "
+                    . 'to SQLGrey and does not create them. Install SQLGrey and let it run once '
+                    . 'against this database first, then point DATABASE_URL at it.',
+                    implode(', ', $missing)
+                );
+            }
         }
 
         if ($problems !== []) {
@@ -92,5 +118,20 @@ class CheckConfigCommand extends Command
         $io->success('Configuration looks good.');
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function missingSqlgreyTables(): array
+    {
+        try {
+            $present = $this->connection->createSchemaManager()->listTableNames();
+        } catch (DbalException) {
+            // Unreachable database is already reported above.
+            return [];
+        }
+
+        return array_values(array_diff(self::SQLGREY_TABLES, $present));
     }
 }
