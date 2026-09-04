@@ -1,0 +1,19 @@
+{
+    "// ": "Build-tool configs only. They run in Node, so they get Node's globals;",
+    "//  ": "the app's tsconfig.json deliberately does not, so browser code cannot",
+    "//   ": "reach for process.env and typecheck against a global it will not have.",
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": ["es2023"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "types": ["node"]
+    },
+    "include": ["vite.config.ts", "vitest.config.mts"]
+}
