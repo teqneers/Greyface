@@ -78,7 +78,8 @@
       "domains": "Domains",
       "navigation": "Navigation",
       "openMenu": "Open menu",
-      "accountMenu": "Account menu"
+      "accountMenu": "Account menu",
+      "dashboard": "Dashboard"
     },
     "greylist": {
       "header": "Greylist",
@@ -319,6 +320,32 @@
       "add": {
         "emails": "Add email",
         "domains": "Add domain"
+      }
+    },
+    "dashboard": {
+      "header": "Dashboard",
+      "description": "What greylisting is doing right now.",
+      "pair": "{{emails}} emails · {{domains}} domains",
+      "tiles": {
+        "greylist": "Waiting for retry",
+        "autoWhitelist": "Auto-whitelisted",
+        "whitelist": "Whitelisted",
+        "blacklist": "Blacklisted",
+        "users": "Users",
+        "aliases": "Aliases"
+      },
+      "activity": {
+        "title": "Activity per day",
+        "subtitle": "Entries still waiting, by the day they first arrived, and senders accepted into the auto-whitelist.",
+        "greylisted": "Greylisted (still waiting)",
+        "autoWhitelisted": "Accepted (auto-whitelist)",
+        "range": "Range",
+        "days_one": "{{count}} day",
+        "days_other": "{{count}} days",
+        "table": "Table",
+        "date": "Day",
+        "empty_one": "No activity in the last day.",
+        "empty_other": "No activity in the last {{count}} days."
       }
     }
   }

@@ -78,7 +78,8 @@
       "domains": "Domänen",
       "navigation": "Navigation",
       "openMenu": "Menü öffnen",
-      "accountMenu": "Kontomenü"
+      "accountMenu": "Kontomenü",
+      "dashboard": "Übersicht"
     },
     "greylist": {
       "header": "Greylist",
@@ -319,6 +320,32 @@
       "add": {
         "emails": "E-Mail hinzufügen",
         "domains": "Domain hinzufügen"
+      }
+    },
+    "dashboard": {
+      "header": "Übersicht",
+      "description": "Was das Greylisting gerade tut.",
+      "pair": "{{emails}} E-Mails · {{domains}} Domains",
+      "tiles": {
+        "greylist": "Wartet auf erneuten Versuch",
+        "autoWhitelist": "Automatisch freigegeben",
+        "whitelist": "Whitelist",
+        "blacklist": "Blacklist",
+        "users": "Benutzer",
+        "aliases": "Aliase"
+      },
+      "activity": {
+        "title": "Aktivität pro Tag",
+        "subtitle": "Noch wartende Einträge nach dem Tag ihres ersten Eintreffens und in die Auto-Whitelist aufgenommene Absender.",
+        "greylisted": "Greygelistet (wartet noch)",
+        "autoWhitelisted": "Angenommen (Auto-Whitelist)",
+        "range": "Zeitraum",
+        "days_one": "{{count}} Tag",
+        "days_other": "{{count}} Tage",
+        "table": "Tabelle",
+        "date": "Tag",
+        "empty_one": "Keine Aktivität am letzten Tag.",
+        "empty_other": "Keine Aktivität in den letzten {{count}} Tagen."
       }
     }
   }

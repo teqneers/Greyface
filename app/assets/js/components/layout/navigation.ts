@@ -1,4 +1,4 @@
-import {AtSign, Hourglass, ShieldBan, ShieldCheck, Sparkles, Users} from 'lucide-react';
+import {AtSign, Hourglass, LayoutDashboard, ShieldBan, ShieldCheck, Sparkles, Users} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
 
 export interface NavItem {
@@ -24,6 +24,7 @@ export interface NavGroup {
 export const navigation: NavGroup[] = [
     {
         items: [
+            {label: 'menu.dashboard', to: '/dashboard', icon: LayoutDashboard, adminOnly: true},
             {label: 'menu.greylist', to: '/greylist', icon: Hourglass},
         ],
     },
