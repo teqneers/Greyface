@@ -1,9 +1,14 @@
 version: 2
 
-# Updates are grouped so a week's worth of transitive bumps arrives as one pull
-# request per ecosystem instead of dozens. Security updates still open their own
-# pull requests — enable "Dependabot security updates" in the repository
-# settings for that; it is currently switched off.
+# Updates are grouped so a week's worth of transitive bumps arrives as a handful
+# of pull requests per ecosystem instead of dozens. Security updates still open
+# their own pull requests — enable "Dependabot security updates" in the
+# repository settings for that; it is currently switched off.
+#
+# Groups must name packages that actually exist in app/package.json. A pattern
+# that matches nothing silently drops its package into the ungrouped pile and it
+# arrives as a lone pull request; that is how the TypeScript and @eslint/js
+# bumps escaped the build-tooling group after the 2026-09 frontend rebuild.
 updates:
     -   package-ecosystem: composer
         directory: /app
@@ -27,6 +32,36 @@ updates:
         schedule:
             interval: weekly
         open-pull-requests-limit: 5
+
+        ignore:
+            # typescript-eslint declares `typescript: >=4.8.4 <6.1.0`, and no
+            # released version accepts TypeScript 7 — loading it aborts eslint
+            # outright. Drop this once typescript-eslint ships TS 7 support:
+            # https://github.com/typescript-eslint/typescript-eslint/issues/10940
+            -   dependency-name: 'typescript'
+                versions:
+                    - '>=7'
+            # v9 is an API rewrite (createCoreRowModel, feature-based table
+            # types), not a bump: it fails to compile against
+            # assets/js/components/data-table/. Remove this when someone
+            # schedules the migration.
+            -   dependency-name: '@tanstack/react-table'
+                update-types:
+                    - version-update:semver-major
+            # ESLint 10 is blocked by eslint-plugin-react. Its latest release
+            # (7.37.5) declares `eslint: ^3 || … || ^9.7` and genuinely breaks
+            # on 10 — every rule fails to load with "contextOrFilename.getFilename
+            # is not a function", because ESLint 10 dropped the legacy context API
+            # its React-version detection calls. eslint-plugin-react-hooks and
+            # typescript-eslint are both ready; this one package is the holdout.
+            # Lift both entries together once it ships ESLint 10 support.
+            -   dependency-name: 'eslint'
+                update-types:
+                    - version-update:semver-major
+            -   dependency-name: '@eslint/js'
+                update-types:
+                    - version-update:semver-major
+
         groups:
             react:
                 patterns:
@@ -34,18 +69,50 @@ updates:
                     - 'react-dom'
                     - '@types/react'
                     - '@types/react-dom'
+            # Vite, Tailwind and TypeScript move together: a Vite major usually
+            # drags its plugins along, and Tailwind 4 lives in the Vite plugin.
             build-tooling:
                 patterns:
-                    - '@babel/*'
-                    - '@symfony/webpack-encore'
-                    - 'webpack*'
-                    - 'babel-loader'
-                    - 'sass*'
-                    - 'postcss*'
-                    - 'ts-loader'
+                    - 'vite'
+                    - 'vite-plugin-*'
+                    - '@vitejs/*'
+                    - 'tailwindcss'
+                    - '@tailwindcss/*'
                     - 'typescript'
-                    - 'eslint*'
+                    - '@types/node'
+            # The eslint packages pin each other through peer ranges — @eslint/js
+            # 10 requires eslint ^10 — so they are useless apart. The leading '@'
+            # is why a bare 'eslint*' pattern misses half of them.
+            linting:
+                patterns:
+                    - 'eslint'
+                    - 'eslint-plugin-*'
+                    - '@eslint/*'
+                    - 'typescript-eslint'
                     - '@typescript-eslint/*'
+                    - 'globals'
+            testing:
+                patterns:
+                    - 'vitest'
+                    - 'jsdom'
+                    - '@testing-library/*'
+            # The devtools peer-depend on an exact react-query minor, so a lone
+            # bump of either one installs a broken pair.
+            tanstack-query:
+                patterns:
+                    - '@tanstack/react-query'
+                    - '@tanstack/react-query-devtools'
+            # react-i18next peer-depends on i18next.
+            i18n:
+                patterns:
+                    - 'i18next'
+                    - 'react-i18next'
+            # @hookform/resolvers peer-depends on both of the others.
+            forms:
+                patterns:
+                    - 'react-hook-form'
+                    - '@hookform/resolvers'
+                    - 'zod'
             js-minor-and-patch:
                 update-types:
                     - minor
