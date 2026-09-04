@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useHistory} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {CellProps, Column, TableState} from 'react-table';
 
 import {usePermissions} from '../../application/usePermissions';
@@ -8,7 +8,7 @@ import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
-import {User, UserAlias} from '../../types/user';
+import type {User, UserAlias} from '../../types/user';
 
 interface UsersTableProps {
     data: User[],
@@ -28,7 +28,7 @@ const UsersTable: React.FC<UsersTableProps> = (
     }) => {
 
     const {t} = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const {isCurrentUser} = usePermissions();
 
@@ -58,14 +58,14 @@ const UsersTable: React.FC<UsersTableProps> = (
         Cell: ({row: {original: row}}: CellProps<User, string>) => {
             return <>
                 <DefaultButton label="button.changePassword"
-                        onClick={() => history.push(`/users/${row.id}/password`)}/>
+                        onClick={() => navigate(`/users/${row.id}/password`)}/>
                 <DefaultButton label="button.edit"
-                        onClick={() => history.push(`/users/${row.id}/edit`)}/>
+                        onClick={() => navigate(`/users/${row.id}/edit`)}/>
                 {!isCurrentUser(row) && <DeleteButton
-                        onClick={() => history.push(`/users/${row.id}/delete`)}/>}
+                        onClick={() => navigate(`/users/${row.id}/delete`)}/>}
             </>;
         }
-    }], [t, history, isCurrentUser]);
+    }], [t, navigate, isCurrentUser]);
 
     if (isFetching) {
         return <LoadingIndicator/>;

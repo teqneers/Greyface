@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../application/ApplicationContext';
@@ -9,7 +9,7 @@ import {setSetting, useSettings} from '../../application/settings';
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
-import {GreyTableState} from '../../types/greylist';
+import type {GreyTableState} from '../../types/greylist';
 import CreateUser from './CreateUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
@@ -17,9 +17,8 @@ import SetPassword from './SetPassword';
 import UsersTable from './UsersTable';
 
 const UserModule = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {users} = useSettings();
     const [tableState, setTableState] = useState<GreyTableState>(users);
 
@@ -50,7 +49,9 @@ const UserModule = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['users', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['users', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/users?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -59,7 +60,9 @@ const UserModule = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -70,7 +73,7 @@ const UserModule = () => {
             <ModuleTopBar title="user.header"
                           buttons={<DefaultButton
                               label="button.createUser"
-                              onClick={() => history.push(`${url}/create`)}/>}
+                              onClick={() => navigate('/users/create')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -84,38 +87,36 @@ const UserModule = () => {
                 onStateChange={onStateChange}/>)}
 
 
-            <Route path={`${path}/create`}>
-                <CreateUser onCancel={() => history.push(url)}
-                            onCreate={() => {
-                                history.push(url);
-                                refetch();
-                            }}/>
-            </Route>
+            <Routes>
+                <Route path="create"
+                       element={<CreateUser onCancel={() => navigate('/users')}
+                                onCreate={() => {
+                                    navigate('/users');
+                                    refetch();
+                                }}/>}/>
 
-            <Route path={`${path}/:id/edit`}>
-                <EditUser onCancel={() => history.push(url)}
-                          onUpdate={() => {
-                              history.push(url);
-                              refetch();
-                          }}/>
-            </Route>
+                <Route path=":id/edit"
+                       element={<EditUser onCancel={() => navigate('/users')}
+                              onUpdate={() => {
+                                  navigate('/users');
+                                  refetch();
+                              }}/>}/>
 
-            <Route path={`${path}/:id/password`}>
-                <SetPassword onCancel={() => history.push(url)}
-                             onUpdate={() => {
-                                 history.push(url);
-                                 refetch();
-                             }}/>
-            </Route>
+                <Route path=":id/password"
+                       element={<SetPassword onCancel={() => navigate('/users')}
+                                 onUpdate={() => {
+                                     navigate('/users');
+                                     refetch();
+                                 }}/>}/>
 
-            <Route path={`${path}/:id/delete`}>
-                <DeleteUser
-                    onCancel={(id) => history.push(`${url}/${id}`)}
-                    onDelete={() => {
-                        history.push(url);
-                        refetch();
-                    }}/>
-            </Route>
+                <Route path=":id/delete"
+                       element={<DeleteUser
+                        onCancel={(id) => navigate(`/users/${id}`)}
+                        onDelete={() => {
+                            navigate('/users');
+                            refetch();
+                        }}/>}/>
+            </Routes>
 
         </ApplicationModuleContainer>
     );

@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../application/ApplicationContext';
 import ModalForm from '../../controllers/ModalForm';
-import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm';
+import UserAliasForm from './UserAliasForm';
+import type {UserAliasRequest, UserAliasValues} from './UserAliasForm';
 
 interface CreateUserAliasProps {
     onCancel: () => void,
@@ -17,7 +18,8 @@ const CreateUserAlias: React.FC<CreateUserAliasProps> = ({onCancel, onCreate}) =
     const {apiUrl} = useApplication();
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
-    const createUserAlias = useMutation(async (values: UserAliasRequest) => {
+    const createUserAlias = useMutation({
+        mutationFn: async (values: UserAliasRequest) => {
         return await fetch(`${apiUrl}/users-aliases`, {
             method: 'POST',
             body: JSON.stringify(values)
@@ -34,10 +36,10 @@ const CreateUserAlias: React.FC<CreateUserAliasProps> = ({onCancel, onCreate}) =
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             onCreate();
-        }
+        },
     });
 
     return (

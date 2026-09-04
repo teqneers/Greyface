@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation, useQuery, useQueryClient} from 'react-query';
-import {useRouteMatch} from 'react-router-dom';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useParams} from 'react-router-dom';
 
 import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModalForm from '../../controllers/ModalForm';
-import UserAliasForm, {UserAliasRequest, UserAliasValues} from './UserAliasForm';
+import UserAliasForm from './UserAliasForm';
+import type {UserAliasRequest, UserAliasValues} from './UserAliasForm';
 
 interface EditUserAliasProps {
     onCancel: () => void,
@@ -21,15 +22,19 @@ const EditUserAlias: React.FC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
 
     const [error, setError] = useState<string | null>(null);
 
-    const {params: {id}} = useRouteMatch<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
 
-    const {data, isLoading} = useQuery(['users', id], () => {
+    const {data, isLoading} = useQuery({
+        queryKey: ['users', id],
+        queryFn: () => {
         return fetch(`${apiUrl}/users-aliases/${id}`)
             .then((res) => res.json());
+    },
     });
 
 
-    const updateUser = useMutation(async (values: UserAliasRequest) => {
+    const updateUser = useMutation({
+        mutationFn: async (values: UserAliasRequest) => {
         return await fetch(`${apiUrl}/users-aliases/${id}`, {
             method: 'PUT',
             body: JSON.stringify(values)
@@ -46,11 +51,11 @@ const EditUserAlias: React.FC<EditUserAliasProps> = ({onCancel, onUpdate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
-            await queryClient.invalidateQueries('users-aliases');
+            await queryClient.invalidateQueries({queryKey: ['users-aliases']});
             onUpdate();
-        }
+        },
     });
 
     if (isLoading) {

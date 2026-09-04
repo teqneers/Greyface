@@ -4,7 +4,7 @@ import {CellProps, Column, TableState} from 'react-table';
 
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import Table from '../../../controllers/Table/Table';
-import {WhiteListEmail} from '../../../types/greylist';
+import type {WhiteListEmail} from '../../../types/greylist';
 import DeleteEmail from './DeleteEmail';
 import EditEmail from './EditEmail';
 

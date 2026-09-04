@@ -1,4 +1,5 @@
-import React, {HTMLAttributes} from 'react';
+import React from 'react';
+import type {HTMLAttributes} from 'react';
 
 export interface SortMarkerProps extends HTMLAttributes<HTMLDivElement> {
     canSort?: boolean,

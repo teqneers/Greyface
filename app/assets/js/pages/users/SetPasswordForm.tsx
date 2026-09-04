@@ -1,6 +1,6 @@
-import {TFunction} from 'i18next';
+import type {TFunction} from 'i18next';
 import React from 'react';
-import {UseMutationResult} from 'react-query';
+import type {UseMutationResult} from '@tanstack/react-query';
 import {useTranslation} from 'react-i18next';
 import {Col, Form, Modal, Row} from 'react-bootstrap';
 import {Formik} from 'formik';

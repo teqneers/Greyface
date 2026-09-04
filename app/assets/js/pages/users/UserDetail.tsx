@@ -1,8 +1,8 @@
 import React from 'react';
 import {CloseButton} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useQuery} from 'react-query';
-import {useRouteMatch} from 'react-router-dom';
+import {useQuery} from '@tanstack/react-query';
+import {useParams} from 'react-router-dom';
 
 import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
@@ -14,11 +14,14 @@ interface UserDetailProps {
 const UserDetail: React.FC<UserDetailProps> = ({onBack}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
-    const {params: {id}} = useRouteMatch<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
 
-    const {data, isLoading} = useQuery(['users', id], () => {
+    const {data, isLoading} = useQuery({
+        queryKey: ['users', id],
+        queryFn: () => {
         return fetch(`${apiUrl}/users/${id}`)
             .then((res) => res.json());
+    },
     });
 
     if (isLoading) {

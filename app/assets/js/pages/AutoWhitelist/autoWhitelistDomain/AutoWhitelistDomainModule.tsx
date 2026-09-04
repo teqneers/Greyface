@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../../application/ApplicationContext';
@@ -9,14 +9,13 @@ import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {AutoWhiteListDomain, GreyTableState} from '../../../types/greylist';
+import type {AutoWhiteListDomain, GreyTableState} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import AutoWhitelistDomainTable from './AutoWhitelistDomainTable';
 
 const AutoDomainModule: React.FC = () => {
     const {apiUrl} = useApplication();
-    const history = useHistory();
-    const {path, url} = useRouteMatch();
+    const navigate = useNavigate();
     const {autoWhitelistDomain} = useSettings();
 
     const [tableState, setTableState] = useState<GreyTableState>(autoWhitelistDomain);
@@ -48,7 +47,9 @@ const AutoDomainModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['awl', 'domains', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['awl', 'domains', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/awl/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -57,7 +58,9 @@ const AutoDomainModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -69,7 +72,7 @@ const AutoDomainModule: React.FC = () => {
             <ModuleTopBar title="autoWhitelist.domain.header"
                           buttons={<DefaultButton
                               label="button.addDomain"
-                              onClick={() => history.push(`${url}/add`)}/>}
+                              onClick={() => navigate('/awl/domains/add')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -83,13 +86,14 @@ const AutoDomainModule: React.FC = () => {
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/add`}>
-                <AddDomain onCancel={() => history.push(url)}
-                           onCreate={() => {
-                               history.push(url);
-                               refetch();
-                           }}/>
-            </Route>
+            <Routes>
+                <Route path="add"
+                       element={<AddDomain onCancel={() => navigate('/awl/domains')}
+                               onCreate={() => {
+                                   navigate('/awl/domains');
+                                   refetch();
+                               }}/>}/>
+            </Routes>
         </ApplicationModuleContainer>
     );
 };

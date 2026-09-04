@@ -1,4 +1,4 @@
-import {AuditTracking, HasId} from './common';
+import type {AuditTracking, HasId} from './common';
 
 export const USER_ROLES = ['user', 'admin'] as const;
 

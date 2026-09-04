@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../../application/ApplicationContext';
@@ -9,15 +9,14 @@ import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {GreyTableState, WhiteListEmail} from '../../../types/greylist';
+import type {GreyTableState, WhiteListEmail} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import WhitelistEmailTable from './WhitelistEmailTable';
 
 const WhitelistEmailModule: React.FC = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {whitelistEmail} = useSettings();
 
     const [tableState, setTableState] = useState<GreyTableState>(whitelistEmail);
@@ -49,7 +48,9 @@ console.log(tableState);
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-out', 'emails', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['opt-out', 'emails', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/opt-out/emails?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -58,7 +59,9 @@ console.log(tableState);
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -70,7 +73,7 @@ console.log(tableState);
             <ModuleTopBar title="whitelist.email.header"
                           buttons={<DefaultButton
                               label="button.addEmail"
-                              onClick={() => history.push(`${url}/add`)}/>}
+                              onClick={() => navigate('/opt-out/emails/add')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -84,13 +87,14 @@ console.log(tableState);
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/add`}>
-                <AddEmail onCancel={() => history.push(url)}
-                          onCreate={() => {
-                              history.push(url);
-                              refetch();
-                          }}/>
-            </Route>
+            <Routes>
+                <Route path="add"
+                       element={<AddEmail onCancel={() => navigate('/opt-out/emails')}
+                              onCreate={() => {
+                                  navigate('/opt-out/emails');
+                                  refetch();
+                              }}/>}/>
+            </Routes>
         </ApplicationModuleContainer>
     );
 };

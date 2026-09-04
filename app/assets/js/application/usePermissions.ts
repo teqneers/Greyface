@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 
-import {User} from '../types/user';
+import type {User} from '../types/user';
 import {useApplication} from './ApplicationContext';
 
 interface UsePermissions {

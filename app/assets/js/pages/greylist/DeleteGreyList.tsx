@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../application/ApplicationContext';
 import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
-import {Greylist} from '../../types/greylist';
+import type {Greylist} from '../../types/greylist';
 
 interface DeleteGreyListProps {
     onDelete: () => void,
@@ -19,8 +19,8 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
     const withConfirmation = false;
     const [show, setShow] = useState(false);
 
-    const deleteRecord = useMutation(
-        (data: Greylist) => fetch(`${apiUrl}/greylist/delete`, {
+    const deleteRecord = useMutation({
+        mutationFn: (data: Greylist) => fetch(`${apiUrl}/greylist/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'name': data.connect.name,
@@ -40,7 +40,8 @@ const DeleteGreyList = ({onDelete, data}: DeleteGreyListProps) => {
             onDelete();
         }).catch(error => {
             console.error('There was an error!', error);
-        }));
+        }),
+    });
 
     return (
         <>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Col, Form, Modal, Row} from 'react-bootstrap';
-import {UseMutationResult} from 'react-query';
+import type {UseMutationResult} from '@tanstack/react-query';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {Formik} from 'formik';

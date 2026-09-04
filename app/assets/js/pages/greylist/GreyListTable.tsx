@@ -7,7 +7,7 @@ import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
 import DisplayDate from '../../controllers/DisplayDate';
 import {DATE_TIME_SECONDS_FORMAT} from '../../types/common';
-import {Greylist} from '../../types/greylist';
+import type {Greylist} from '../../types/greylist';
 import DeleteGreyList from './DeleteGreyList';
 import MoveToWhiteList from './MoveToWhiteList';
 

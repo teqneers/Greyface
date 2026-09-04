@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../application/ApplicationContext';
@@ -10,8 +10,8 @@ import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import UserFilter from '../../controllers/UserFilter';
-import {GreyTableStateWithUser} from '../../types/greylist';
-import {UserAlias} from '../../types/user';
+import type {GreyTableStateWithUser} from '../../types/greylist';
+import type {UserAlias} from '../../types/user';
 import CreateUserAlias from './CreateUserAlias';
 import DeleteUserAlias from './DeleteUserAlias';
 import EditUserAlias from './EditUserAlias';
@@ -19,9 +19,8 @@ import UserAliasTable from './UserAliasTable';
 
 const UserAliasModule: React.FC = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {userAlias} = useSettings();
     const [tableState, setTableState] = useState<GreyTableStateWithUser>(userAlias);
 
@@ -54,7 +53,9 @@ const UserAliasModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['users-aliases', tableState, searchQuery, user], () => {
+    } = useQuery({
+        queryKey: ['users-aliases', tableState, searchQuery, user],
+        queryFn: () => {
 
         let url = `${apiUrl}/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
 
@@ -68,7 +69,9 @@ const UserAliasModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -81,7 +84,7 @@ const UserAliasModule: React.FC = () => {
             <ModuleTopBar title="alias.header"
                           buttons={<DefaultButton
                               label="button.createUserAlias"
-                              onClick={() => history.push(`${url}/create`)}/>}
+                              onClick={() => navigate('/users-aliases/create')}/>}
                           userFilter={<UserFilter user={user} setUser={setUser}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
@@ -95,28 +98,27 @@ const UserAliasModule: React.FC = () => {
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/create`}>
-                <CreateUserAlias onCancel={() => history.push(url)}
-                                 onCreate={() => {
-                                     history.push(url);
-                                     refetch();
-                                 }}/>
-            </Route>
+            <Routes>
+                <Route path="create"
+                       element={<CreateUserAlias onCancel={() => navigate('/users-aliases')}
+                                     onCreate={() => {
+                                         navigate('/users-aliases');
+                                         refetch();
+                                     }}/>}/>
 
-            <Route path={`${path}/:id/edit`}>
-                <EditUserAlias onCancel={() => history.push(url)}
-                               onUpdate={() => {
-                                   history.push(url);
-                               }}/>
-            </Route>
+                <Route path=":id/edit"
+                       element={<EditUserAlias onCancel={() => navigate('/users-aliases')}
+                                   onUpdate={() => {
+                                       navigate('/users-aliases');
+                                   }}/>}/>
 
-            <Route path={`${path}/:id/delete`}>
-                <DeleteUserAlias
-                    onCancel={() => history.push(url)}
-                    onDelete={() => {
-                        history.push(url);
-                    }}/>
-            </Route>
+                <Route path=":id/delete"
+                       element={<DeleteUserAlias
+                        onCancel={() => navigate('/users-aliases')}
+                        onDelete={() => {
+                            navigate('/users-aliases');
+                        }}/>}/>
+            </Routes>
 
         </ApplicationModuleContainer>
     );

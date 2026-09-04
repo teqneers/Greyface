@@ -1,7 +1,8 @@
-import {TFunction} from 'i18next';
+import type {TFunction} from 'i18next';
 import React from 'react';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
-import {UseMutationResult, useQuery} from 'react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import type {UseMutationResult} from '@tanstack/react-query';
 import * as yup from 'yup';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
@@ -67,10 +68,14 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
 
-    const {data: users, isLoading: usersLoading} = useQuery(['users'], () => {
+    const {data: users, isLoading: usersLoading} = useQuery({
+        queryKey: ['users'],
+        queryFn: () => {
         return fetch(`${apiUrl}/users`)
             .then((res) => res.json());
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (usersLoading) {
         return <LoadingIndicator/>;

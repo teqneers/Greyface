@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
-import FormDomain , {DomainRequest, DomainValues} from './FormDomain';
+import FormDomain from './FormDomain';
+import type {DomainRequest, DomainValues} from './FormDomain';
 
 interface AddDomainProps {
     onCancel: () => void,
@@ -16,7 +17,8 @@ const AddDomain: React.FC<AddDomainProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
-    const createEmails = useMutation(async (values: DomainRequest) => {
+    const createEmails = useMutation({
+        mutationFn: async (values: DomainRequest) => {
         return await fetch(`${apiUrl}/awl/domains`, {
             method: 'POST',
             body: JSON.stringify(values)
@@ -33,10 +35,10 @@ const AddDomain: React.FC<AddDomainProps> = ({onCancel, onCreate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             onCreate();
-        }
+        },
     });
 
     return (

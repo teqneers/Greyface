@@ -1,4 +1,4 @@
-import {DateObject} from './common';
+import type {DateObject} from './common';
 
 export interface Greylist {
     aliasName: string,

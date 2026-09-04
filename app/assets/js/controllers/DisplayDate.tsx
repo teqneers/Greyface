@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {DATE_TIME_FORMAT, DateObject} from '../types/common';
+import {DATE_TIME_FORMAT} from '../types/common';
+import type {DateObject} from '../types/common';
 
 import {format as dateFormat, isValid, parseISO} from 'date-fns';
 

@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation, useQueryClient} from 'react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 
 import {useApplication} from '../../application/ApplicationContext';
 import ModalForm from '../../controllers/ModalForm';
-import UserForm, {CreateUserRequest, CreateUserValues} from './UserForm';
+import UserForm from './UserForm';
+import type {CreateUserRequest, CreateUserValues} from './UserForm';
 
 interface CreateUserProps {
     onCancel: () => void,
@@ -17,7 +18,8 @@ const CreateUser: React.FC<CreateUserProps> = ({onCancel, onCreate}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
     const queryClient = useQueryClient();
-    const createUser = useMutation(async (values: CreateUserRequest) => {
+    const createUser = useMutation({
+        mutationFn: async (values: CreateUserRequest) => {
         return await fetch(`${apiUrl}/users`, {
             method: 'POST',
             body: JSON.stringify(values)
@@ -34,11 +36,11 @@ const CreateUser: React.FC<CreateUserProps> = ({onCancel, onCreate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async ({user: id}) => {
-            await queryClient.invalidateQueries('users');
+            await queryClient.invalidateQueries({queryKey: ['users']});
             onCreate(id);
-        }
+        },
     });
 
     return (

@@ -6,7 +6,7 @@ import DisplayDate from '../../../controllers/DisplayDate';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import Table from '../../../controllers/Table/Table';
 import {DATE_TIME_SECONDS_FORMAT} from '../../../types/common';
-import {AutoWhiteListEmail} from '../../../types/greylist';
+import type {AutoWhiteListEmail} from '../../../types/greylist';
 import DeleteEmail from './DeleteEmail';
 import EditEmail from './EditEmail';
 

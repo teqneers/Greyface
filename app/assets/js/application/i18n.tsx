@@ -1,12 +1,12 @@
 import * as DateFns from 'date-fns';
-import dateFns_de from 'date-fns/locale/de';
-import dateFns_en from 'date-fns/locale/en-US';
+// date-fns 3 dropped the default export from each locale submodule; locales are
+// named exports of date-fns/locale now.
+import {de as dateFns_de, enUS as dateFns_en} from 'date-fns/locale';
 
 import i18n from 'i18next';
 
-import numeral from 'numeral';
-import 'numeral/locales/de';
-import React, {ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import type {ReactNode} from 'react';
 import {initReactI18next} from 'react-i18next';
 
 import * as yup from 'yup';
@@ -32,7 +32,7 @@ function updateLanguageAsync(locale: string): Promise<string> {
             if (err) {
                 reject(err);
             } else {
-                updateDependencies(language);
+                updateDependencies();
                 currentLanguage = language;
                 eventDispatcher.dispatch(currentLanguage);
                 resolve(language);
@@ -41,8 +41,9 @@ function updateLanguageAsync(locale: string): Promise<string> {
     });
 }
 
-function updateDependencies(language: string): void {
-    numeral.locale(language);
+// Re-applies locale-dependent configuration after a language change.
+// Only yup needs this now that numeral is gone.
+function updateDependencies(): void {
     yup.setLocale({
         mixed: {
             default: i18n.t('errors.default'),
@@ -83,7 +84,7 @@ export async function initI18n(): Promise<void> {
                 escapeValue: false
             }
         });
-    updateDependencies(currentLanguage);
+    updateDependencies();
 }
 
 export function useLanguage(): string {

@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
-import {WhiteListEmail} from '../../../types/greylist';
-import {EmailRequest, EmailValues} from '../../../utils/yupSchema';
+import type {WhiteListEmail} from '../../../types/greylist';
+import type {EmailRequest, EmailValues} from '../../../utils/yupSchema';
 import FormEmail from './FormEmail';
 
 interface EditEmailProps {
@@ -22,7 +22,8 @@ const EditEmail = ({onUpdate, data}: EditEmailProps) => {
     const [show, setShow] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const editRecord = useMutation(async (values: EmailRequest) => {
+    const editRecord = useMutation({
+        mutationFn: async (values: EmailRequest) => {
         return await fetch(`${apiUrl}/opt-out/emails/edit`, {
             method: 'PUT',
             body: JSON.stringify({
@@ -44,10 +45,10 @@ const EditEmail = ({onUpdate, data}: EditEmailProps) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             onUpdate();
-        }
+        },
     });
 
     return (

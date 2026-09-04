@@ -4,7 +4,7 @@ import {CellProps, Column, TableState} from 'react-table';
 
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import Table from '../../../controllers/Table/Table';
-import {WhiteListDomain} from '../../../types/greylist';
+import type {WhiteListDomain} from '../../../types/greylist';
 import DeleteDomain from './DeleteDomain';
 import EditDomain from './EditDomain';
 

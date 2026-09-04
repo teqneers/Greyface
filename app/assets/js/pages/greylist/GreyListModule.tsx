@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../application/ApplicationContext';
@@ -9,7 +9,7 @@ import {usePermissions} from '../../application/usePermissions';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../controllers/ModuleTopBar';
 import UserFilter from '../../controllers/UserFilter';
-import {Greylist, GreyTableStateWithUser} from '../../types/greylist';
+import type {Greylist, GreyTableStateWithUser} from '../../types/greylist';
 import DeleteByDate from './DeleteByDate';
 import GreyListTable from './GreyListTable';
 
@@ -50,7 +50,9 @@ const GreyListModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['greylist', tableState, searchQuery, user], () => {
+    } = useQuery({
+        queryKey: ['greylist', tableState, searchQuery, user],
+        queryFn: () => {
 
         let url = `${apiUrl}/greylist?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
 
@@ -63,7 +65,9 @@ const GreyListModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
 
     if (isLoading) {

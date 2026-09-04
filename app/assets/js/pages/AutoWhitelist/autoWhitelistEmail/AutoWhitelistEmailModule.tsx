@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../../application/ApplicationContext';
@@ -9,15 +9,14 @@ import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {AutoWhiteListEmail, GreyTableState} from '../../../types/greylist';
+import type {AutoWhiteListEmail, GreyTableState} from '../../../types/greylist';
 import AddEmail from './AddEmail';
 import AutoWhitelistEmailTable from './AutoWhitelistEmailTable';
 
 const AutoEmailModule: React.FC = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {autoWhitelistEmail} = useSettings();
 
     const [tableState, setTableState] = useState<GreyTableState>(autoWhitelistEmail);
@@ -50,7 +49,9 @@ const AutoEmailModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['awl', 'emails', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['awl', 'emails', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/awl/emails?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -59,7 +60,9 @@ const AutoEmailModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -71,7 +74,7 @@ const AutoEmailModule: React.FC = () => {
             <ModuleTopBar title="autoWhitelist.email.header"
                           buttons={<DefaultButton
                               label="button.addEmail"
-                              onClick={() => history.push(`${url}/add`)}/>}
+                              onClick={() => navigate('/awl/emails/add')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -85,13 +88,14 @@ const AutoEmailModule: React.FC = () => {
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/add`}>
-                <AddEmail onCancel={() => history.push(url)}
-                          onCreate={() => {
-                              history.push(url);
-                              refetch();
-                          }}/>
-            </Route>
+            <Routes>
+                <Route path="add"
+                       element={<AddEmail onCancel={() => navigate('/awl/emails')}
+                              onCreate={() => {
+                                  navigate('/awl/emails');
+                                  refetch();
+                              }}/>}/>
+            </Routes>
         </ApplicationModuleContainer>
     );
 };

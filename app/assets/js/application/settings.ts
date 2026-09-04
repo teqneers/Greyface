@@ -1,4 +1,4 @@
-import {GreyTableState, GreyTableStateWithUser} from '../types/greylist';
+import type {GreyTableState, GreyTableStateWithUser} from '../types/greylist';
 import {EventDispatcher, useSubscription} from '../utils/event';
 
 export enum SettingsLocale {

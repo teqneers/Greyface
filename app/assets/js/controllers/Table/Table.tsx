@@ -19,7 +19,8 @@ import {
     UsePaginationState, useFlexLayout
 } from 'react-table';
 import SortMarker from './SortMarker';
-import TableBody, {TableBodyProps} from './TableBody';
+import TableBody from './TableBody';
+import type {TableBodyProps} from './TableBody';
 import {DOTS, useCustomPagination} from './useCustomPagination';
 
 import {createGetRowId} from './utils';

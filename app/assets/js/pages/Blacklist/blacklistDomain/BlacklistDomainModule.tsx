@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import {useApplication} from '../../../application/ApplicationContext';
@@ -9,15 +9,14 @@ import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import { BlackListDomain, GreyTableState} from '../../../types/greylist';
+import type {BlackListDomain, GreyTableState} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import BlacklistDomainTable from './BlacklistDomainTable';
 
 const BlacklistDomainModule: React.FC = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {blacklistDomain} = useSettings();
     const [tableState, setTableState] = useState<GreyTableState>(blacklistDomain);
 
@@ -49,7 +48,9 @@ const BlacklistDomainModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-in', 'domains', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['opt-in', 'domains', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/opt-in/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -58,7 +59,9 @@ const BlacklistDomainModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -70,7 +73,7 @@ const BlacklistDomainModule: React.FC = () => {
             <ModuleTopBar title="blacklist.domain.header"
                           buttons={<DefaultButton
                               label="button.addDomain"
-                              onClick={() => history.push(`${url}/add`)}/>}
+                              onClick={() => navigate('/opt-in/domains/add')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -84,13 +87,14 @@ const BlacklistDomainModule: React.FC = () => {
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/add`}>
-                <AddDomain onCancel={() => history.push(url)}
-                           onCreate={() => {
-                               history.push(url);
-                               refetch();
-                           }}/>
-            </Route>
+            <Routes>
+                <Route path="add"
+                       element={<AddDomain onCancel={() => navigate('/opt-in/domains')}
+                               onCreate={() => {
+                                   navigate('/opt-in/domains');
+                                   refetch();
+                               }}/>}/>
+            </Routes>
         </ApplicationModuleContainer>
     );
 };

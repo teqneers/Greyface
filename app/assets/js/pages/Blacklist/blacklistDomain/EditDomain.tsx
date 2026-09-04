@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import ModalForm from '../../../controllers/ModalForm';
-import {BlackListDomain} from '../../../types/greylist';
-import {DomainRequest, DomainValues} from '../../../utils/yupSchema';
+import type {BlackListDomain} from '../../../types/greylist';
+import type {DomainRequest, DomainValues} from '../../../utils/yupSchema';
 import FormDomain from './FormDomain';
 
 interface EditDomainProps {
@@ -22,7 +22,8 @@ const EditDomain = ({onUpdate, data}: EditDomainProps) => {
     const [show, setShow] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const editRecord = useMutation(async (values: DomainRequest) => {
+    const editRecord = useMutation({
+        mutationFn: async (values: DomainRequest) => {
         return await fetch(`${apiUrl}/opt-in/domains/edit`, {
             method: 'PUT',
             body: JSON.stringify({
@@ -44,10 +45,10 @@ const EditDomain = ({onUpdate, data}: EditDomainProps) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             onUpdate();
-        }
+        },
     });
 
     return (

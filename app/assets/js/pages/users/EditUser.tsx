@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation, useQuery, useQueryClient} from 'react-query';
-import {useRouteMatch} from 'react-router-dom';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useParams} from 'react-router-dom';
 
 import {useApplication} from '../../application/ApplicationContext';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import ModalForm from '../../controllers/ModalForm';
 
-import UserForm, {UpdateUserValues, UpdateUserRequest} from './UserForm';
+import UserForm from './UserForm';
+import type {UpdateUserValues, UpdateUserRequest} from './UserForm';
 
 interface EditUserProps {
     onCancel: () => void,
@@ -21,15 +22,19 @@ const EditUser: React.FC<EditUserProps> = ({onCancel, onUpdate}) => {
     const {apiUrl} = useApplication();
     const queryClient = useQueryClient();
 
-    const {params: {id}} = useRouteMatch<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
 
-    const {data, isLoading} = useQuery(['users', id], () => {
+    const {data, isLoading} = useQuery({
+        queryKey: ['users', id],
+        queryFn: () => {
         return fetch(`${apiUrl}/users/${id}`)
             .then((res) => res.json());
+    },
     });
 
 
-    const updateUser = useMutation(async (values: UpdateUserRequest) => {
+    const updateUser = useMutation({
+        mutationFn: async (values: UpdateUserRequest) => {
         return await fetch(`${apiUrl}/users/${id}`, {
             method: 'PUT',
             body: JSON.stringify(values)
@@ -46,11 +51,11 @@ const EditUser: React.FC<EditUserProps> = ({onCancel, onUpdate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async ({user: id}) => {
-            await queryClient.invalidateQueries('users');
+            await queryClient.invalidateQueries({queryKey: ['users']});
             onUpdate(id);
-        }
+        },
     });
 
     if (isLoading) {

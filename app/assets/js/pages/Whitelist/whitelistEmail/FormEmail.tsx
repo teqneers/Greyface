@@ -1,12 +1,13 @@
 import React from 'react';
 import {Button, Col, Form, InputGroup, Modal, Row} from 'react-bootstrap';
-import {UseMutationResult} from 'react-query';
+import type {UseMutationResult} from '@tanstack/react-query';
 import {useTranslation} from 'react-i18next';
 import {FieldArray, Formik} from 'formik';
 
 import CancelButton from '../../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../../controllers/Buttons/SubmitButton';
-import {EmailRequest, EmailSchema, EmailValues} from '../../../utils/yupSchema';
+import {EmailSchema} from '../../../utils/yupSchema';
+import type {EmailRequest, EmailValues} from '../../../utils/yupSchema';
 
 interface FormEmailProps<TValues extends object, TData, TRes, TError> {
     createMode?: boolean,

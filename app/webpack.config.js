@@ -1,8 +1,11 @@
-const Encore = require('@symfony/webpack-encore');
+// Encore 7 ships as ESM, so the CommonJS require() hands back the module
+// namespace rather than the Encore instance.
+const Encore = require('@symfony/webpack-encore').default;
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
-// Manually configure the runtime environment if not already configured yet by the "encore" command.
-// It's useful when you use tools that rely on webpack.config.js file.
+// Manually configure the runtime environment if the "encore" command has not
+// done it already — useful for tools that load this file directly. Every other
+// Encore method throws until this has run.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
@@ -56,27 +59,34 @@ Encore
             }
             babelConfig.plugins.push('babel-plugin-styled-components');
             babelConfig.plugins.push('@babel/plugin-transform-runtime');
+
+            // Babel 8 removed useBuiltIns/corejs from @babel/preset-env, and
+            // Encore 7 refuses to start if they are still set. This plugin is
+            // the replacement and injects the same usage-based core-js imports.
+            babelConfig.plugins.push(['polyfill-corejs3', {
+                method: 'usage-global',
+                version: '3.38',
+            }]);
         }
     )
-
-    // enables @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3.23;
-    })
 
     // enables Sass/SCSS support
     .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
-    .enableBabelTypeScriptPreset({
-        isTSX: true,
-        allExtensions: true,
-    })
+    // Babel 8 removed the isTSX/allExtensions options from
+    // @babel/preset-typescript; .tsx is now detected from the file extension.
+    .enableBabelTypeScriptPreset()
 
-    // uncomment if you use React
-    .enableReactPreset()
+    // Babel 8 switched @babel/preset-react to the automatic JSX runtime, and
+    // Encore 7 no longer sets `development` for you. Left at its default, the
+    // production bundle called jsxDEV() from react/jsx-dev-runtime, which is not
+    // in a production React build — the SPA rendered a blank page with
+    // "(0 , b.jsxDEV) is not a function" in the console.
+    .enableReactPreset((options) => {
+        options.development = !Encore.isProduction();
+    })
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
@@ -109,8 +119,12 @@ if (!Encore.isProduction()) {
     config.plugins.push(new ReactRefreshWebpackPlugin({overlay: false}));
 }
 
-// required because content-disposition requires these node modules
+// required because content-disposition requires these node modules.
+// Encore 7 no longer always emits a `resolve` key, so create it if absent
+// instead of assuming it is there.
+config.resolve = config.resolve || {};
 config.resolve.fallback = {
+    ...config.resolve.fallback,
     path: require.resolve('path-browserify'),
     buffer: require.resolve('buffer/'),
 };

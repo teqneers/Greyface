@@ -1,13 +1,14 @@
 import React from 'react';
 import {Col, Form, Modal, Row} from 'react-bootstrap';
-import {UseMutationResult} from 'react-query';
+import type {UseMutationResult} from '@tanstack/react-query';
 import {useTranslation} from 'react-i18next';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 
 import CancelButton from '../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../controllers/Buttons/SubmitButton';
-import {UserRole, USER_ROLES} from '../../types/user';
+import {USER_ROLES} from '../../types/user';
+import type {UserRole} from '../../types/user';
 
 interface UserValues {
     password?: string | number | string[];

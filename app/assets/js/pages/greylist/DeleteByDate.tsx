@@ -2,7 +2,7 @@ import {format} from 'date-fns';
 import React, {useState} from 'react';
 import {Col, Form} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 import DatePicker from 'react-datepicker';
 
 import {useApplication} from '../../application/ApplicationContext';
@@ -20,8 +20,8 @@ const DeleteByDate = ({onDelete}: DeleteByDateProps) => {
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
-    const deleteRecord = useMutation(
-        (values: { date: string }) => fetch(`${apiUrl}/greylist/delete-to-date`, {
+    const deleteRecord = useMutation({
+        mutationFn: (values: { date: string }) => fetch(`${apiUrl}/greylist/delete-to-date`, {
             method: 'DELETE',
             body: JSON.stringify(values)
         }).then(async response => {
@@ -37,7 +37,8 @@ const DeleteByDate = ({onDelete}: DeleteByDateProps) => {
             onDelete();
         }).catch(error => {
             console.error('There was an error!', error);
-        }));
+        }),
+    });
 
     return (
         <>

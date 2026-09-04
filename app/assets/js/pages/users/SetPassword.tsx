@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useRouteMatch} from 'react-router-dom';
-import {useMutation, useQueryClient} from 'react-query';
+import {useParams} from 'react-router-dom';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 
 import ModalForm from '../../controllers/ModalForm';
 import {useApplication} from '../../application/ApplicationContext';
-import SetPasswordForm, {SetPasswordRequest, SetPasswordValues} from './SetPasswordForm';
+import SetPasswordForm from './SetPasswordForm';
+import type {SetPasswordRequest, SetPasswordValues} from './SetPasswordForm';
 
 interface SetPasswordProps {
     onCancel: () => void,
@@ -21,9 +22,10 @@ const SetPassword: React.FC<SetPasswordProps> = ({onCancel, onUpdate}) => {
 
     const [error, setError] = useState<string | null>(null);
 
-    const {params: {id}} = useRouteMatch<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
 
-    const setPassword = useMutation(async (values: SetPasswordRequest) => {
+    const setPassword = useMutation({
+        mutationFn: async (values: SetPasswordRequest) => {
         return await fetch(`${apiUrl}/users/${id}/password`, {
             method: 'PUT',
             body: JSON.stringify(values)
@@ -40,15 +42,15 @@ const SetPassword: React.FC<SetPasswordProps> = ({onCancel, onUpdate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             if (id === user.id) { // if current user changed his password then redirect to login screen
                 window.location.href = logoutUrl;
             } else {
-                await queryClient.invalidateQueries('users');
+                await queryClient.invalidateQueries({queryKey: ['users']});
                 onUpdate(id);
             }
-        }
+        },
     });
 
     return (

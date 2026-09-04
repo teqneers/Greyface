@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
-import {AutoWhiteListDomain} from '../../../types/greylist';
+import type {AutoWhiteListDomain} from '../../../types/greylist';
 
 interface DeleteDomainProps {
     onDelete: () => void,
@@ -18,8 +18,8 @@ const DeleteDomain = ({onDelete, data}: DeleteDomainProps) => {
 
     const [show, setShow] = useState(false);
 
-    const deleteRecord = useMutation(
-        (data: AutoWhiteListDomain) => fetch(`${apiUrl}/awl/domains/delete`, {
+    const deleteRecord = useMutation({
+        mutationFn: (data: AutoWhiteListDomain) => fetch(`${apiUrl}/awl/domains/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'domain': data.domain,
@@ -37,7 +37,8 @@ const DeleteDomain = ({onDelete, data}: DeleteDomainProps) => {
             onDelete();
         }).catch(error => {
             console.error('There was an error!', error);
-        }));
+        }),
+    });
 
     return (
         <>

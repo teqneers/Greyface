@@ -1,7 +1,7 @@
 import React from 'react';
 import {Form} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useQuery} from 'react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 import {useApplication} from '../application/ApplicationContext';
 import LoadingIndicator from './LoadingIndicator';
@@ -16,10 +16,14 @@ const UserFilter: React.FC<UserFilterProps> = ({user, setUser, filterFor = 'user
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
 
-    const {data: users, isLoading: usersLoading} = useQuery(['users'], () => {
+    const {data: users, isLoading: usersLoading} = useQuery({
+        queryKey: ['users'],
+        queryFn: () => {
         return fetch(`${apiUrl}/users`)
             .then((res) => res.json());
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (usersLoading) {
         return <LoadingIndicator/>;

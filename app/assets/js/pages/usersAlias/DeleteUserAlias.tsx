@@ -1,7 +1,7 @@
 import React from 'react';
-import {useRouteMatch} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import {useMutation, useQueryClient} from 'react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 
 import {useApplication} from '../../application/ApplicationContext';
 import ModalConfirmation from '../../controllers/ModalConfirmation';
@@ -14,10 +14,10 @@ interface DeleteUserAliasProps {
 const DeleteUserAlias: React.FC<DeleteUserAliasProps> = ({onCancel, onDelete}) => {
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
-    const {params: {id}} = useRouteMatch<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const queryClient = useQueryClient();
-    const deleteUserAlias = useMutation(
-        () => fetch(`${apiUrl}/users-aliases/${id}`, {
+    const deleteUserAlias = useMutation({
+        mutationFn: () => fetch(`${apiUrl}/users-aliases/${id}`, {
             method: 'DELETE'
         }).then(async response => {
             const data = await response.json();
@@ -30,10 +30,11 @@ const DeleteUserAlias: React.FC<DeleteUserAliasProps> = ({onCancel, onDelete}) =
             }
             onDelete();
             queryClient.removeQueries(['users-aliases', id]);
-            await queryClient.invalidateQueries('users-aliases');
+            await queryClient.invalidateQueries({queryKey: ['users-aliases']});
         }).catch(error => {
             console.error('There was an error!', error);
-        }));
+        }),
+    });
 
     return (
         <ModalConfirmation

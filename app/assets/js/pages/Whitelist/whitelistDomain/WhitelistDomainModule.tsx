@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useQuery} from 'react-query';
-import {Route, useHistory, useRouteMatch} from 'react-router-dom';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {Route, Routes, useNavigate} from 'react-router-dom';
 import {TableState} from 'react-table';
 
 import ApplicationModuleContainer from '../../../application/ApplicationModuleContainer';
@@ -9,14 +9,13 @@ import {setSetting, useSettings} from '../../../application/settings';
 import DefaultButton from '../../../controllers/Buttons/DefaultButton';
 import LoadingIndicator from '../../../controllers/LoadingIndicator';
 import ModuleTopBar from '../../../controllers/ModuleTopBar';
-import {GreyTableState, WhiteListDomain} from '../../../types/greylist';
+import type {GreyTableState, WhiteListDomain} from '../../../types/greylist';
 import AddDomain from './AddDomain';
 import WhitelistDomainTable from './WhitelistDomainTable';
 
 const WhitelistDomainModule: React.FC = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const {apiUrl} = useApplication();
-    const {path, url} = useRouteMatch();
     const {whitelistDomain} = useSettings();
 
     const [tableState, setTableState] = useState<GreyTableState>(whitelistDomain);
@@ -48,7 +47,9 @@ const WhitelistDomainModule: React.FC = () => {
         data,
         isFetching,
         refetch
-    } = useQuery(['opt-out', 'domains', tableState, searchQuery], () => {
+    } = useQuery({
+        queryKey: ['opt-out', 'domains', tableState, searchQuery],
+        queryFn: () => {
 
         let url = `${apiUrl}/opt-out/domains?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
         if (tableState.sortBy[0]) {
@@ -57,7 +58,9 @@ const WhitelistDomainModule: React.FC = () => {
 
         return fetch(url).then((res) => res.json());
 
-    }, {keepPreviousData: true});
+    },
+        placeholderData: keepPreviousData,
+    });
 
     if (isLoading) {
         return <LoadingIndicator/>;
@@ -69,7 +72,7 @@ const WhitelistDomainModule: React.FC = () => {
             <ModuleTopBar title="whitelist.domain.header"
                           buttons={<DefaultButton
                               label="button.addDomain"
-                              onClick={() => history.push(`${url}/add`)}/>}
+                              onClick={() => navigate('/opt-out/domains/add')}/>}
                           searchQuery={searchQuery}
                           setSearchQuery={setSearchQuery}/>
 
@@ -83,13 +86,14 @@ const WhitelistDomainModule: React.FC = () => {
                 initialState={tableState}
                 onStateChange={onStateChange}/>)}
 
-            <Route path={`${path}/add`}>
-                <AddDomain onCancel={() => history.push(url)}
-                           onCreate={() => {
-                               history.push(url);
-                               refetch();
-                           }}/>
-            </Route>
+            <Routes>
+                <Route path="add"
+                       element={<AddDomain onCancel={() => navigate('/opt-out/domains')}
+                               onCreate={() => {
+                                   navigate('/opt-out/domains');
+                                   refetch();
+                               }}/>}/>
+            </Routes>
         </ApplicationModuleContainer>
     );
 };

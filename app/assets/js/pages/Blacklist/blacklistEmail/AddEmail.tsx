@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Alert} from 'react-bootstrap';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import ModalForm from '../../../controllers/ModalForm';
-import {EmailRequest, EmailValues} from '../../../utils/yupSchema';
+import type {EmailRequest, EmailValues} from '../../../utils/yupSchema';
 import FormEmail from './FormEmail';
 
 interface AddEmailProps {
@@ -17,7 +17,8 @@ const AddEmail: React.FC<AddEmailProps> = ({onCancel, onCreate}) => {
     const [error, setError] = useState<string | null>(null);
     const {t} = useTranslation();
     const {apiUrl} = useApplication();
-    const createEmails = useMutation(async (values: EmailRequest) => {
+    const createEmails = useMutation({
+        mutationFn: async (values: EmailRequest) => {
         return await fetch(`${apiUrl}/opt-in/emails`, {
             method: 'POST',
             body: JSON.stringify(values)
@@ -34,10 +35,10 @@ const AddEmail: React.FC<AddEmailProps> = ({onCancel, onCreate}) => {
                     setError(body.error);
                 });
             });
-    }, {
+    },
         onSuccess: async () => {
             onCreate();
-        }
+        },
     });
 
     return (

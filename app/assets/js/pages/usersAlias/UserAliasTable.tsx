@@ -1,13 +1,13 @@
 import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useHistory} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {CellProps, Column, TableState} from 'react-table';
 
 import DefaultButton from '../../controllers/Buttons/DefaultButton';
 import DeleteButton from '../../controllers/Buttons/DeleteButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
 import Table from '../../controllers/Table/Table';
-import {UserAlias} from '../../types/user';
+import type {UserAlias} from '../../types/user';
 
 interface UserAliasTableProps {
     data: UserAlias[],
@@ -27,7 +27,7 @@ const UserAliasTable: React.FC<UserAliasTableProps> = (
     }) => {
 
     const {t} = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const columns = useMemo<Column<UserAlias>[]>(() => [{
         Header: t('alias.aliasName'),
@@ -50,12 +50,12 @@ const UserAliasTable: React.FC<UserAliasTableProps> = (
         Cell: ({row: {original: row}}: CellProps<UserAlias, string>) => {
             return <>
                 <DefaultButton label="button.edit"
-                        onClick={() => history.push(`/users-aliases/${row.id}/edit`)}/>
+                        onClick={() => navigate(`/users-aliases/${row.id}/edit`)}/>
                 <DeleteButton
-                        onClick={() => history.push(`/users-aliases/${row.id}/delete`)}/>
+                        onClick={() => navigate(`/users-aliases/${row.id}/delete`)}/>
             </>;
         }
-    }], [t, history]);
+    }], [t, navigate]);
 
     if (isFetching) {
         return <LoadingIndicator/>;

@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 
 import {useApplication} from '../../../application/ApplicationContext';
 import DeleteButton from '../../../controllers/Buttons/DeleteButton';
 import ModalConfirmation from '../../../controllers/ModalConfirmation';
-import {WhiteListEmail} from '../../../types/greylist';
+import type {WhiteListEmail} from '../../../types/greylist';
 
 interface DeleteEmailProps {
     onDelete: () => void,
@@ -18,8 +18,8 @@ const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
 
     const [show, setShow] = useState(false);
 
-    const deleteRecord = useMutation(
-        (data: WhiteListEmail) => fetch(`${apiUrl}/opt-out/emails/delete`, {
+    const deleteRecord = useMutation({
+        mutationFn: (data: WhiteListEmail) => fetch(`${apiUrl}/opt-out/emails/delete`, {
             method: 'DELETE',
             body: JSON.stringify({
                 'email': data.email
@@ -36,7 +36,8 @@ const DeleteEmail = ({onDelete, data}: DeleteEmailProps) => {
             onDelete();
         }).catch(error => {
             console.error('There was an error!', error);
-        }));
+        }),
+    });
 
     return (
         <>

@@ -1,12 +1,13 @@
 import React from 'react';
 import {Helmet, HelmetProvider} from 'react-helmet-async';
 import {BrowserRouter as Router} from 'react-router-dom';
-import {QueryClient, QueryClientProvider} from 'react-query';
-import {ReactQueryDevtools} from 'react-query/devtools';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 
 import LoadingIndicator from '../controllers/LoadingIndicator';
 import ApplicationContainer from './ApplicationContainer';
-import {ApplicationConfigProps, ApplicationProvider} from './ApplicationContext';
+import {ApplicationProvider} from './ApplicationContext';
+import type {ApplicationConfigProps} from './ApplicationContext';
 import ApplicationRoutes from './ApplicationRoutes';
 import I18n from './i18n';
 
@@ -34,15 +35,10 @@ function Application({baseUrl, ...rest}: ApplicationProps): React.ReactElement {
                                 </ApplicationContainer>
                             </ApplicationProvider>
 
+                            {/* v5 renamed the panel props; the floating trigger
+                                is positioned with buttonPosition now. */}
                             <ReactQueryDevtools initialIsOpen={false}
-                                                position="bottom-right"
-                                                toggleButtonProps={{
-                                                    style: {
-                                                        right: -6,
-                                                        bottom: 40,
-                                                        zoom: 0.8
-                                                    }
-                                                }}/>
+                                                buttonPosition="bottom-right"/>
                         </QueryClientProvider>
                     </React.StrictMode>
                 </Router>
