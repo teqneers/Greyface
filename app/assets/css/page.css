@@ -1,0 +1,31 @@
+/*
+ * Server-rendered pages (login, password change). Shares the tokens in app.css
+ * and adds a handful of component classes that mirror the shadcn Input and
+ * Button variants, since Twig cannot use the React components.
+ */
+@import "./app.css";
+
+@layer components {
+    .gf-label {
+        @apply block text-sm font-medium leading-none;
+    }
+    .gf-input {
+        @apply flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow];
+        @apply placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none;
+        @apply disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30;
+    }
+    .gf-checkbox {
+        @apply size-4 shrink-0 rounded-[4px] border border-input accent-primary shadow-xs focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none;
+    }
+    .gf-button-primary,
+    .gf-button-outline {
+        @apply inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium whitespace-nowrap transition-colors;
+        @apply focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+    }
+    .gf-button-primary {
+        @apply bg-primary text-primary-foreground shadow-xs hover:bg-primary/90;
+    }
+    .gf-button-outline {
+        @apply border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:hover:bg-input/50;
+    }
+}

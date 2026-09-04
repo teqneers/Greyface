@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app.request.locale|default('en') }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,10 +7,24 @@
         <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32">
 
         <title>{% block title %}Greyface{% endblock %}</title>
+        {# Apply the persisted theme before the first paint. The SPA stores it
+           under the same key (assets/js/application/settings.ts). #}
+        <script>
+            (function () {
+                try {
+                    var settings = JSON.parse(localStorage.getItem('teqneers.greyface.settings') || '{}');
+                    var theme = settings.theme || 'system';
+                    if (theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+                        document.documentElement.classList.add('dark');
+                    }
+                } catch (e) { /* no storage, no theme */ }
+            })();
+        </script>
         {# Each child template picks exactly one Vite entry: "app" for the SPA,
            "page" for the server-rendered login and password pages. #}
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}{% endblock %}
+        {% block head %}{% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

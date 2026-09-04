@@ -115,8 +115,8 @@ primitive. The dashboard goes last because it is the only piece with backend wor
 
 ## Checklist
 
-- [ ] 1 Tooling
-- [ ] 2 Shell
+- [x] 1 Tooling
+- [x] 2 Shell
 - [ ] 3 Shared primitives
 - [ ] 4a Greylist
 - [ ] 4b Whitelist, blacklist, auto-whitelist

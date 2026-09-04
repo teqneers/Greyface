@@ -3,42 +3,36 @@
 {% block subtitle %}{% trans %}login.title{% endtrans %}{% endblock %}
 
 {% block content %}
+    <h1 class="text-xl font-semibold tracking-tight">{% trans %}login.header{% endtrans %}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">{% trans %}login.intro{% endtrans %}</p>
 
-    <h3>{% trans %}login.header{% endtrans %}</h3>
     {% if error %}
-        <div class="alert alert-danger">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
+        <div role="alert" class="mt-4 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
     {% endif %}
 
-    <form name="login" method="post" action="{{ path('login') }}">
-        <div class="form-group">
-            <label for="username">{% trans %}login.form.username{% endtrans %}</label>
-            <input class="form-control" type="text" aria-label="Login" id="username" name="username"
+    <form name="login" method="post" action="{{ path('login') }}" class="mt-6 space-y-4">
+        <div class="space-y-1.5">
+            <label for="username" class="gf-label">{% trans %}login.form.username{% endtrans %}</label>
+            <input class="gf-input" type="text" id="username" name="username"
                    value="{{ last_username }}"
                    required autocomplete="username" {% if not last_username %}autofocus{% endif %}/>
         </div>
 
-        <div class="form-group">
-            <label for="password">{% trans %}login.form.password{% endtrans %}</label>
-            <input class="form-control" type="password" aria-label="Password" id="password" name="password"
+        <div class="space-y-1.5">
+            <label for="password" class="gf-label">{% trans %}login.form.password{% endtrans %}</label>
+            <input class="gf-input" type="password" id="password" name="password"
                    required autocomplete="current-password" {% if last_username %}autofocus{% endif %}/>
         </div>
 
-        <div class="form-group mb-3">
-            <div class="form-check mt-2">
-                <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me"/>
-                <label class="form-check-label mt-0" for="remember_me">{% trans %}login.form.remember_me{% endtrans %}</label>
-            </div>
-        </div>
+        <label class="flex items-center gap-2 text-sm" for="remember_me">
+            <input type="checkbox" class="gf-checkbox" id="remember_me" name="remember_me"/>
+            {% trans %}login.form.remember_me{% endtrans %}
+        </label>
 
         <input type="hidden" name="csrf_token" value="{{ csrf_token('login') }}"/>
 
-        <div class="form-group text-center">
-            <button type="submit" class="btn btn-outline-primary btn-sm">
-                <i class="tq-glyph-enter-right"></i>
-                <span>{% trans %}login.submit{% endtrans %}</span>
-            </button>
-        </div>
+        <button type="submit" class="gf-button-primary w-full">{% trans %}login.submit{% endtrans %}</button>
     </form>
 {% endblock %}

@@ -1,179 +1,197 @@
 {
-    "common": {
-        "emptyHeader": "Nothing selected",
-        "emptyBody": "Either there are no entries here or you have not yet selected anything.",
-        "locale": {
-            "de_DE": "Deutsch",
-            "en_US": "English"
-        },
-        "booleanValue": {
-            "yes": "Yes",
-            "no": "No"
-        },
-        "button": {
-            "language": "Language",
-            "logout": "Logout",
-            "changePassword": "Password Change",
-            "add": "Add",
-            "create": "Create",
-            "edit": "Edit",
-            "delete": "Delete",
-            "deleteByDate": "Delete by Date",
-            "moveToWhitelist": "Auto Whitelist",
-            "save": "Save",
-            "cancel": "Cancel",
-            "close": "Close",
-            "back": "Back",
-            "searchAndFilters": "Search & Filter",
-            "createUser": "Add User",
-            "createUserAlias": "Add Alias",
-            "addEmail": "Add Email",
-            "addDomain": "Add Domain"
-        },
-        "placeholder": {
-            "search": "Search",
-            "searchByText": "Search by Text",
-            "user": "User",
-            "noData": "No Data",
-            "sortBy": "Sort by",
-            "addMore": "Add another",
-            "showAll": "Show All",
-            "showUnassigned": "Show Unassigned"
-        },
-        "errors": {
-            "required": "This field is required!",
-            "unique": "Data must be unique!",
-            "min": "Must be at least {{ min }} characters",
-            "passNotMatch": "Password does not match"
-        },
-        "paging": {
-            "previous": "Previous",
-            "next": "Next",
-            "itemsPerPage": "Per Page:"
-        },
-        "menu": {
-            "greylist": "Greylist",
-            "users": "Users",
-            "alias": "Alias",
-            "autoWhitelist": "Auto Whitelist",
-            "whitelist": "Whitelist",
-            "blacklist": "Blacklist",
-            "email": "Email",
-            "domain": "Domain"
-        },
-        "greylist": {
-            "header": "Greylist",
-            "sender": "Sender",
-            "domain": "Domain",
-            "source": "Source",
-            "recipient": "Recipient",
-            "firstSeen": "First Seen",
-            "username": "Username",
-            "deleteHeader": "Delete Entry",
-            "deleteMessage": "Do you really want to delete this entry?",
-            "deleteByDateHeader": "Delete entries by time",
-            "deleteByDateMessage": "All entries from the past to the selected date will be deleted!",
-            "moveToWhitelistHeader": "Move to Auto Whitelist",
-            "moveToWhitelistMessage": "Do you really want to move this?"
-        },
-        "user": {
-            "header": "Users",
-            "createHeader": "Create New User",
-            "editHeader": "Edit User",
-            "setPassword": "Set New Password",
-            "deleteHeader": "Delete user",
-            "deleteMessage": "Do you really want to delete this user?",
-            "unDeleteHeader": "Restore User",
-            "unDeleteMessage": "Are you sure you want to restore this user?",
-            "username": "Username",
-            "email": "E-Mail Address",
-            "role": "Role",
-            "password": "Password",
-            "passwordRetype": "Retype Password",
-            "createdAt": "Created At",
-            "roles": {
-                "admin": "Administrator",
-                "user": "User"
-            },
-            "userStatus": {
-                "disabled": "Disabled",
-                "locked": "Locked",
-                "enabled": "Enabled",
-                "deleted": "Deleted"
-            }
-        },
-        "alias": {
-            "header": "User Aliases",
-            "createHeader": "Create New Alias",
-            "editHeader": "Edit Alias",
-            "deleteHeader": "Delete Alias",
-            "deleteMessage": "Do you really want to delete this Alias?",
-            "aliasName": "Alias",
-            "user": "User"
-        },
-        "whitelist": {
-            "header": "Whitelist",
-            "email": {
-                "header": "Whitelist Email",
-                "addHeader": "Add Whitelist Emails",
-                "editHeader": "Edit Whitelist Email",
-                "deleteHeader": "Delete Whitelist Email",
-                "deleteMessage": "Do you really want to delete this?",
-                "email": "Email"
-            },
-            "domain": {
-                "header": "Whitelist Domain",
-                "addHeader": "Add Whitelist Domains",
-                "editHeader": "Edit Whitelist Domain",
-                "deleteHeader": "Delete Whitelist Domain",
-                "deleteMessage": "Do you really want to delete this?",
-                "domain": "Domain"
-            }
-        },
-        "blacklist": {
-            "header": "Blacklist",
-            "email": {
-                "header": "Blacklist Email",
-                "addHeader": "Add Blacklist Emails",
-                "editHeader": "Edit Blacklist Email",
-                "deleteHeader": "Delete Blacklist Email",
-                "deleteMessage": "Do you really want to delete this?",
-                "email": "Email"
-            },
-            "domain": {
-                "header": "Blacklist Domain",
-                "addHeader": "Add Blacklist Domains",
-                "editHeader": "Edit Blacklist Domain",
-                "deleteHeader": "Delete Blacklist Domain",
-                "deleteMessage": "Do you really want to delete this?",
-                "domain": "Domain"
-            }
-        },
-        "autoWhitelist": {
-            "header": "Auto Whitelist",
-            "email": {
-                "header": "Auto Whitelist Email",
-                "addHeader": "Add Auto Whitelist Emails",
-                "editHeader": "Edit Auto Whitelist Email",
-                "deleteHeader": "Delete Auto Whitelist Email",
-                "deleteMessage": "Do you really want to delete this?",
-                "name": "Sender",
-                "domain": "Domain",
-                "source": "Source",
-                "firstSeen": "First Seen",
-                "lastSeen": "Last Seen"
-            },
-            "domain": {
-                "header": "Auto Whitelist Domain",
-                "addHeader": "Add Auto Whitelist Domains",
-                "editHeader": "Edit Auto Whitelist Domain",
-                "deleteHeader": "Delete Auto Whitelist Domain",
-                "deleteMessage": "Do you really want to delete this?",
-                "domain": "Domain",
-                "source": "Source",
-                "firstSeen": "First Seen",
-                "lastSeen": "Last Seen"
-            }
-        }
-    }
+  "common": {
+    "emptyHeader": "Nothing selected",
+    "emptyBody": "Either there are no entries here or you have not yet selected anything.",
+    "locale": {
+      "de_DE": "Deutsch",
+      "en_US": "English"
+    },
+    "booleanValue": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "button": {
+      "language": "Language",
+      "logout": "Logout",
+      "changePassword": "Password Change",
+      "add": "Add",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteByDate": "Delete by Date",
+      "moveToWhitelist": "Auto Whitelist",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "back": "Back",
+      "searchAndFilters": "Search & Filter",
+      "createUser": "Add User",
+      "createUserAlias": "Add Alias",
+      "addEmail": "Add Email",
+      "addDomain": "Add Domain"
+    },
+    "placeholder": {
+      "search": "Search",
+      "searchByText": "Search by Text",
+      "user": "User",
+      "noData": "No Data",
+      "sortBy": "Sort by",
+      "addMore": "Add another",
+      "showAll": "Show All",
+      "showUnassigned": "Show Unassigned"
+    },
+    "errors": {
+      "required": "This field is required!",
+      "unique": "Data must be unique!",
+      "min": "Must be at least {{ min }} characters",
+      "passNotMatch": "Password does not match",
+      "forbidden": "You are not allowed to open that page."
+    },
+    "paging": {
+      "previous": "Previous",
+      "next": "Next",
+      "itemsPerPage": "Per Page:"
+    },
+    "menu": {
+      "greylist": "Greylist",
+      "users": "Users",
+      "alias": "Alias",
+      "autoWhitelist": "Auto Whitelist",
+      "whitelist": "Whitelist",
+      "blacklist": "Blacklist",
+      "email": "Email",
+      "domain": "Domain",
+      "lists": "Lists",
+      "administration": "Administration",
+      "emails": "Emails",
+      "domains": "Domains",
+      "navigation": "Navigation",
+      "openMenu": "Open menu",
+      "accountMenu": "Account menu"
+    },
+    "greylist": {
+      "header": "Greylist",
+      "sender": "Sender",
+      "domain": "Domain",
+      "source": "Source",
+      "recipient": "Recipient",
+      "firstSeen": "First Seen",
+      "username": "Username",
+      "deleteHeader": "Delete Entry",
+      "deleteMessage": "Do you really want to delete this entry?",
+      "deleteByDateHeader": "Delete entries by time",
+      "deleteByDateMessage": "All entries from the past to the selected date will be deleted!",
+      "moveToWhitelistHeader": "Move to Auto Whitelist",
+      "moveToWhitelistMessage": "Do you really want to move this?"
+    },
+    "user": {
+      "header": "Users",
+      "createHeader": "Create New User",
+      "editHeader": "Edit User",
+      "setPassword": "Set New Password",
+      "deleteHeader": "Delete user",
+      "deleteMessage": "Do you really want to delete this user?",
+      "unDeleteHeader": "Restore User",
+      "unDeleteMessage": "Are you sure you want to restore this user?",
+      "username": "Username",
+      "email": "E-Mail Address",
+      "role": "Role",
+      "password": "Password",
+      "passwordRetype": "Retype Password",
+      "createdAt": "Created At",
+      "roles": {
+        "admin": "Administrator",
+        "user": "User"
+      },
+      "userStatus": {
+        "disabled": "Disabled",
+        "locked": "Locked",
+        "enabled": "Enabled",
+        "deleted": "Deleted"
+      }
+    },
+    "alias": {
+      "header": "User Aliases",
+      "createHeader": "Create New Alias",
+      "editHeader": "Edit Alias",
+      "deleteHeader": "Delete Alias",
+      "deleteMessage": "Do you really want to delete this Alias?",
+      "aliasName": "Alias",
+      "user": "User"
+    },
+    "whitelist": {
+      "header": "Whitelist",
+      "email": {
+        "header": "Whitelist Email",
+        "addHeader": "Add Whitelist Emails",
+        "editHeader": "Edit Whitelist Email",
+        "deleteHeader": "Delete Whitelist Email",
+        "deleteMessage": "Do you really want to delete this?",
+        "email": "Email"
+      },
+      "domain": {
+        "header": "Whitelist Domain",
+        "addHeader": "Add Whitelist Domains",
+        "editHeader": "Edit Whitelist Domain",
+        "deleteHeader": "Delete Whitelist Domain",
+        "deleteMessage": "Do you really want to delete this?",
+        "domain": "Domain"
+      }
+    },
+    "blacklist": {
+      "header": "Blacklist",
+      "email": {
+        "header": "Blacklist Email",
+        "addHeader": "Add Blacklist Emails",
+        "editHeader": "Edit Blacklist Email",
+        "deleteHeader": "Delete Blacklist Email",
+        "deleteMessage": "Do you really want to delete this?",
+        "email": "Email"
+      },
+      "domain": {
+        "header": "Blacklist Domain",
+        "addHeader": "Add Blacklist Domains",
+        "editHeader": "Edit Blacklist Domain",
+        "deleteHeader": "Delete Blacklist Domain",
+        "deleteMessage": "Do you really want to delete this?",
+        "domain": "Domain"
+      }
+    },
+    "autoWhitelist": {
+      "header": "Auto Whitelist",
+      "email": {
+        "header": "Auto Whitelist Email",
+        "addHeader": "Add Auto Whitelist Emails",
+        "editHeader": "Edit Auto Whitelist Email",
+        "deleteHeader": "Delete Auto Whitelist Email",
+        "deleteMessage": "Do you really want to delete this?",
+        "name": "Sender",
+        "domain": "Domain",
+        "source": "Source",
+        "firstSeen": "First Seen",
+        "lastSeen": "Last Seen"
+      },
+      "domain": {
+        "header": "Auto Whitelist Domain",
+        "addHeader": "Add Auto Whitelist Domains",
+        "editHeader": "Edit Auto Whitelist Domain",
+        "deleteHeader": "Delete Auto Whitelist Domain",
+        "deleteMessage": "Do you really want to delete this?",
+        "domain": "Domain",
+        "source": "Source",
+        "firstSeen": "First Seen",
+        "lastSeen": "Last Seen"
+      }
+    },
+    "theme": {
+      "label": "Appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "footer": {
+      "credit": "Greyface is developed by"
+    },
+    "loading": "Loading…"
+  }
 }

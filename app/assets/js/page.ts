@@ -1,2 +1,1 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/page.scss';
+import '../css/page.css';

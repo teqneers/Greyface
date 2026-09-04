@@ -1,24 +1,24 @@
-import React from 'react';
-import {Container} from 'react-bootstrap';
-import {Helmet} from 'react-helmet-async';
+import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
 export interface ApplicationModuleContainerProps {
+    /** Translation key of the screen title; also becomes the document title. */
     title: string,
     children?: React.ReactNode,
 }
 
 const ApplicationModuleContainer: React.FC<ApplicationModuleContainerProps> = ({title, children}) => {
     const {t} = useTranslation();
+    const label = t(title);
 
+    useEffect(() => {
+        document.title = `${label} · Greyface`;
+    }, [label]);
 
     return (
-        <Container fluid className="module-container mt-4">
-            <Helmet>
-                <title>{t(title)}</title>
-            </Helmet>
+        <div className="module-container mx-auto w-full max-w-7xl">
             {children}
-        </Container>
+        </div>
     );
 };
 

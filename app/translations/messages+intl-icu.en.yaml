@@ -3,6 +3,7 @@ title: Greyface
 cancel: Cancel
 
 login.title: Login
+login.intro: Sign in to manage your greylisted mail.
 login.header: Welcome to Greyface
 login.form.username: Username
 login.form.password: Password

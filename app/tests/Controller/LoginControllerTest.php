@@ -18,7 +18,7 @@ class LoginControllerTest extends WebTestCase
         $client->request('GET', '/login');
 
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextSame('h3', 'Welcome to Greyface');
+        self::assertSelectorTextSame('h1', 'Welcome to Greyface');
     }
 
     public function testLoginExistingUser(): void
@@ -64,7 +64,7 @@ class LoginControllerTest extends WebTestCase
 
         $client->followRedirect();
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextSame('div.alert-danger', 'Invalid credentials.');
+        self::assertSelectorTextSame('[role="alert"]', 'Invalid credentials.');
         self::assertInputValueSame('username', 'doesnotexist');
     }
 
@@ -90,7 +90,7 @@ class LoginControllerTest extends WebTestCase
 
         $client->followRedirect();
         self::assertResponseStatusCodeSame(200);
-        self::assertSelectorTextSame('div.alert-danger', 'Invalid credentials.');
+        self::assertSelectorTextSame('[role="alert"]', 'Invalid credentials.');
         self::assertInputValueSame('username', $user->getUsername());
     }
 

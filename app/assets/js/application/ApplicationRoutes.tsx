@@ -1,6 +1,8 @@
 import React from 'react';
 import {Navigate, Route, Routes} from 'react-router-dom';
 
+import {RequireAdmin} from '@/components/RequireAdmin';
+
 const GreyListModule =  React.lazy(() => import('../pages/greylist/GreyListModule'));
 const UserModule =  React.lazy(() => import('../pages/users/UserModule'));
 const UserAliasModule =  React.lazy(() => import('../pages/usersAlias/UserAliasModule'));
@@ -13,7 +15,8 @@ const AutoWhitelistEmailModule =  React.lazy(() => import('../pages/AutoWhitelis
 
 /**
  * Every module owns a subtree, so each path ends in "/*": the module itself
- * renders the nested create/edit/delete routes for its own rows.
+ * renders the nested create/edit/delete routes for its own rows. Everything
+ * but the greylist is admin-only and wrapped in the route guard.
  */
 function ApplicationRoutes(): React.ReactElement {
     return (
@@ -21,17 +24,17 @@ function ApplicationRoutes(): React.ReactElement {
             <Route path="/" element={<Navigate to="/greylist" replace/>}/>
 
             <Route path="/greylist/*" element={<GreyListModule/>}/>
-            <Route path="/users/*" element={<UserModule/>}/>
-            <Route path="/users-aliases/*" element={<UserAliasModule/>}/>
+            <Route path="/users/*" element={<RequireAdmin><UserModule/></RequireAdmin>}/>
+            <Route path="/users-aliases/*" element={<RequireAdmin><UserAliasModule/></RequireAdmin>}/>
 
-            <Route path="/awl/emails/*" element={<AutoWhitelistEmailModule/>}/>
-            <Route path="/awl/domains/*" element={<AutoWhitelistDomainModule/>}/>
+            <Route path="/awl/emails/*" element={<RequireAdmin><AutoWhitelistEmailModule/></RequireAdmin>}/>
+            <Route path="/awl/domains/*" element={<RequireAdmin><AutoWhitelistDomainModule/></RequireAdmin>}/>
 
-            <Route path="/opt-out/emails/*" element={<WhitelistEmailModule/>}/>
-            <Route path="/opt-out/domains/*" element={<WhitelistDomainModule/>}/>
+            <Route path="/opt-out/emails/*" element={<RequireAdmin><WhitelistEmailModule/></RequireAdmin>}/>
+            <Route path="/opt-out/domains/*" element={<RequireAdmin><WhitelistDomainModule/></RequireAdmin>}/>
 
-            <Route path="/opt-in/emails/*" element={<BlacklistEmailModule/>}/>
-            <Route path="/opt-in/domains/*" element={<BlacklistDomainModule/>}/>
+            <Route path="/opt-in/emails/*" element={<RequireAdmin><BlacklistEmailModule/></RequireAdmin>}/>
+            <Route path="/opt-in/domains/*" element={<RequireAdmin><BlacklistDomainModule/></RequireAdmin>}/>
 
             <Route path="*" element={<Navigate to="/greylist" replace/>}/>
         </Routes>
