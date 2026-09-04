@@ -20,7 +20,6 @@ export interface NavGroup {
 
 /**
  * The sidebar for administrators; users only ever see the greylist.
- * The email/domain sub-links disappear once the list screens are merged.
  */
 export const navigation: NavGroup[] = [
     {
@@ -32,27 +31,9 @@ export const navigation: NavGroup[] = [
         label: 'menu.lists',
         adminOnly: true,
         items: [
-            {
-                label: 'menu.whitelist', to: '/opt-out/emails', icon: ShieldCheck,
-                children: [
-                    {label: 'menu.emails', to: '/opt-out/emails'},
-                    {label: 'menu.domains', to: '/opt-out/domains'},
-                ],
-            },
-            {
-                label: 'menu.blacklist', to: '/opt-in/emails', icon: ShieldBan,
-                children: [
-                    {label: 'menu.emails', to: '/opt-in/emails'},
-                    {label: 'menu.domains', to: '/opt-in/domains'},
-                ],
-            },
-            {
-                label: 'menu.autoWhitelist', to: '/awl/emails', icon: Sparkles,
-                children: [
-                    {label: 'menu.emails', to: '/awl/emails'},
-                    {label: 'menu.domains', to: '/awl/domains'},
-                ],
-            },
+            {label: 'menu.whitelist', to: '/whitelist', icon: ShieldCheck},
+            {label: 'menu.blacklist', to: '/blacklist', icon: ShieldBan},
+            {label: 'menu.autoWhitelist', to: '/auto-whitelist', icon: Sparkles},
         ],
     },
     {

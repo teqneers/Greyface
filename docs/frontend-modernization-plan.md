@@ -119,7 +119,7 @@ primitive. The dashboard goes last because it is the only piece with backend wor
 - [x] 2 Shell
 - [x] 3 Shared primitives
 - [x] 4a Greylist
-- [ ] 4b Whitelist, blacklist, auto-whitelist
+- [x] 4b Whitelist, blacklist, auto-whitelist
 - [ ] 4c Users, aliases
 - [ ] 5 Dashboard
 - [ ] 6 Polish

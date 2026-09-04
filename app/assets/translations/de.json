@@ -48,7 +48,10 @@
       "min": "Muss mindestens {{ min }} Zeichen lang sein",
       "passNotMatch": "Passwort stimmt nicht überein",
       "forbidden": "Diese Seite darf nicht geöffnet werden.",
-      "loadFailed": "Die Daten konnten nicht geladen werden."
+      "loadFailed": "Die Daten konnten nicht geladen werden.",
+      "email": "Keine gültige E-Mail-Adresse",
+      "domain": "Kein gültiger Domainname",
+      "max": "Darf höchstens {{max}} Zeichen lang sein"
     },
     "paging": {
       "previous": "Vorherige Seite",
@@ -192,7 +195,8 @@
         "editHeader": "Whitelist Email bearbeiten",
         "deleteHeader": "Whitelist Email löschen",
         "deleteMessage": "Wollen Sie das wirklich löschen?",
-        "email": "Email"
+        "email": "Email",
+        "emptyDescription": "Noch keine Absenderadressen auf der Whitelist."
       },
       "domain": {
         "header": "Whitelist-Domain",
@@ -200,8 +204,10 @@
         "editHeader": "Whitelist-Domain bearbeiten",
         "deleteHeader": "Whitelist-Domain löschen",
         "deleteMessage": "Wollen Sie das wirklich löschen?",
-        "domain": "Domain"
-      }
+        "domain": "Domain",
+        "emptyDescription": "Noch keine Absenderdomains auf der Whitelist."
+      },
+      "description": "Absender, die immer ohne Greylisting angenommen werden."
     },
     "blacklist": {
       "header": "Blacklist",
@@ -211,7 +217,8 @@
         "editHeader": "Blacklist Email bearbeiten",
         "deleteHeader": "Blacklist Email löschen",
         "deleteMessage": "Wollen Sie das wirklich löschen?",
-        "email": "Email"
+        "email": "Email",
+        "emptyDescription": "Keine Absenderadressen auf der Blacklist."
       },
       "domain": {
         "header": "Blacklist-Domain",
@@ -219,8 +226,10 @@
         "editHeader": "Blacklist-Domain bearbeiten",
         "deleteHeader": "Blacklist-Domain löschen",
         "deleteMessage": "Wollen Sie das wirklich löschen?",
-        "domain": "Domain"
-      }
+        "domain": "Domain",
+        "emptyDescription": "Keine Absenderdomains auf der Blacklist."
+      },
+      "description": "Absender, die immer greygelistet werden, auch wenn SQLGrey sie bereits kennt."
     },
     "autoWhitelist": {
       "header": "Auto Whitelist",
@@ -234,7 +243,8 @@
         "domain": "Domäne",
         "source": "Quelle",
         "firstSeen": "Erstmals Gesichtet",
-        "lastSeen": "Zuletzt Gesichtet"
+        "lastSeen": "Zuletzt Gesichtet",
+        "emptyDescription": "SQLGrey hat noch keinen Absender automatisch freigegeben."
       },
       "domain": {
         "header": "Auto Whitelist Whitelist-Domain",
@@ -245,8 +255,10 @@
         "domain": "Domäne",
         "source": "Quelle",
         "firstSeen": "Erstmals Gesichtet",
-        "lastSeen": "Zuletzt Gesichtet"
-      }
+        "lastSeen": "Zuletzt Gesichtet",
+        "emptyDescription": "SQLGrey hat noch keine Domain automatisch freigegeben."
+      },
+      "description": "Absender, denen SQLGrey vertraut, weil sie korrekt erneut zugestellt haben. Einträge verfallen von selbst, wenn ein Absender längere Zeit nichts sendet."
     },
     "theme": {
       "label": "Darstellung",
@@ -266,6 +278,32 @@
       "selected_other": "{{count}} ausgewählt",
       "clearSelection": "Aufheben",
       "actions": "Aktionen"
+    },
+    "lists": {
+      "created": "Hinzugefügt.",
+      "updated": "Gespeichert.",
+      "deleted": "Eintrag gelöscht.",
+      "editEntry": "{{label}} bearbeiten",
+      "deleteEntry": "{{label}} löschen",
+      "deleteMessage": "{{label}} wird aus der Liste entfernt.",
+      "bulkDelete": "Auswahl löschen",
+      "bulkDeleteTitle": "Ausgewählte Einträge löschen",
+      "bulkDeleteMessage_one": "{{count}} Eintrag wird aus der Liste entfernt.",
+      "bulkDeleteMessage_other": "{{count}} Einträge werden aus der Liste entfernt.",
+      "bulkDeleteConfirm_one": "{{count}} Eintrag löschen",
+      "bulkDeleteConfirm_other": "{{count}} Einträge löschen",
+      "bulkDeleted_one": "{{count}} Eintrag gelöscht.",
+      "bulkDeleted_other": "{{count}} Einträge gelöscht.",
+      "bulkDeletedPartial": "{{count}} von {{total}} Einträgen gelöscht; der Rest ist fehlgeschlagen.",
+      "removeValue": "Wert {{index}} entfernen",
+      "empty": {
+        "title": "Diese Liste ist leer",
+        "filtered": "Keine Einträge passen zur aktuellen Suche."
+      },
+      "add": {
+        "emails": "E-Mail hinzufügen",
+        "domains": "Domain hinzufügen"
+      }
     }
   }
 }
