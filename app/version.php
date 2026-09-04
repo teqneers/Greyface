@@ -1,9 +1,10 @@
 <?php
 
-#############################################################################
-###     APPLICATION SPECIFIC CONFIG
-#############################################################################
+/**
+ * Rewritten by .github/workflows/release.yml at build time from the git tag.
+ * A working copy always reads "dev"; only a released archive or container image
+ * carries a real version.
+ */
 
-// MUST BE CHANGED WITH ANY DEPLOYMENT
-define('PRODUCT_VERSION', '2.0.0');
-define('PRODUCT_BUILD', '0');    // DO NOT CHANGE MANUALLY. NEEDED BY PHING
+define('PRODUCT_VERSION', 'dev');
+define('PRODUCT_BUILD', 'source');

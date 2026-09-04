@@ -26,7 +26,7 @@ const themes: ThemeSetting[] = ['light', 'dark', 'system'];
 
 export function UserMenu(): React.ReactElement {
     const {t} = useTranslation();
-    const {user, changePasswordUrl, logoutUrl} = useApplication();
+    const {user, changePasswordUrl, logoutUrl, version, build} = useApplication();
     const {locale} = useSettings();
     const {theme, setTheme} = useTheme();
     const ThemeIcon = themeIcons[theme];
@@ -101,6 +101,12 @@ export function UserMenu(): React.ReactElement {
                         {t('button.logout')}
                     </a>
                 </DropdownMenuItem>
+
+                <DropdownMenuSeparator/>
+                <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                    {t('version.label', {version})}
+                    <span className="ml-1 opacity-70">({build})</span>
+                </div>
             </DropdownMenuContent>
         </DropdownMenu>
     );

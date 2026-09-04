@@ -37,6 +37,11 @@ class AppController extends AbstractController
             'logoutUrl'         => $logoutUrlGenerator->getLogoutPath(),
             'changePasswordUrl' => $urlGenerator->generate('change_password'),
             'user'              => $userEntity,
+            // Defined in version.php, autoloaded by composer and stamped from the
+            // git tag at release time. Shown in the account menu so a user can
+            // answer "which version are you running?" without shell access.
+            'version'           => defined('PRODUCT_VERSION') ? PRODUCT_VERSION : 'dev',
+            'build'             => defined('PRODUCT_BUILD') ? PRODUCT_BUILD : 'source',
         ];
 
         return $this->render(

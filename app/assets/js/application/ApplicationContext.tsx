@@ -8,6 +8,10 @@ export interface ApplicationConfigProps {
     logoutUrl: string,
     baseUrl: string,
     changePasswordUrl: string | null,
+    /** Release version, or "dev" in a working copy. */
+    version: string,
+    /** Short commit the release was built from, or "source". */
+    build: string,
     children?: React.ReactNode,
 }
 
