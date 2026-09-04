@@ -29,7 +29,8 @@
       "createUserAlias": "Add Alias",
       "addEmail": "Add Email",
       "addDomain": "Add Domain",
-      "clearSearch": "Clear search"
+      "clearSearch": "Clear search",
+      "undo": "Undo"
     },
     "placeholder": {
       "search": "Search",
@@ -46,7 +47,8 @@
       "unique": "Data must be unique!",
       "min": "Must be at least {{ min }} characters",
       "passNotMatch": "Password does not match",
-      "forbidden": "You are not allowed to open that page."
+      "forbidden": "You are not allowed to open that page.",
+      "loadFailed": "The data could not be loaded."
     },
     "paging": {
       "previous": "Previous page",
@@ -84,11 +86,68 @@
       "firstSeen": "First Seen",
       "username": "Username",
       "deleteHeader": "Delete Entry",
-      "deleteMessage": "Do you really want to delete this entry?",
+      "deleteMessage": "The entry from {{sender}} will be removed. If the sender retries, it is greylisted again.",
       "deleteByDateHeader": "Delete entries by time",
       "deleteByDateMessage": "All entries from the past to the selected date will be deleted!",
       "moveToWhitelistHeader": "Move to Auto Whitelist",
-      "moveToWhitelistMessage": "Do you really want to move this?"
+      "moveToWhitelistMessage": "Do you really want to move this?",
+      "adminIntro": "Mail that SQLGrey is holding back until the sending server tries again. Whitelist a sender to let it through immediately.",
+      "moved": "{{sender}} moved to the auto-whitelist.",
+      "undone": "Entry restored.",
+      "deleted": "Entry deleted.",
+      "deleteEntry": "Delete entry from {{sender}}",
+      "bulkWhitelist": "Whitelist selected",
+      "bulkDelete": "Delete selected",
+      "bulkMoved_one": "{{count}} entry moved to the auto-whitelist.",
+      "bulkMoved_other": "{{count}} entries moved to the auto-whitelist.",
+      "bulkDeleted_one": "{{count}} entry deleted.",
+      "bulkDeleted_other": "{{count}} entries deleted.",
+      "bulkDeleteTitle": "Delete selected entries",
+      "bulkDeleteMessage_one": "{{count}} entry will be removed from the greylist.",
+      "bulkDeleteMessage_other": "{{count}} entries will be removed from the greylist.",
+      "bulkDeleteConfirm_one": "Delete {{count}} entry",
+      "bulkDeleteConfirm_other": "Delete {{count}} entries",
+      "empty": {
+        "title": "Nothing is waiting",
+        "description": "No mail is being held back right now.",
+        "filtered": "No entries match the current search or filter."
+      },
+      "stats": {
+        "pending": "Waiting for retry",
+        "oldest": "Oldest entry"
+      },
+      "deleteByDate": {
+        "title": "Delete old entries",
+        "description": "Removes every entry first seen on or before the chosen day. Senders that retry later are greylisted again.",
+        "olderThan": "Older than",
+        "days_one": "{{count}} day",
+        "days_other": "{{count}} days",
+        "custom": "Custom date",
+        "upTo": "Up to and including",
+        "counting": "Counting…",
+        "preview_one": "{{count}} entry up to {{date}} will be deleted.",
+        "preview_other": "{{count}} entries up to {{date}} will be deleted.",
+        "confirm_one": "Delete {{count}} entry",
+        "confirm_other": "Delete {{count}} entries",
+        "done_one": "{{count}} entry deleted.",
+        "done_other": "{{count}} entries deleted."
+      },
+      "help": {
+        "open": "What is greylisting?",
+        "dismiss": "Dismiss",
+        "title": "What is this list?",
+        "subtitle": "How greylisting works and what the columns mean.",
+        "what": "Greylisting delays mail from senders it has not seen before. The first delivery attempt is turned away, and a legitimate mail server simply tries again a few minutes later, after which the mail is accepted. Most spam senders never retry. This list shows the mails currently being held back for your addresses.",
+        "whitelist": "If you are expecting a mail that is listed here, click \"Auto Whitelist\": the sender is accepted immediately and will not be delayed again. Deleting an entry only removes the record; if the sender retries, it starts over.",
+        "columnsTitle": "Columns",
+        "columns": {
+          "sender": "The part of the sender address before the @.",
+          "domain": "The part of the sender address after the @.",
+          "source": "The address (network prefix) of the sending mail server.",
+          "recipient": "The address of yours the mail was sent to.",
+          "firstSeen": "When the first delivery attempt arrived."
+        }
+      }
     },
     "user": {
       "header": "Users",
@@ -205,7 +264,8 @@
       "selection": "Selection",
       "selected_one": "{{count}} selected",
       "selected_other": "{{count}} selected",
-      "clearSelection": "Clear"
+      "clearSelection": "Clear",
+      "actions": "Actions"
     }
   }
 }
