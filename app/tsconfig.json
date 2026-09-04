@@ -19,5 +19,5 @@
             "@/*": ["assets/js/*"]
         }
     },
-    "include": ["assets/js/**/*", "vite.config.ts", "vitest.config.mts"]
+    "include": ["assets/js/**/*"]
 }
