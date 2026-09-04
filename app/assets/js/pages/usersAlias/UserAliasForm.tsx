@@ -11,6 +11,7 @@ import {useApplication} from '../../application/ApplicationContext';
 import CancelButton from '../../controllers/Buttons/CancelButton';
 import SubmitButton from '../../controllers/Buttons/SubmitButton';
 import LoadingIndicator from '../../controllers/LoadingIndicator';
+import type {User} from '../../types/user';
 
 export interface UserAliasValues {
     user_id?: string,
@@ -23,8 +24,8 @@ export interface UserAliasRequest {
 }
 
 
-yup.addMethod(yup.array, 'unique', function (message, mapper = a => a) {
-    return this.test('unique', message, function (list) {
+yup.addMethod(yup.array, 'unique', function (message, mapper = (a: unknown) => a) {
+    return this.test('unique', message, function (list: unknown[]) {
         return list.length === new Set(list.map(mapper)).size;
     });
 });
@@ -114,7 +115,7 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                                     onChange={handleChange}
                                     isInvalid={!!errors.user_id}>
                                     <option disabled value=""/>
-                                    {users.results.map((u) => {
+                                    {users.results.map((u: User) => {
                                         return (
                                             <option key={u.id} value={u.id}>{u.username}</option>
                                         );
@@ -172,9 +173,9 @@ function UserAliasForm<TValues extends UserAliasValues, TData extends UserAliasR
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <CancelButton onClick={() => onCancel()}/>
+                        <CancelButton onClick={() => onCancel?.()}/>
 
-                        <SubmitButton label={submitBtn}
+                        <SubmitButton label={submitBtn ?? ''}
                                       disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>

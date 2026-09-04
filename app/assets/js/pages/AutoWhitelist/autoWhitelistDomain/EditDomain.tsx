@@ -43,8 +43,8 @@ const EditDomain = ({onUpdate, data}: EditDomainProps) => {
         })
             .then((res) => res.json())
             .catch(error => {
-                error.json().then(body => {
-                    setError(body.error);
+                error.json().then((body: { error?: string }) => {
+                    setError(body.error ?? null);
                 });
             });
     },

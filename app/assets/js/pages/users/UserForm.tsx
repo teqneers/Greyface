@@ -171,9 +171,9 @@ function UserForm<TValues extends UserValues, TData extends UserRequest>(
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <CancelButton  onClick={() => onCancel()}/>
+                        <CancelButton  onClick={() => onCancel?.()}/>
 
-                        <SubmitButton label={submitBtn}
+                        <SubmitButton label={submitBtn ?? ''}
                                       disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>

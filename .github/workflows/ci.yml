@@ -120,4 +120,4 @@ jobs:
 
             - name: Build
               working-directory: app
-              run: yarn build:ci
+              run: yarn build

@@ -32,7 +32,7 @@ http://{$SERVER_NAME:localhost}:{$HTTP_PORT:18080} {
 
 	encode zstd br gzip
 
-	# Long-lived caching for the hashed Encore bundles; everything else is
+	# Long-lived caching for the hashed Vite bundles; everything else is
 	# served fresh, which is what you want while developing.
 	@encoreAssets path /build/*
 	header @encoreAssets Cache-Control "public, max-age=31536000, immutable"

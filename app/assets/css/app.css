@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/* Design tokens land here in the shell phase; for now this only wires Tailwind in. */

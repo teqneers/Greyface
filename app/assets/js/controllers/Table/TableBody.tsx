@@ -35,15 +35,15 @@ function TableBody<D extends object>(
                     if (rowClassName) {
                         className = rowClassName(className, row.original, row.id, index, row);
                     }
+                    const {key: rowKey, ...rowProps} = row.getRowProps();
                     return (
-                        // eslint-disable-next-line react/jsx-key
-                        <tr key={row.id} {...row.getRowProps()} className={className}
-                            // onClick={onRowClick ? () => onRowClick(row.original, row.id, index, row) : null}
-                             onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row.original, row.id, index, row) : null}>
+                        <tr key={rowKey} {...rowProps} className={className}
+                            // onClick={onRowClick ? () => onRowClick(row.original, row.id, index, row) : undefined}
+                             onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row.original, row.id, index, row) : undefined}>
                             {row.cells.map((cell) => (
                                 // eslint-disable-next-line react/jsx-key
                                 <td {...cell.getCellProps()}
-                                     onClick={(onRowClick && cell.column.rowClick) ? () => onRowClick(row.original, row.id, index, row) : null}>
+                                     onClick={(onRowClick && cell.column.rowClick) ? () => onRowClick(row.original, row.id, index, row) : undefined}>
                                     {cell.render('Cell')}
                                 </td>
                             ))}

@@ -1,18 +1,23 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
+        "target": "es2022",
+        "lib": ["es2022", "dom", "dom.iterable"],
         "module": "esnext",
-        "moduleResolution": "node",
-        "noImplicitAny": false,
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
         "esModuleInterop": true,
-        "target": "es2019",
-        "jsx": "react"
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "allowJs": false,
+        "useDefineForClassFields": true,
+        "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["assets/js/*"]
+        }
     },
-    "include": [
-        "assets/js/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "exporter"
-    ]
+    "include": ["assets/js/**/*", "vite.config.ts", "vitest.config.mts"]
 }

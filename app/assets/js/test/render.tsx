@@ -10,7 +10,6 @@ import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {ApplicationProvider} from '../application/ApplicationContext';
 import type {User} from '../types/user';
 
-// @ts-ignore — resolveJsonModule is off in tsconfig; the bundler handles it.
 import translation_en from '../../translations/en.json';
 
 /**
@@ -98,8 +97,10 @@ export function renderWithProviders(ui: ReactElement, options: RenderOptions = {
         </HelmetProvider>
     );
 
+    const result: RenderResult = render(ui, {wrapper: Wrapper});
+
     return {
-        ...render(ui, {wrapper: Wrapper}),
+        ...result,
         queryClient,
     };
 }

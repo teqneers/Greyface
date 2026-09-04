@@ -110,7 +110,7 @@ function Table<D extends object>(
             manualPagination: true,
             pageCount: controlledPageCount,
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            getRowId: useCallback(createGetRowId(idColumn), [idColumn])
+            getRowId: useCallback(createGetRowId<D>(idColumn), [idColumn])
         },
         useSortBy,
         useColumnOrder,
@@ -135,23 +135,29 @@ function Table<D extends object>(
         <div className="gf-table">
             <BTable bordered size="sm" {...getTableProps()}>
                 <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th key={column.id} {...column.getHeaderProps()}>
+                {headerGroups.map(headerGroup => {
+                    const {key: headerGroupKey, ...headerGroupProps} = headerGroup.getHeaderGroupProps();
+                    return (
+                        <tr key={headerGroupKey} {...headerGroupProps}>
+                            {headerGroup.headers.map(column => {
+                                const {key: columnKey, ...columnProps} = column.getHeaderProps();
+                                return (
+                                    <th key={columnKey} {...columnProps}>
 
-                                <SortMarker
-                                    canSort={column.canSort}
-                                    sortDescFirst={column.sortDescFirst}
-                                    isSorted={column.isSorted}
-                                    isSortedDesc={column.isSortedDesc}
-                                    {...column.getSortByToggleProps()}>
-                                    {column.render('Header')}
-                                </SortMarker>
-                            </th>
-                        ))}
-                    </tr>
-                ))}
+                                        <SortMarker
+                                            canSort={column.canSort}
+                                            sortDescFirst={column.sortDescFirst}
+                                            isSorted={column.isSorted}
+                                            isSortedDesc={column.isSortedDesc}
+                                            {...column.getSortByToggleProps()}>
+                                            {column.render('Header')}
+                                        </SortMarker>
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    );
+                })}
                 </thead>
 
                 <TableBody columnCount={columns.length} data={page} prepareRow={prepareRow} {...getTableBodyProps()}

@@ -1,13 +1,19 @@
 import {useMemo} from 'react';
 
-export const DOTS = '...';
+export const DOTS = '...' as const;
 
-const range = (start, end) => {
+const range = (start: number, end: number): number[] => {
     const length = end - start + 1;
     return Array.from({length}, (_, idx) => idx + start);
 };
 
-export const useCustomPagination = ({totalPageCount, siblingCount = 1, currentPage}) => {
+interface UseCustomPaginationParams {
+    totalPageCount: number,
+    siblingCount?: number,
+    currentPage: number,
+}
+
+export const useCustomPagination = ({totalPageCount, siblingCount = 1, currentPage}: UseCustomPaginationParams): (number | typeof DOTS)[] => {
     return useMemo(() => {
 
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
@@ -58,5 +64,8 @@ export const useCustomPagination = ({totalPageCount, siblingCount = 1, currentPa
             const middleRange = range(leftSiblingIndex, rightSiblingIndex);
             return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
         }
+
+        // Unreachable with the default siblingCount, but keeps the return type total.
+        return [];
     }, [totalPageCount, siblingCount, currentPage]);
 };

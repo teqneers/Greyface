@@ -29,7 +29,7 @@ const DeleteUser: React.FC<DeleteUserProps> = ({onCancel, onDelete}) => {
                 return Promise.reject(error);
             }
             onDelete();
-            queryClient.removeQueries(['users', id]);
+            queryClient.removeQueries({queryKey: ['users', id]});
             await queryClient.invalidateQueries({queryKey: ['users']});
         }).catch(error => {
             console.error('There was an error!', error);
@@ -39,7 +39,7 @@ const DeleteUser: React.FC<DeleteUserProps> = ({onCancel, onDelete}) => {
     return (
         <ModalConfirmation
             onConfirm={() => deleteUser.mutateAsync()}
-            onCancel={() => onCancel(id)}
+            onCancel={() => onCancel(id ?? '')}
             title="user.deleteHeader">
             {t('user.deleteMessage')}
         </ModalConfirmation>

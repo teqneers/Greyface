@@ -29,7 +29,7 @@ const DeleteUserAlias: React.FC<DeleteUserAliasProps> = ({onCancel, onDelete}) =
                 return Promise.reject(error);
             }
             onDelete();
-            queryClient.removeQueries(['users-aliases', id]);
+            queryClient.removeQueries({queryKey: ['users-aliases', id]});
             await queryClient.invalidateQueries({queryKey: ['users-aliases']});
         }).catch(error => {
             console.error('There was an error!', error);
@@ -39,7 +39,7 @@ const DeleteUserAlias: React.FC<DeleteUserAliasProps> = ({onCancel, onDelete}) =
     return (
         <ModalConfirmation
             onConfirm={() => deleteUserAlias.mutateAsync()}
-            onCancel={() => onCancel(id)}
+            onCancel={() => onCancel(id ?? '')}
             title="alias.deleteHeader">
             {t('alias.deleteMessage')}
         </ModalConfirmation>

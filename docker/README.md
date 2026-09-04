@@ -128,14 +128,19 @@ application has to sit at `<root>/app/public` for caches and logs to land in
 
 ## Frontend
 
-Not containerised yet — keep running `yarn` on the host. Encore writes to
+Not containerised yet — keep running `yarn` on the host. `yarn build` writes to
 `app/public/build`, which is bind-mounted in and served as static files, so a
-host-side `yarn build` or `yarn watch` shows up immediately.
+host-side build shows up immediately.
 
-`yarn start` (the Encore dev-server with hot reload) still does **not** work from
-a clean checkout: `app/webpack.config.js` reads a TLS key pair from
-`docker/build/webserver/`, which nothing generates. That is why `docker/build/`
-is gitignored while the rest of this directory is committed.
+`yarn dev` starts the Vite dev server on `http://localhost:15173` (the 1xxxx
+prefix again). It rewrites `app/public/build/.vite/entrypoints.json` to point at
+itself, the container reads that file through the bind mount, and the `/build/*`
+route of `pentatrion/vite-bundle` proxies module requests to the dev server. So
+keep opening `https://localhost:18443`; the SPA hot-reloads from there. Stop the
+dev server with Ctrl+C and it restores the production entrypoints (run
+`yarn build` again if the file is missing).
+
+`docker/build/` stays gitignored for local generated output.
 
 ## Not covered here
 

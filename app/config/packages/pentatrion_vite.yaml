@@ -1,0 +1,16 @@
+# Vite replaces Webpack Encore. The build writes to public/build (unchanged, so
+# files/build_tag.sh and the Caddy cache rule keep working) and the bundle reads
+# public/build/.vite/entrypoints.json to render script and link tags.
+#
+# While `yarn dev` runs on the host, vite-plugin-symfony rewrites that file so
+# the tags point the browser straight at http://localhost:15173. The bundle's
+# optional /build proxy route is deliberately not registered: the dev server
+# binds to the host's loopback, which the PHP container cannot reach, and the
+# browser does not need the proxy.
+pentatrion_vite:
+    public_directory: public
+    build_directory: build
+
+when@prod:
+    pentatrion_vite:
+        cache: true

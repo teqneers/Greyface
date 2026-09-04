@@ -9,8 +9,7 @@ greyface.ini
 /data
 
 # The docker/ directory is committed. Only its generated output is not:
-# docker/build/webserver holds the TLS key pair the Encore dev-server reads
-# (see app/webpack.config.js), which is generated locally, never shared.
+# docker/build/ is reserved for locally generated output, never shared.
 /docker/build/
 
 ## PhpStorm ###

@@ -8,7 +8,7 @@ import tseslint from 'typescript-eslint';
 // moved into this single exported array.
 export default tseslint.config(
     {
-        ignores: ['node_modules/**', 'public/build/**', 'webpack.config.js', 'vitest.config.mts'],
+        ignores: ['node_modules/**', 'public/build/**', 'vite.config.ts', 'vitest.config.mts'],
     },
 
     js.configs.recommended,
@@ -21,11 +21,7 @@ export default tseslint.config(
         languageOptions: {
             ecmaVersion: 2020,
             sourceType: 'module',
-            globals: {
-                ...globals.browser,
-                // Injected by webpack's DefinePlugin, see webpack.config.js.
-                IS_DEV: 'readonly',
-            },
+            globals: {...globals.browser},
             parserOptions: {ecmaFeatures: {jsx: true}},
         },
         settings: {react: {version: 'detect'}},
@@ -46,10 +42,6 @@ export default tseslint.config(
             // Replaces the ban-types rule removed in typescript-eslint 8; the
             // codebase intentionally uses bare `object` in a few generic spots.
             '@typescript-eslint/no-empty-object-type': 'off',
-            // Images are pulled in through webpack's require(), including one
-            // dynamic `require(`../../images/language/${flag}.png`)` that a
-            // static import cannot express.
-            '@typescript-eslint/no-require-imports': 'off',
 
             // eslint-plugin-react-hooks 7 adds rules that flag long-standing
             // patterns in the page modules (setState inside an effect to reset
