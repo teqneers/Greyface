@@ -3,28 +3,22 @@
 {% block subtitle %}{% trans %}change_password.title{% endtrans %}{% endblock %}
 
 {% block content %}
-    <h3>{% trans %}change_password.header{% endtrans %}</h3>
-    <div class="description-wrap">
-        <p>{% trans %}change_password.intro{% endtrans %}</p>
-    </div>
+    <h1 class="text-xl font-semibold tracking-tight">{% trans %}change_password.header{% endtrans %}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">{% trans %}change_password.intro{% endtrans %}</p>
 
-    {{ form_start(form) }}
+    {{ form_start(form, {attr: {class: 'mt-6 space-y-4'}}) }}
     {{ form_errors(form) }}
 
-    <div class="form-group">
-        <label for="username">{% trans %}change_password.form.username{% endtrans %}</label>
-        <input class="form-control" type="text" disabled id="username" value="{{ user.username }}"/>
+    <div class="space-y-1.5">
+        <label for="username" class="gf-label">{% trans %}change_password.form.username{% endtrans %}</label>
+        <input class="gf-input" type="text" disabled id="username" value="{{ user.username }}" autocomplete="username"/>
     </div>
 
     {{ form_rest(form) }}
 
-    <div class="form-group mt-3 text-center">
-        <button class="btn btn-outline-dark btn-sm" onclick="window.location.href='{{ path('app') }}'">
-            <span>{% trans %}cancel{% endtrans %}</span>
-        </button>
-        <button type="submit" class="btn btn-outline-primary btn-sm">
-            <span>{% trans %}change_password.submit{% endtrans %}</span>
-        </button>
+    <div class="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+        <a href="{{ path('app') }}" class="gf-button-outline">{% trans %}cancel{% endtrans %}</a>
+        <button type="submit" class="gf-button-primary">{% trans %}change_password.submit{% endtrans %}</button>
     </div>
 
     {{ form_end(form) }}

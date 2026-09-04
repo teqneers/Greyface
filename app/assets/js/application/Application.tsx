@@ -1,11 +1,12 @@
 import React from 'react';
-import {Helmet, HelmetProvider} from 'react-helmet-async';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 
+import {AppShell} from '@/components/layout/AppShell';
+import {Toaster} from '@/components/ui/sonner';
+import {TooltipProvider} from '@/components/ui/tooltip';
 import LoadingIndicator from '../controllers/LoadingIndicator';
-import ApplicationContainer from './ApplicationContainer';
 import {ApplicationProvider} from './ApplicationContext';
 import type {ApplicationConfigProps} from './ApplicationContext';
 import ApplicationRoutes from './ApplicationRoutes';
@@ -21,28 +22,24 @@ function Application({baseUrl, ...rest}: ApplicationProps): React.ReactElement {
     return (
         <React.StrictMode>
             <I18n>
-            <HelmetProvider>
-                <Helmet defaultTitle={'Greyface by TEQneers GmbH & Co KG'}
-                        titleTemplate={'%s | Greyface by TEQneers GmbH & Co KG'}/>
                 <Router basename={baseUrl}>
-                    <React.StrictMode>
-                        <QueryClientProvider client={queryClient}>
-                            <ApplicationProvider baseUrl={baseUrl} {...rest}>
-                                <ApplicationContainer>
+                    <QueryClientProvider client={queryClient}>
+                        <ApplicationProvider baseUrl={baseUrl} {...rest}>
+                            <TooltipProvider>
+                                <AppShell>
                                     <React.Suspense fallback={<LoadingIndicator/>}>
                                         <ApplicationRoutes/>
                                     </React.Suspense>
-                                </ApplicationContainer>
-                            </ApplicationProvider>
+                                </AppShell>
+                                <Toaster position="bottom-right"/>
+                            </TooltipProvider>
+                        </ApplicationProvider>
 
-                            {/* v5 renamed the panel props; the floating trigger
-                                is positioned with buttonPosition now. */}
-                            <ReactQueryDevtools initialIsOpen={false}
-                                                buttonPosition="bottom-right"/>
-                        </QueryClientProvider>
-                    </React.StrictMode>
+                        {import.meta.env.DEV && (
+                            <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left"/>
+                        )}
+                    </QueryClientProvider>
                 </Router>
-            </HelmetProvider>
             </I18n>
         </React.StrictMode>
     );

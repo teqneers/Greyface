@@ -3,6 +3,7 @@ title: Greyface
 cancel: Abbrechen
 
 login.title: Anmelden
+login.intro: Anmelden, um die eigene Greylist zu verwalten.
 login.header: Willkommen bei Greyface
 login.form.username: Username
 login.form.password: Passwort

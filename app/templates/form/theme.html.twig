@@ -1,0 +1,35 @@
+{# Form theme for the server-rendered pages. Uses the gf-* classes from
+   assets/css/page.css so the fields match the SPA's inputs. #}
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_row -%}
+    <div class="space-y-1.5">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row -%}
+
+{%- block form_label -%}
+    {%- if label is not same as(false) -%}
+        {%- if label is empty -%}
+            {%- set label = name|humanize -%}
+        {%- endif -%}
+        <label for="{{ id }}" class="gf-label">{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block form_widget_simple -%}
+    {%- set attr = attr|merge({class: ('gf-input ' ~ (attr.class|default('')))|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul role="alert" class="{{ form.parent is null ? 'rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2' : 'mt-1' }} space-y-1 text-sm text-destructive">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}

@@ -20,7 +20,7 @@ class ChangePasswordType extends AbstractType
                 [
                     'label' => 'change_password.form.current_password',
                     'required' => true,
-                    'attr'     => ['autocomplete' => 'current-password', 'class' => 'form-control'],
+                    'attr'     => ['autocomplete' => 'current-password'],
                 ]
             )
             ->add(
@@ -31,12 +31,12 @@ class ChangePasswordType extends AbstractType
                     'first_options'  => [
                         'label' => 'change_password.form.new_password',
                         'required' => true,
-                        'attr'     => ['autocomplete' => 'new-password', 'class' => 'form-control'],
+                        'attr'     => ['autocomplete' => 'new-password'],
                     ],
                     'second_options' => [
                         'label' => 'change_password.form.new_password_repeat',
                         'required' => true,
-                        'attr'     => ['autocomplete' => 'new-password', 'class' => 'form-control'],
+                        'attr'     => ['autocomplete' => 'new-password'],
                     ],
                 ]
             );

@@ -2,7 +2,6 @@ import {render, RenderResult} from '@testing-library/react';
 import i18n from 'i18next';
 import React, {ReactElement} from 'react';
 import type {ReactNode} from 'react';
-import {HelmetProvider} from 'react-helmet-async';
 import {initReactI18next} from 'react-i18next';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
@@ -78,9 +77,7 @@ export function renderWithProviders(ui: ReactElement, options: RenderOptions = {
     });
 
     const Wrapper = ({children}: { children?: ReactNode }): ReactElement => (
-        // Mirrors the provider stack in Application.tsx: modules render <Helmet>
-        // for their page title, which throws without a provider above them.
-        <HelmetProvider>
+        // Mirrors the provider stack in Application.tsx.
         <MemoryRouter initialEntries={[route]}>
             <QueryClientProvider client={queryClient}>
                 <ApplicationProvider
@@ -94,7 +91,6 @@ export function renderWithProviders(ui: ReactElement, options: RenderOptions = {
                 </ApplicationProvider>
             </QueryClientProvider>
         </MemoryRouter>
-        </HelmetProvider>
     );
 
     const result: RenderResult = render(ui, {wrapper: Wrapper});

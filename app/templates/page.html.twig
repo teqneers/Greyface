@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
-{% set pageId = pageId|default("page") %}
 
-{% block title %}{% block subtitle %}{% endblock %} | greyface{% endblock %}
+{% block title %}{% block subtitle %}{% endblock %} · Greyface{% endblock %}
 
 {% block stylesheets %}
     {{ vite_entry_link_tags('page') }}
@@ -12,14 +11,23 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-                <div id="{{ pageId }}">
-                    {% block content %}{% endblock %}
-                </div>
-                <div id="copyright" class="mt-5 text-center">
-                    <a href="https://www.teqneers.de/" target="_blank">©{{ "now"|date('Y') }} TEQneers GmbH & Co. KG</a>
-                </div>
-        </div>
+    <div class="flex min-h-screen flex-col items-center justify-center px-4 py-10">
+        <a href="{{ path('app') }}" class="mb-6 inline-flex items-center gap-2.5 font-semibold tracking-tight">
+            <svg viewBox="0 0 32 32" aria-hidden="true" class="size-8">
+                <rect width="32" height="32" rx="8" class="fill-primary"/>
+                <path d="M8 11.5h16v10a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-10Z" class="fill-none stroke-primary-foreground" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="m8 12 8 6 8-6" class="fill-none stroke-primary-foreground" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M6 8h20" class="stroke-primary-foreground" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            <span class="text-lg">Greyface</span>
+        </a>
+
+        <main class="w-full max-w-sm rounded-xl border bg-card p-6 text-card-foreground shadow-sm sm:p-8">
+            {% block content %}{% endblock %}
+        </main>
+
+        <p class="mt-6 text-xs text-muted-foreground">
+            <a href="https://www.teqneers.de/" target="_blank" rel="noreferrer" class="hover:underline underline-offset-4">©{{ "now"|date('Y') }} TEQneers GmbH &amp; Co. KG</a>
+        </p>
     </div>
 {% endblock %}

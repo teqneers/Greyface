@@ -7,13 +7,11 @@
 {% block subtitle %}{% trans %}change_password.success.title{% endtrans %}{% endblock %}
 
 {% block content %}
-    <h3>{% trans %}change_password.success.header{% endtrans %}</h3>
-    <div class="description-wrap">
-        <p> {% trans %}change_password.success.text{% endtrans %} </p>
-
-            <button class="mt-3 btn btn-outline-dark" onclick="window.location.href='{{ path('app') }}'">
-                <span>{% trans %}change_password.success.button{% endtrans %}</span>
-            </button>
-
+    <div class="mb-4 inline-flex size-10 items-center justify-center rounded-full bg-success/15 text-success">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
     </div>
+    <h1 class="text-xl font-semibold tracking-tight">{% trans %}change_password.success.header{% endtrans %}</h1>
+    <p class="mt-1 text-sm text-muted-foreground">{% trans %}change_password.success.text{% endtrans %}</p>
+
+    <a href="{{ path('app') }}" class="gf-button-primary mt-6 w-full">{% trans %}change_password.success.button{% endtrans %}</a>
 {% endblock %}

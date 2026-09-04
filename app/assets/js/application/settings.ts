@@ -8,8 +8,11 @@ export enum SettingsLocale {
 
 const normalSplitSize: [number, number] = [40, 60];
 
+export type ThemeSetting = 'light' | 'dark' | 'system';
+
 type SettingsType = {
     locale: SettingsLocale,
+    theme: ThemeSetting,
     splitViewSizes: Record<string, [number, number]> | null,
     greyList: GreyTableStateWithUser,
     autoWhitelistDomain: GreyTableState,
@@ -24,6 +27,7 @@ type SettingsType = {
 
 const INITIAL_SETTINGS: SettingsType = {
     locale: SettingsLocale.de_DE,
+    theme: 'system',
     splitViewSizes: null,
     autoWhitelistDomain: {
         columnOrder: [],

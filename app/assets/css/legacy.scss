@@ -1,0 +1,41 @@
+// Styling for the react-bootstrap screens that have not been rebuilt yet.
+// Everything sits in the lowest cascade layer (declared in app.css), so the
+// new shell's Tailwind utilities always win. Delete this file with the last
+// react-bootstrap import.
+@layer legacy, theme, base, components, utilities;
+
+@layer legacy {
+    $primary: #3a6cb4;
+    $font-family-sans-serif: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    $font-size-base: 0.875rem;
+
+    @import "bootstrap/scss/bootstrap";
+    @import "react-datepicker/dist/react-datepicker";
+
+    .table {
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+        }
+
+        th .sort-icon {
+            opacity: 0;
+        }
+
+        th:hover .sort-icon,
+        th .sort-icon.active {
+            opacity: 1;
+        }
+
+        tbody td {
+            word-break: break-all;
+            white-space: normal;
+        }
+    }
+
+    .modal-header .btn-close {
+        padding: 0.5rem 0.5rem;
+        margin: -0.5rem 0.5rem -0.5rem auto;
+    }
+}

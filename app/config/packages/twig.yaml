@@ -1,5 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    # Tailwind-classed form rendering for the server-rendered pages.
+    form_themes: ['form/theme.html.twig']
 
 when@test:
     twig:
