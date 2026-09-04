@@ -60,9 +60,13 @@ export function EntryList<T>({config, i18n, creating}: EntryListProps<T>): React
         }
     }, [data, clampPage]);
 
-    useEffect(() => {
+    // Selection is per page; anything not on screen any more is dropped. `state`
+    // is memoised per URL, so this fires exactly when the listing changes.
+    const [selectedIn, setSelectedIn] = useState(state);
+    if (state !== selectedIn) {
+        setSelectedIn(state);
         setSelection({});
-    }, [state]);
+    }
 
     const invalidate = () => queryClient.invalidateQueries({queryKey: ['list', config.apiPath]});
 

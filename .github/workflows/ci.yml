@@ -95,6 +95,14 @@ jobs:
         name: Frontend
         runs-on: ubuntu-latest
 
+        env:
+            # The runner ships a global TypeScript (7.x since 2026-09) under
+            # /usr/local/lib/node_modules. Node falls back to NODE_PATH when a
+            # require() misses locally, so a hiccup in the install surfaces as
+            # "typescript-eslint does not support TS 7.0" instead of a missing
+            # module. Clearing it keeps resolution inside app/node_modules.
+            NODE_PATH: ''
+
         steps:
             - name: Check out the repository
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -111,6 +119,21 @@ jobs:
             - name: Install dependencies
               working-directory: app
               run: yarn install --frozen-lockfile
+
+            - name: Verify TypeScript resolves to the project's own copy
+              working-directory: app
+              # The runner ships a global TypeScript. If the project's copy is ever
+              # missing, Node silently falls back to that one and eslint aborts with
+              # a confusing "typescript-eslint does not support TS 7.0". Fail here
+              # instead, naming the culprit. The version itself is the lockfile's job.
+              run: |
+                  node -e "
+                    const resolved = require.resolve('typescript');
+                    console.log('typescript', require('typescript/package.json').version, 'from', resolved);
+                    if (!resolved.startsWith(process.cwd())) {
+                      throw new Error('resolved TypeScript from outside the project: ' + resolved);
+                    }
+                  "
 
             - name: Lint
               working-directory: app

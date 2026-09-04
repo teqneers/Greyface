@@ -27,10 +27,14 @@ export function DataTableToolbar(
     const [value, setValue] = useState(query);
     const debounced = useDebouncedValue(value);
 
-    // External resets (a shared link, the back button) flow into the box.
-    useEffect(() => {
+    // External resets (a shared link, the back button) flow into the box. Adjusting
+    // during render rather than in an effect avoids a second render pass:
+    // https://react.dev/learn/you-might-not-need-an-effect
+    const [lastQuery, setLastQuery] = useState(query);
+    if (query !== lastQuery) {
+        setLastQuery(query);
         setValue(query);
-    }, [query]);
+    }
 
     useEffect(() => {
         if (debounced !== query) {

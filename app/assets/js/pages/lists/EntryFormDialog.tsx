@@ -47,11 +47,19 @@ export function EntryFormDialog<T, V extends FieldValues>(
         defaultValues: (editing ? formConfig.fromRow(row) : formConfig.empty()) as any,
     });
 
-    // Reopening the dialog for another row must not show the previous values.
+    // Reopening the dialog for another row must not show the previous attempt's
+    // error. Cleared during render; the form's own values are reset below.
+    const [shownFor, setShownFor] = useState<{ open: boolean, row?: T }>({open, row});
+    if (shownFor.open !== open || shownFor.row !== row) {
+        setShownFor({open, row});
+        if (open) {
+            setError(null);
+        }
+    }
+
     useEffect(() => {
         if (open) {
             form.reset((editing ? formConfig.fromRow(row) : formConfig.empty()) as any);
-            setError(null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, row]);
