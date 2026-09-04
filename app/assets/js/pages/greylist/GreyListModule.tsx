@@ -51,10 +51,13 @@ const GreyListModule: React.FC = () => {
         }
     }, [data, clampPage]);
 
-    // Selection is per page; anything not on screen any more is dropped.
-    useEffect(() => {
+    // Selection is per page; anything not on screen any more is dropped. `state`
+    // is memoised per URL, so this fires exactly when the listing changes.
+    const [selectedIn, setSelectedIn] = useState(state);
+    if (state !== selectedIn) {
+        setSelectedIn(state);
         setSelection({});
-    }, [state]);
+    }
 
     const {bulkMove, bulkRemove} = useGreylistMutations();
     const rows = useMemo(() => data?.results ?? [], [data]);

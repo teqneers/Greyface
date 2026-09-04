@@ -14,9 +14,9 @@
         "allowJs": false,
         "useDefineForClassFields": true,
         "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
-        "baseUrl": ".",
+        // Resolved relative to this file; baseUrl is deprecated and gone in TS 7.
         "paths": {
-            "@/*": ["assets/js/*"]
+            "@/*": ["./assets/js/*"]
         }
     },
     "include": ["assets/js/**/*"]
