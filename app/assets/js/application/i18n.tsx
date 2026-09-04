@@ -10,9 +10,7 @@ import type {ReactNode} from 'react';
 import {initReactI18next} from 'react-i18next';
 
 import * as yup from 'yup';
-// @ts-ignore
 import translation_de from '../../translations/de.json';
-// @ts-ignore
 import translation_en from '../../translations/en.json';
 
 import {EventDispatcher, useSubscription} from '../utils/event';
@@ -72,8 +70,7 @@ export async function initI18n(): Promise<void> {
         .init({
             resources: {de: translation_de, en: translation_en},
             lng: currentLanguage,
-            // @ts-ignore
-            fallbackLng: IS_DEV ? 'dev' : 'en',
+            fallbackLng: import.meta.env.PROD ? 'en' : 'dev',
             //debug: !!__DEV__,
             supportedLngs: ['en', 'de', 'dev'],
             ns: [],
@@ -96,7 +93,9 @@ interface Localization {
     timezone: string,
 }
 
-const dateLocales = {
+type DateInput = Date | number | string;
+
+const dateLocales: Record<string, DateFns.Locale> = {
     en: dateFns_en,
     de: dateFns_de,
 };
@@ -104,26 +103,26 @@ const dateLocales = {
 export function useLocalizedDate() {
     const language = useLanguage();
 
-    const optionsForLanguage = useCallback((options) => (
+    const optionsForLanguage = useCallback(<T extends object>(options: T): T & { locale: DateFns.Locale } => (
         Object.assign({}, options, {
             locale: dateLocales[language],
         })
     ), [language]);
 
     return useMemo(() => ({
-        format: (date, format, options = {}) => {
+        format: (date: DateInput, format: string, options: DateFns.FormatOptions = {}) => {
             return DateFns.format(date, format, optionsForLanguage(options));
         },
-        parse: (dateString, format, backup, options = {}) => {
+        parse: (dateString: string, format: string, backup: Date, options: DateFns.ParseOptions = {}) => {
             return DateFns.parse(dateString, format, backup, optionsForLanguage(options));
         },
-        formatDistance: (date, dateToCompare, options = {}) => {
+        formatDistance: (date: DateInput, dateToCompare: DateInput, options: DateFns.FormatDistanceOptions = {}) => {
             return DateFns.formatDistance(date, dateToCompare, optionsForLanguage(options));
         },
-        formatDistanceToNow: (date, options = {}) => {
+        formatDistanceToNow: (date: DateInput, options: DateFns.FormatDistanceToNowOptions = {}) => {
             return DateFns.formatDistanceToNow(date, optionsForLanguage(options));
         },
-        formatDistanceStrict: (date, dateToCompare, options = {}) => {
+        formatDistanceStrict: (date: DateInput, dateToCompare: DateInput, options: DateFns.FormatDistanceStrictOptions = {}) => {
             return DateFns.formatDistanceStrict(date, dateToCompare, optionsForLanguage(options));
         }
     }), [optionsForLanguage]);
@@ -141,7 +140,7 @@ function getEffectiveLocalization(settingsLocale: SettingsLocale) {
     };
 }
 
-const I18nContext = React.createContext<Localization>(null);
+const I18nContext = React.createContext<Localization>(systemLocalization);
 
 export function useI18n(): Localization {
     return useContext(I18nContext);

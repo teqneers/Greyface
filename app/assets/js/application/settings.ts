@@ -128,7 +128,7 @@ export function initSettings(): void {
     let settings = {};
     try {
         const storedSettingsStr = storage.getItem(STORAGE_KEY);
-        settings = JSON.parse(storedSettingsStr) || settings;
+        settings = (storedSettingsStr ? JSON.parse(storedSettingsStr) : null) || settings;
     } catch (e) {
         console.error(e);
     }

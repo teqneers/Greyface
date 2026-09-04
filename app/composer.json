@@ -13,6 +13,7 @@
         "doctrine/orm": "^3.3",
         "jms/serializer-bundle": "^5.4",
         "nyholm/psr7": "^1.5",
+        "pentatrion/vite-bundle": "^8.2",
         "ramsey/uuid": "^4.3",
         "stof/doctrine-extensions-bundle": "^1.11",
         "symfony/console": "7.4.*",
@@ -29,7 +30,6 @@
         "symfony/translation": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
         "symfony/validator": "7.4.*",
-        "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "7.4.*",
         "webmozart/assert": "^1.11"
     },

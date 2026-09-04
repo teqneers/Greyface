@@ -24,7 +24,7 @@ function DefaultButton({
     return (
         <Button variant={variant ? variant : 'outline-primary'}
                 size="sm"
-                className="m-1" onClick={onClick ? onClick : null}
+                className="m-1" onClick={onClick}
                 disabled={disabled}
                 type={type as ButtonTypes}>
             {t(label)}

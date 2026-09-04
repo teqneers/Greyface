@@ -101,9 +101,9 @@ function FormDomain<TValues extends DomainValues, TData extends DomainRequest>(
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <CancelButton onClick={() => onCancel()}/>
+                        <CancelButton onClick={() => onCancel?.()}/>
 
-                        <SubmitButton label={submitBtn}
+                        <SubmitButton label={submitBtn ?? ''}
                                       disabled={isSubmitting && !onSubmit.isError}/>
                     </Modal.Footer>
                 </Form>

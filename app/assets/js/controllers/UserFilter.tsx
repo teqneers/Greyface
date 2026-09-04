@@ -5,6 +5,7 @@ import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 import {useApplication} from '../application/ApplicationContext';
 import LoadingIndicator from './LoadingIndicator';
+import type {User} from '../types/user';
 
 interface UserFilterProps {
     user: string | null,
@@ -34,11 +35,11 @@ const UserFilter: React.FC<UserFilterProps> = ({user, setUser, filterFor = 'user
             <Form.Label column>{t('placeholder.user')}</Form.Label>
             <Form.Select
                 size="sm"
-                value={user}
+                value={user ?? ''}
                 onChange={(v) => setUser(v.target.value)}>
                 <option value="">{t('placeholder.showAll')}</option>
                 {filterFor === 'greylist' && <option value="show_unassigned">{t('placeholder.showUnassigned')}</option>}
-                {users && users.results && users.results.map((u) => {
+                {users && users.results && users.results.map((u: User) => {
                     return (
                         <option key={u.id} value={u.id}>{u.username}</option>
                     );

@@ -38,8 +38,8 @@ const SetPassword: React.FC<SetPasswordProps> = ({onCancel, onUpdate}) => {
         })
             .then((res) => res.json())
             .catch(error => {
-                error.json().then(body => {
-                    setError(body.error);
+                error.json().then((body: { error?: string }) => {
+                    setError(body.error ?? null);
                 });
             });
     },
@@ -48,7 +48,7 @@ const SetPassword: React.FC<SetPasswordProps> = ({onCancel, onUpdate}) => {
                 window.location.href = logoutUrl;
             } else {
                 await queryClient.invalidateQueries({queryKey: ['users']});
-                onUpdate(id);
+                onUpdate(id ?? '');
             }
         },
     });

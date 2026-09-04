@@ -55,7 +55,11 @@ const DeleteByDate = ({onDelete}: DeleteByDateProps) => {
                 <Form.Group as={Col} md="12"
                             className="mt-2">
                     <DatePicker selected={date}
-                                onChange={(date: Date) => setDate(date)}
+                                onChange={(date: Date | null) => {
+                                    if (date) {
+                                        setDate(date);
+                                    }
+                                }}
                                 className="form-control"
                                 dateFormat={DATE_FORMAT}/>
                 </Form.Group>

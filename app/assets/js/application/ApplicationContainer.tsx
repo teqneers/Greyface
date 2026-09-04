@@ -7,6 +7,12 @@ import {useApplication} from './ApplicationContext';
 import ApplicationMenu from './ApplicationMenu';
 import {setSetting, SettingsLocale, useSettings} from './settings';
 
+import logo from '../../images/teqneers_logo.png';
+import flagDe from '../../images/language/de.png';
+import flagEn from '../../images/language/en.png';
+
+const flags: Record<string, string> = {de: flagDe, en: flagEn};
+
 const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) => {
     const {t} = useTranslation();
     const {locale} = useSettings();
@@ -20,7 +26,7 @@ const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) =>
             <Navbar bg="light" sticky="top" className="m-1">
                 <Navbar.Brand href={`${baseUrl}`}>
                     <img
-                        src={require('../../images/teqneers_logo.png')}
+                        src={logo}
                         height="30"
                         className="d-inline-block align-top"
                         alt="Greyface by TEQneers GmbH & Co KG"/>
@@ -32,7 +38,7 @@ const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) =>
                         {/* User dropdown */}
                         <NavDropdown title={user.username}>
                             <NavDropdown.Item
-                                onClick={() => window.location.href = changePasswordUrl}>{t('button.changePassword')}</NavDropdown.Item>
+                                onClick={() => window.location.href = changePasswordUrl ?? ''}>{t('button.changePassword')}</NavDropdown.Item>
                             <NavDropdown.Item
                                 onClick={() => window.location.href = logoutUrl}>{t('button.logout')}</NavDropdown.Item>
                         </NavDropdown>
@@ -41,7 +47,7 @@ const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) =>
                         <NavDropdown
                             title={<><img
                                 style={{marginRight: 5}}
-                                src={require(`../../images/language/${flag}.png`)}
+                                src={flags[flag]}
                                 className="d-inline-block" alt={flag}/>
                                 {t(`locale.${locale.replace('-', '_')}`)}</>}>
 
@@ -53,7 +59,7 @@ const ApplicationContainer: React.FC<{ children?: ReactNode }> = ({children}) =>
                                         onClick={() => setSetting('locale', value)}>
                                         <img
                                             style={{marginRight: 5}}
-                                            src={require(`../../images/language/${langFlag}.png`)}
+                                            src={flags[langFlag]}
                                             className="d-inline-block m-1"
                                             alt={key}/>
                                         {t(`locale.${key}`)}

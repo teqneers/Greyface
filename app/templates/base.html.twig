@@ -2,24 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="web_author" content="TEQneers GmbH & Co. KG – https://www.teqneers.de/">
-        <link rel="shortcut icon" type="image/png" href="{{ asset('build/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" href="{{ asset('build/favicon-32x32.png') }}" sizes="32x32">
-        <link rel="icon" type="image/png" href="{{ asset('build/favicon-192x192.png') }}" sizes="192x192">
-        <link rel="apple-touch-icon" href="{{ asset('build/favicon-180x180.png') }}">
-        <meta name="msapplication-TileImage" content="{{ asset('build/favicon-270x270.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32">
 
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
+        <title>{% block title %}Greyface{% endblock %}</title>
+        {# Each child template picks exactly one Vite entry: "app" for the SPA,
+           "page" for the server-rendered login and password pages. #}
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

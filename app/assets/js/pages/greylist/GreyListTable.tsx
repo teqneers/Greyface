@@ -40,7 +40,7 @@ const GreyListTable: React.FC<GreyListTableProps> = (
             id: 'name',
             minWidth: 300,
             maxWidth: 500,
-            accessor: (originalRow) => originalRow.connect.name,
+            accessor: (originalRow: Greylist) => originalRow.connect.name,
             canSort: true,
             disableResizing: true
         }, {
@@ -49,7 +49,7 @@ const GreyListTable: React.FC<GreyListTableProps> = (
             width: 160,
             minWidth: 150,
             maxWidth: 200,
-            accessor: (originalRow) => originalRow.connect.domain,
+            accessor: (originalRow: Greylist) => originalRow.connect.domain,
             canSort: true,
             disableResizing: true
         }, {
@@ -58,7 +58,7 @@ const GreyListTable: React.FC<GreyListTableProps> = (
             width: 130,
             minWidth: 130,
             maxWidth: 150,
-            accessor: (originalRow) => originalRow.connect.source,
+            accessor: (originalRow: Greylist) => originalRow.connect.source,
             canSort: true,
             disableResizing: true
         }, {
@@ -67,13 +67,13 @@ const GreyListTable: React.FC<GreyListTableProps> = (
             width: 180,
             minWidth: 180,
             maxWidth: 250,
-            accessor: (originalRow) => originalRow.connect.rcpt,
+            accessor: (originalRow: Greylist) => originalRow.connect.rcpt,
             canSort: true,
             disableResizing: true
         }, {
             Header: t('greylist.firstSeen'),
             id: 'firstSeen',
-            accessor: (originalRow) => <DisplayDate date={originalRow.connect.firstSeen}
+            accessor: (originalRow: Greylist) => <DisplayDate date={originalRow.connect.firstSeen}
                                                     format={DATE_TIME_SECONDS_FORMAT}/>,
             canSort: true,
             disableResizing: true

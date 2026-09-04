@@ -31,8 +31,8 @@ const AddDomain: React.FC<AddDomainProps> = ({onCancel, onCreate}) => {
         })
             .then((res) => res.json())
             .catch(error => {
-                error.json().then(body => {
-                    setError(body.error);
+                error.json().then((body: { error?: string }) => {
+                    setError(body.error ?? null);
                 });
             });
     },
