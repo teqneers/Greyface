@@ -41,7 +41,7 @@
         "symfony/css-selector": "7.4.*",
         "symfony/debug-bundle": "7.4.*",
         "symfony/error-handler": "7.4.*",
-        "symfony/phpunit-bridge": "7.4.*",
+        "symfony/phpunit-bridge": "8.1.*",
         "symfony/stopwatch": "7.4.*",
         "symfony/var-dumper": "7.4.*",
         "symfony/web-profiler-bundle": "7.4.*"
