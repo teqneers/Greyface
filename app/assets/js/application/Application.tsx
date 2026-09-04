@@ -6,7 +6,7 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import {AppShell} from '@/components/layout/AppShell';
 import {Toaster} from '@/components/ui/sonner';
 import {TooltipProvider} from '@/components/ui/tooltip';
-import LoadingIndicator from '../controllers/LoadingIndicator';
+import LoadingIndicator from '@/components/LoadingIndicator';
 import {ApplicationProvider} from './ApplicationContext';
 import type {ApplicationConfigProps} from './ApplicationContext';
 import ApplicationRoutes from './ApplicationRoutes';

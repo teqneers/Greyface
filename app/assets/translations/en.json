@@ -158,7 +158,7 @@
       "editHeader": "Edit User",
       "setPassword": "Set New Password",
       "deleteHeader": "Delete user",
-      "deleteMessage": "Do you really want to delete this user?",
+      "deleteMessage": "{{username}} will no longer be able to sign in. Their aliases stay in place.",
       "unDeleteHeader": "Restore User",
       "unDeleteMessage": "Are you sure you want to restore this user?",
       "username": "Username",
@@ -176,16 +176,32 @@
         "locked": "Locked",
         "enabled": "Enabled",
         "deleted": "Deleted"
-      }
+      },
+      "description": "Who can sign in to Greyface. Administrators see everything; users see the mail held back for their own addresses and aliases.",
+      "emptyDescription": "No users match the current search.",
+      "created": "User created.",
+      "updated": "User saved.",
+      "deleted": "User deleted.",
+      "passwordSet": "Password changed.",
+      "editUser": "Edit {{username}}",
+      "deleteUser": "Delete {{username}}",
+      "setPasswordFor": "Set a new password for {{username}}"
     },
     "alias": {
       "header": "User Aliases",
       "createHeader": "Create New Alias",
       "editHeader": "Edit Alias",
       "deleteHeader": "Delete Alias",
-      "deleteMessage": "Do you really want to delete this Alias?",
+      "deleteMessage": "{{alias}} will be removed. The user will no longer see mail for this address.",
       "aliasName": "Alias",
-      "user": "User"
+      "user": "User",
+      "description": "Which mail addresses belong to which user. A user only sees greylisted mail addressed to one of their aliases.",
+      "formIntro": "Each alias is a full mail address.",
+      "chooseUser": "Choose a user",
+      "emptyDescription": "No aliases yet. Users without an alias see an empty greylist.",
+      "created": "Alias added.",
+      "updated": "Alias saved.",
+      "deleted": "Alias deleted."
     },
     "whitelist": {
       "header": "Whitelist",

@@ -6,7 +6,6 @@ import {initI18n} from './application/i18n';
 import {initTheme} from './application/theme';
 import type {ApplicationConfigProps as ApplicationConfig} from './application/ApplicationContext';
 
-import '../css/legacy.scss';
 import '../css/app.css';
 
 const root = document.getElementById('app');

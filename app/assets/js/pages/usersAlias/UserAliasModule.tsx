@@ -1,125 +1,162 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {Route, Routes, useNavigate} from 'react-router-dom';
-import {TableState} from 'react-table';
+import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import type {ColumnDef} from '@tanstack/react-table';
+import {AtSign, Pencil, Plus, Trash2} from 'lucide-react';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Route, Routes, useNavigate, useParams} from 'react-router-dom';
+import {toast} from 'sonner';
 
-import {useApplication} from '../../application/ApplicationContext';
-import ApplicationModuleContainer from '../../application/ApplicationModuleContainer';
-import {setSetting, useSettings} from '../../application/settings';
-import DefaultButton from '../../controllers/Buttons/DefaultButton';
-import LoadingIndicator from '../../controllers/LoadingIndicator';
-import ModuleTopBar from '../../controllers/ModuleTopBar';
-import UserFilter from '../../controllers/UserFilter';
-import type {GreyTableStateWithUser} from '../../types/greylist';
-import type {UserAlias} from '../../types/user';
-import CreateUserAlias from './CreateUserAlias';
-import DeleteUserAlias from './DeleteUserAlias';
-import EditUserAlias from './EditUserAlias';
-import UserAliasTable from './UserAliasTable';
+import {useApplication} from '@/application/ApplicationContext';
+import ApplicationModuleContainer from '@/application/ApplicationModuleContainer';
+import {DataTable, DataTablePagination, DataTableToolbar} from '@/components/data-table';
+import {ConfirmDialog} from '@/components/dialogs';
+import {EmptyState} from '@/components/EmptyState';
+import {PageHeader} from '@/components/PageHeader';
+import {Button} from '@/components/ui/button';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
+import {UserSelect} from '@/components/UserSelect';
+import {useListState} from '@/hooks/useListState';
+import {apiFetch, listUrl} from '@/lib/api';
+import type {ListResponse} from '@/lib/api';
+import type {UserAlias} from '@/types/user';
+
+import {UserAliasFormDialog} from './UserAliasFormDialog';
+
+function AliasDialog({editing}: { editing: boolean }): React.ReactElement {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const close = () => navigate('/users-aliases' + window.location.search, {replace: true});
+    return <UserAliasFormDialog open onOpenChange={(open) => !open && close()} aliasId={editing ? id : undefined}/>;
+}
 
 const UserAliasModule: React.FC = () => {
-
-    const navigate = useNavigate();
+    const {t} = useTranslation();
     const {apiUrl} = useApplication();
-    const {userAlias} = useSettings();
-    const [tableState, setTableState] = useState<GreyTableStateWithUser>(userAlias);
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const [searchQuery, setSearchQuery] = useState<string>(userAlias.searchQuery ?? '');
-    const [user, setUser] = useState(userAlias.user ?? '');
+    const {state, setPage, setPageSize, setSort, setQuery, setFilter, clampPage} = useListState({
+        key: 'users-aliases',
+        defaultSort: {id: 'aliasName', desc: false},
+        filterKeys: ['user'],
+    });
+    const [deleting, setDeleting] = useState<UserAlias | undefined>();
 
-    // run every time the table state change
-    const onStateChange = useCallback<(state: TableState<UserAlias>) => void>((state) => {
-        setSetting('userAlias',
-            {
-                ...state,
-                searchQuery: searchQuery,
-                user: user
-            });
-        setTableState(prevState => ({...prevState, ...state, searchQuery: searchQuery}));
-    }, [searchQuery, user]);
-
-    // set pageIndex to 0 whenever search query change
-    useEffect(() => {
-        const state = {...tableState, pageIndex: 0, searchQuery: searchQuery, user: user};
-        setSetting('userAlias', state);
-        setTableState(state);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchQuery, user]);
-
-    const {
-        isLoading,
-        isError,
-        error,
-        data,
-        isFetching,
-        refetch
-    } = useQuery({
-        queryKey: ['users-aliases', tableState, searchQuery, user],
-        queryFn: () => {
-
-        let url = `${apiUrl}/users-aliases?start=${tableState.pageIndex}&max=${tableState.pageSize}&query=${searchQuery}`;
-
-        if (tableState.sortBy[0]) {
-            url += `&sortBy=${tableState.sortBy[0].id}&desc=${tableState.sortBy[0].desc ? 1 : 0}`;
-        }
-
-        if (user) {
-            url += `&user=${user}`;
-        }
-
-        return fetch(url).then((res) => res.json());
-
-    },
+    const {data, isLoading, isFetching, isError, error} = useQuery({
+        queryKey: ['users-aliases', 'list', state],
+        queryFn: () => apiFetch<ListResponse<UserAlias>>(listUrl(`${apiUrl}/users-aliases`, state, {user: state.filters.user})),
         placeholderData: keepPreviousData,
     });
 
-    if (isLoading) {
-        return <LoadingIndicator/>;
-    }
+    useEffect(() => {
+        if (data) {
+            clampPage(data.count);
+        }
+    }, [data, clampPage]);
+
+    const remove = useMutation({
+        mutationFn: (alias: UserAlias) => apiFetch(`${apiUrl}/users-aliases/${alias.id}`, {method: 'DELETE'}),
+        onSuccess: () => {
+            toast.success(t('alias.deleted'));
+            queryClient.invalidateQueries({queryKey: ['users-aliases']});
+            setDeleting(undefined);
+        },
+        onError: (failure: Error) => toast.error(failure.message),
+    });
+
+    const rows = useMemo(() => data?.results ?? [], [data]);
+
+    const columns = useMemo<ColumnDef<UserAlias>[]>(() => [
+        {
+            id: 'aliasName',
+            header: t('alias.aliasName'),
+            accessorKey: 'alias_name',
+            cell: ({getValue}) => <span className="font-medium break-all">{getValue<string>()}</span>,
+        },
+        {id: 'username', header: t('alias.user'), accessorFn: (row) => row.user.username},
+        {
+            id: 'actions',
+            header: () => <span className="sr-only">{t('table.actions')}</span>,
+            enableSorting: false,
+            cell: ({row}) => (
+                <div className="flex items-center justify-end gap-1">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon-sm" onClick={() => navigate(`/users-aliases/${row.original.id}/edit${window.location.search}`)}
+                                    aria-label={t('lists.editEntry', {label: row.original.alias_name})}>
+                                <Pencil aria-hidden="true"/>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('button.edit')}</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon-sm" onClick={() => setDeleting(row.original)}
+                                    aria-label={t('lists.deleteEntry', {label: row.original.alias_name})}>
+                                <Trash2 aria-hidden="true"/>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('button.delete')}</TooltipContent>
+                    </Tooltip>
+                </div>
+            ),
+            meta: {align: 'right', nowrap: true},
+        },
+    ], [t, navigate]);
 
     return (
         <ApplicationModuleContainer title="alias.header">
+            <PageHeader title={t('alias.header')} description={t('alias.description')}/>
 
+            <div className="space-y-3">
+                <DataTableToolbar
+                    query={state.query}
+                    onQueryChange={setQuery}
+                    filters={<UserSelect value={state.filters.user ?? ''} onChange={(value) => setFilter('user', value)}/>}
+                    actions={
+                        <Button onClick={() => navigate(`/users-aliases/create${window.location.search}`)}>
+                            <Plus aria-hidden="true"/>
+                            {t('button.createUserAlias')}
+                        </Button>
+                    }
+                />
 
-            <ModuleTopBar title="alias.header"
-                          buttons={<DefaultButton
-                              label="button.createUserAlias"
-                              onClick={() => navigate('/users-aliases/create')}/>}
-                          userFilter={<UserFilter user={user} setUser={setUser}/>}
-                          searchQuery={searchQuery}
-                          setSearchQuery={setSearchQuery}/>
+                {isError ? (
+                    <EmptyState title={t('errors.loadFailed')} description={(error as Error).message}/>
+                ) : (
+                    <DataTable
+                        columns={columns}
+                        data={rows}
+                        getRowId={(alias) => alias.id}
+                        sort={state.sort}
+                        onSortChange={setSort}
+                        isLoading={isLoading}
+                        isFetching={isFetching}
+                        emptyState={
+                            <EmptyState icon={AtSign} title={t('placeholder.noData')}
+                                        description={state.query || state.filters.user ? t('lists.empty.filtered') : t('alias.emptyDescription')}/>
+                        }
+                    />
+                )}
 
-            {isError ? (//@ts-ignore
-                <div>Error: {error}</div>
-            ) : (<UserAliasTable
-                data={data.results}
-                pageCount={Math.ceil(data.count / tableState.pageSize)}
-                isFetching={isFetching || isLoading}
-                initialState={tableState}
-                onStateChange={onStateChange}/>)}
+                <DataTablePagination page={state.page} pageSize={state.pageSize} rowCount={data?.count ?? 0}
+                                     onPageChange={setPage} onPageSizeChange={setPageSize}/>
+            </div>
 
             <Routes>
-                <Route path="create"
-                       element={<CreateUserAlias onCancel={() => navigate('/users-aliases')}
-                                     onCreate={() => {
-                                         navigate('/users-aliases');
-                                         refetch();
-                                     }}/>}/>
-
-                <Route path=":id/edit"
-                       element={<EditUserAlias onCancel={() => navigate('/users-aliases')}
-                                   onUpdate={() => {
-                                       navigate('/users-aliases');
-                                   }}/>}/>
-
-                <Route path=":id/delete"
-                       element={<DeleteUserAlias
-                        onCancel={() => navigate('/users-aliases')}
-                        onDelete={() => {
-                            navigate('/users-aliases');
-                        }}/>}/>
+                <Route path="create" element={<AliasDialog editing={false}/>}/>
+                <Route path=":id/edit" element={<AliasDialog editing/>}/>
             </Routes>
 
+            <ConfirmDialog
+                open={deleting !== undefined}
+                onOpenChange={(open) => !open && setDeleting(undefined)}
+                title={t('alias.deleteHeader')}
+                description={deleting ? t('alias.deleteMessage', {alias: deleting.alias_name}) : undefined}
+                destructive
+                pending={remove.isPending}
+                onConfirm={() => deleting && remove.mutate(deleting)}
+            />
         </ApplicationModuleContainer>
     );
 };
