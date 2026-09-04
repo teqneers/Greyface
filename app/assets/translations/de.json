@@ -28,7 +28,8 @@
       "createUser": "neuer Benutzer",
       "createUserAlias": "Alias hinzufügen",
       "addEmail": "Email hinzufügen",
-      "addDomain": "Domäne hinzufügen"
+      "addDomain": "Domäne hinzufügen",
+      "clearSearch": "Suche löschen"
     },
     "placeholder": {
       "search": "Suchen",
@@ -48,9 +49,14 @@
       "forbidden": "Diese Seite darf nicht geöffnet werden."
     },
     "paging": {
-      "previous": "Vorherige",
-      "next": "Nächste",
-      "itemsPerPage": "Pro Seite:"
+      "previous": "Vorherige Seite",
+      "next": "Nächste Seite",
+      "itemsPerPage": "Zeilen pro Seite",
+      "label": "Seitennavigation",
+      "range": "{{from}}–{{to}} von {{count}}",
+      "pageOf": "Seite {{page}} von {{count}}",
+      "first": "Erste Seite",
+      "last": "Letzte Seite"
     },
     "menu": {
       "greylist": "Greylist",
@@ -192,6 +198,14 @@
     "footer": {
       "credit": "Greyface wird entwickelt von"
     },
-    "loading": "Lädt…"
+    "loading": "Lädt…",
+    "table": {
+      "selectAll": "Alle Zeilen dieser Seite auswählen",
+      "selectRow": "Zeile auswählen",
+      "selection": "Auswahl",
+      "selected_one": "{{count}} ausgewählt",
+      "selected_other": "{{count}} ausgewählt",
+      "clearSelection": "Aufheben"
+    }
   }
 }
