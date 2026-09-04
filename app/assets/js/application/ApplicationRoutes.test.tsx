@@ -2,7 +2,7 @@ import {screen} from '@testing-library/react';
 import React from 'react';
 import {describe, expect, it, vi} from 'vitest';
 
-import {renderWithProviders} from '../test/render';
+import {createTestUser, renderWithProviders} from '../test/render';
 import ApplicationRoutes from './ApplicationRoutes';
 
 // Every route target is lazy-loaded and each real module fetches on mount, so
@@ -13,6 +13,7 @@ const stub = (name: string) => ({
     default: () => <div data-testid="module">{name}</div>,
 });
 
+vi.mock('../pages/dashboard/DashboardModule', () => stub('dashboard'));
 vi.mock('../pages/greylist/GreyListModule', () => stub('greylist'));
 vi.mock('../pages/users/UserModule', () => stub('users'));
 vi.mock('../pages/usersAlias/UserAliasModule', () => stub('users-aliases'));
@@ -20,12 +21,12 @@ vi.mock('../pages/lists/WhitelistModule', () => stub('whitelist'));
 vi.mock('../pages/lists/BlacklistModule', () => stub('blacklist'));
 vi.mock('../pages/lists/AutoWhitelistModule', () => stub('auto-whitelist'));
 
-async function renderAt(route: string): Promise<string> {
+async function renderAt(route: string, admin = true): Promise<string> {
     renderWithProviders(
         <React.Suspense fallback={<div>loading</div>}>
             <ApplicationRoutes/>
         </React.Suspense>,
-        {route}
+        {route, user: createTestUser({is_administrator: admin, role: admin ? 'admin' : 'user'})}
     );
 
     return (await screen.findByTestId('module')).textContent ?? '';
@@ -51,12 +52,16 @@ describe('ApplicationRoutes', () => {
         expect(await renderAt(route)).toBe(expected);
     });
 
-    it('redirects the root to the greylist', async () => {
-        expect(await renderAt('/')).toBe('greylist');
+    it('lands administrators on the dashboard', async () => {
+        expect(await renderAt('/')).toBe('dashboard');
     });
 
-    it('sends an unknown path back to the greylist', async () => {
-        expect(await renderAt('/does-not-exist')).toBe('greylist');
+    it('lands users on the greylist', async () => {
+        expect(await renderAt('/', false)).toBe('greylist');
+    });
+
+    it('sends an unknown path home', async () => {
+        expect(await renderAt('/does-not-exist')).toBe('dashboard');
     });
 
     // Nested paths must stay on their parent module: the module itself renders

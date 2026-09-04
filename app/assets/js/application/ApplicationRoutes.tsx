@@ -1,8 +1,10 @@
 import React from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router-dom';
 
+import {usePermissions} from '@/application/usePermissions';
 import {RequireAdmin} from '@/components/RequireAdmin';
 
+const DashboardModule = React.lazy(() => import('../pages/dashboard/DashboardModule'));
 const GreyListModule = React.lazy(() => import('../pages/greylist/GreyListModule'));
 const UserModule = React.lazy(() => import('../pages/users/UserModule'));
 const UserAliasModule = React.lazy(() => import('../pages/usersAlias/UserAliasModule'));
@@ -17,6 +19,12 @@ const LEGACY_PREFIXES: Record<string, string> = {
     '/awl': '/auto-whitelist',
 };
 
+/** Administrators land on the dashboard, everyone else on their greylist. */
+function Home(): React.ReactElement {
+    const {isAdministrator} = usePermissions();
+    return <Navigate to={isAdministrator() ? '/dashboard' : '/greylist'} replace/>;
+}
+
 function LegacyRedirect({prefix}: { prefix: string }): React.ReactElement {
     const {pathname, search} = useLocation();
     return <Navigate to={pathname.replace(prefix, LEGACY_PREFIXES[prefix]) + search} replace/>;
@@ -30,8 +38,9 @@ function LegacyRedirect({prefix}: { prefix: string }): React.ReactElement {
 function ApplicationRoutes(): React.ReactElement {
     return (
         <Routes>
-            <Route path="/" element={<Navigate to="/greylist" replace/>}/>
+            <Route path="/" element={<Home/>}/>
 
+            <Route path="/dashboard" element={<RequireAdmin><DashboardModule/></RequireAdmin>}/>
             <Route path="/greylist/*" element={<GreyListModule/>}/>
             <Route path="/users/*" element={<RequireAdmin><UserModule/></RequireAdmin>}/>
             <Route path="/users-aliases/*" element={<RequireAdmin><UserAliasModule/></RequireAdmin>}/>
@@ -44,7 +53,7 @@ function ApplicationRoutes(): React.ReactElement {
                 <Route key={prefix} path={`${prefix}/*`} element={<LegacyRedirect prefix={prefix}/>}/>
             ))}
 
-            <Route path="*" element={<Navigate to="/greylist" replace/>}/>
+            <Route path="*" element={<Home/>}/>
         </Routes>
     );
 }

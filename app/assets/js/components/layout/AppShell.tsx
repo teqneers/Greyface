@@ -37,7 +37,7 @@ export function AppShell({children}: { children: React.ReactNode }): React.React
         return (
             <div className="flex min-h-screen flex-col">
                 <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b bg-background/95 px-4 backdrop-blur sm:px-6">
-                    <Link to="/greylist" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    <Link to="/" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <Wordmark/>
                     </Link>
                     <UserMenu/>
@@ -52,7 +52,7 @@ export function AppShell({children}: { children: React.ReactNode }): React.React
         <div className="flex min-h-screen">
             <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground md:flex">
                 <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-                    <Link to="/greylist" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+                    <Link to="/" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
                         <Wordmark/>
                     </Link>
                 </div>
@@ -79,7 +79,7 @@ export function AppShell({children}: { children: React.ReactNode }): React.React
                                 </div>
                             </SheetContent>
                         </Sheet>
-                        <Link to="/greylist"><Wordmark/></Link>
+                        <Link to="/"><Wordmark/></Link>
                     </div>
                     <div className="ml-auto">
                         <UserMenu/>
