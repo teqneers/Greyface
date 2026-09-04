@@ -34,3 +34,4 @@ greyface.ini
 
 /.env.local
 /.env.*.local
+/CLAUDE.md
