@@ -49,7 +49,7 @@ class ConnectRepository extends ServiceEntityRepository
     }
 
     #[ArrayShape(['count' => "mixed", 'results' => "mixed"])]
-    public function findFiltered(User|string|null $user = null, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
+    public function findFiltered(User|string|null $user = null, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false, ?string $before = null): iterable|Paginator
     {
         $count = null;
 
@@ -67,6 +67,13 @@ class ConnectRepository extends ServiceEntityRepository
         if ($query) {
             $qb = $qb->andWhere('c.name LIKE :query OR c.domain LIKE :query OR c.source LIKE :query OR c.rcpt LIKE :query OR u.username LIKE :query OR c.firstSeen LIKE :query')
                 ->setParameter('query', '%' . $query . '%');
+        }
+
+        // Same cut-off as deleteByDate(), so the UI can show how many rows a
+        // delete-by-date would remove before it is confirmed.
+        if ($before) {
+            $qb = $qb->andWhere('DATE(c.firstSeen) <= :before')
+                ->setParameter('before', $before);
         }
 
         if ($start !== null) {

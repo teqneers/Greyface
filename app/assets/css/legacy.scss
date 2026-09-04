@@ -8,9 +8,11 @@
     $primary: #3a6cb4;
     $font-family-sans-serif: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
     $font-size-base: 0.875rem;
+    // Bootstrap utilities are !important by default, and !important reverses
+    // cascade-layer order: legacy .px-3 would beat Tailwind pl-8.
+    $enable-important-utilities: false;
 
     @import "bootstrap/scss/bootstrap";
-    @import "react-datepicker/dist/react-datepicker";
 
     .table {
         th {

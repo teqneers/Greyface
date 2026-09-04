@@ -138,4 +138,13 @@ class Connect
         $this->firstSeen = new DateTimeImmutable('now');
         return $this;
     }
+
+    /**
+     * Restores the original timestamp when an entry is put back after an undo.
+     */
+    public function setFirstSeenAt(DateTimeImmutable $firstSeen): self
+    {
+        $this->firstSeen = $firstSeen;
+        return $this;
+    }
 }

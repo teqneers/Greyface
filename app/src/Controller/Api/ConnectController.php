@@ -10,6 +10,7 @@ use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\UserInterface;
 use App\Messenger\Validation;
 use DateTime;
+use DateTimeImmutable;
 use OutOfBoundsException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,7 +53,8 @@ class ConnectController
         $max = $request->query->get('max') ?? 20;
         $sortBy = $request->query->get('sortBy');
         $desc = $request->query->get('desc');
-        $response = $connectRepository->findFiltered($user, $query, $start, $max, $sortBy, boolval($desc));
+        $before = $request->query->get('before');
+        $response = $connectRepository->findFiltered($user, $query, $start, $max, $sortBy, boolval($desc), $before ?: null);
         return new JsonResponse($response);
     }
 
@@ -65,32 +67,138 @@ class ConnectController
         EmailAutoWhiteListRepository $emailAutoWhiteListRepository
     ): Response
     {
-        $body = $request->getContent();
-        $data = json_decode($body, true);
+        $data = json_decode($request->getContent(), true) ?? [];
+        $greylist = $this->findEntry($connectRepository, $data);
+        $snapshot = $this->snapshot($greylist);
 
-        $name = $data['name'] ?? '';
-        $domain = $data['domain'] ?? '';
-        $source = $data['source'] ?? '';
-        $rcpt = $data['rcpt'] ?? '';
-
-        $greylist = $connectRepository->find([
-            'name' => $name,
-            'domain' => $domain,
-            'source' => $source,
-            'rcpt' => $rcpt
-        ]);
-        if (!$greylist) {
-            throw new OutOfBoundsException(
-                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
-            );
+        $result = $this->moveToWhiteList($greylist, $validator, $connectRepository, $emailAutoWhiteListRepository);
+        if ($result instanceof Response) {
+            return $result;
         }
 
+        // The snapshot and the flag let the client undo exactly this move.
+        return new JsonResponse([
+            'message' => 'Data have been moved to whitelist!',
+            'entry' => $snapshot,
+            'awlCreated' => $result,
+        ]);
+    }
+
+    /**
+     * Moves several entries at once; the body is {"entries": [{name, domain, source, rcpt}, ...]}.
+     * Entries that no longer exist are skipped rather than failing the batch.
+     */
+    #[Route('/bulk/toWhiteList', methods: ['POST'])]
+    #[IsGranted('EMAIL_AUTOWHITE_CREATE')]
+    public function bulkToWhiteList(
+        Request                      $request,
+        ValidatorInterface           $validator,
+        ConnectRepository            $connectRepository,
+        EmailAutoWhiteListRepository $emailAutoWhiteListRepository
+    ): Response
+    {
+        $moved = 0;
+        foreach ($this->entriesFromRequest($request) as $data) {
+            $greylist = $connectRepository->find($data);
+            if (!$greylist) {
+                continue;
+            }
+            $result = $this->moveToWhiteList($greylist, $validator, $connectRepository, $emailAutoWhiteListRepository);
+            if ($result instanceof Response) {
+                return $result;
+            }
+            $moved++;
+        }
+        return new JsonResponse(['moved' => $moved]);
+    }
+
+    /**
+     * Reverses toWhiteList(): puts the entry back with its original timestamp
+     * and removes the auto-whitelist row if that call created it.
+     */
+    #[Route('/undoToWhiteList', methods: ['POST'])]
+    #[IsGranted('CONNECT_CREATE')]
+    public function undoToWhiteList(
+        Request                      $request,
+        ConnectRepository            $connectRepository,
+        EmailAutoWhiteListRepository $emailAutoWhiteListRepository
+    ): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $entry = $data['entry'] ?? [];
+        $key = [
+            'name' => $entry['name'] ?? '',
+            'domain' => $entry['domain'] ?? '',
+            'source' => $entry['source'] ?? '',
+            'rcpt' => $entry['rcpt'] ?? '',
+        ];
+        if (in_array('', $key, true)) {
+            return new JsonResponse(['error' => 'Entry is incomplete'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (!$connectRepository->find($key)) {
+            $restored = Connect::create($key['name'], $key['domain'], $key['source'], $key['rcpt']);
+            if (!empty($entry['firstSeen'])) {
+                $restored->setFirstSeenAt(new DateTimeImmutable($entry['firstSeen']));
+            }
+            $connectRepository->save($restored);
+        } else {
+            $restored = $connectRepository->find($key);
+        }
+
+        if (!empty($data['removeAwl'])) {
+            [$senderDomain, $senderName] = $this->normalize_sender($restored);
+            $awl = $emailAutoWhiteListRepository->find([
+                'name' => $senderName,
+                'domain' => $senderDomain,
+                'source' => $restored->getSource(),
+            ]);
+            if ($awl) {
+                $emailAutoWhiteListRepository->delete($awl);
+            }
+        }
+
+        return new JsonResponse(['message' => 'Entry restored']);
+    }
+
+    /**
+     * Deletes several entries at once; the body is {"entries": [{name, domain, source, rcpt}, ...]}.
+     */
+    #[Route('/bulk/delete', methods: ['DELETE'])]
+    #[IsGranted('CONNECT_DELETE')]
+    public function bulkDelete(
+        Request           $request,
+        ConnectRepository $connectRepository
+    ): Response
+    {
+        $deleted = 0;
+        foreach ($this->entriesFromRequest($request) as $data) {
+            $greylist = $connectRepository->find($data);
+            if ($greylist) {
+                $connectRepository->delete($greylist);
+                $deleted++;
+            }
+        }
+        return new JsonResponse(['deleted' => $deleted]);
+    }
+
+    /**
+     * @return bool whether a new auto-whitelist row was created
+     */
+    private function moveToWhiteList(
+        Connect                      $greylist,
+        ValidatorInterface           $validator,
+        ConnectRepository            $connectRepository,
+        EmailAutoWhiteListRepository $emailAutoWhiteListRepository
+    ): bool|Response
+    {
         [$sender_domain, $deverp_sender_name] = $this->normalize_sender($greylist);
         $isAlreadyInWhitelist = $emailAutoWhiteListRepository->find([
             'name' => $deverp_sender_name,
             'domain' => $sender_domain,
             'source' => $greylist->getSource()
         ]);
+        $created = false;
         if (!$isAlreadyInWhitelist) {
             $emailAwl = EmailAutoWhiteList::create(
                 $deverp_sender_name, // sqlgrey is normalize_sender in from_awl table
@@ -105,9 +213,59 @@ class ConnectController
             }
 
             $emailAutoWhiteListRepository->save($emailAwl);
+            $created = true;
         }
         $connectRepository->delete($greylist);
-        return new JsonResponse('Data have been moved to whitelist!');
+        return $created;
+    }
+
+    private function findEntry(ConnectRepository $connectRepository, array $data): Connect
+    {
+        $key = [
+            'name' => $data['name'] ?? '',
+            'domain' => $data['domain'] ?? '',
+            'source' => $data['source'] ?? '',
+            'rcpt' => $data['rcpt'] ?? ''
+        ];
+        $greylist = $connectRepository->find($key);
+        if (!$greylist) {
+            throw new OutOfBoundsException(
+                'No data set found for Name ' . $key['name'] . ', Domain ' . $key['domain'] . ' and Source ' . $key['source'] . ' and Rcpt ' . $key['rcpt']
+            );
+        }
+        return $greylist;
+    }
+
+    /**
+     * @return array<int, array{name: string, domain: string, source: string, rcpt: string}>
+     */
+    private function entriesFromRequest(Request $request): array
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $entries = [];
+        foreach ($data['entries'] ?? [] as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $entries[] = [
+                'name' => (string)($entry['name'] ?? ''),
+                'domain' => (string)($entry['domain'] ?? ''),
+                'source' => (string)($entry['source'] ?? ''),
+                'rcpt' => (string)($entry['rcpt'] ?? ''),
+            ];
+        }
+        return $entries;
+    }
+
+    private function snapshot(Connect $greylist): array
+    {
+        return [
+            'name' => $greylist->getName(),
+            'domain' => $greylist->getDomain(),
+            'source' => $greylist->getSource(),
+            'rcpt' => $greylist->getRcpt(),
+            'firstSeen' => $greylist->getFirstSeen()->format(DateTimeImmutable::ATOM),
+        ];
     }
 
     #[Route('/delete', methods: ['DELETE'])]
@@ -117,25 +275,8 @@ class ConnectController
         ConnectRepository $connectRepository
     ): Response
     {
-        $body = $request->getContent();
-        $data = json_decode($body, true);
-
-        $name = $data['name'] ?? '';
-        $domain = $data['domain'] ?? '';
-        $source = $data['source'] ?? '';
-        $rcpt = $data['rcpt'] ?? '';
-
-        $greylist = $connectRepository->find([
-            'name' => $name,
-            'domain' => $domain,
-            'source' => $source,
-            'rcpt' => $rcpt
-        ]);
-        if (!$greylist) {
-            throw new OutOfBoundsException(
-                'No data set found for Name ' . $name . ', Domain ' . $domain . ' and Source ' . $source . ' and Rcpt ' . $rcpt
-            );
-        }
+        $data = json_decode($request->getContent(), true) ?? [];
+        $greylist = $this->findEntry($connectRepository, $data);
         $connectRepository->delete($greylist);
         return new JsonResponse('Domain deleted successfully!');
     }
@@ -150,13 +291,13 @@ class ConnectController
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        if (isset($data['date'])) {
+        if (!empty($data['date'])) {
             $date = date_format(new DateTime($data['date']), 'Y-m-d');
 
-            $connectRepository->deleteByDate($date);
-            return new JsonResponse('Domain deleted successfully!');
+            $deleted = $connectRepository->deleteByDate($date);
+            return new JsonResponse(['deleted' => $deleted]);
         }
-        return new JsonResponse('Date is missing!', 500);
+        return new JsonResponse(['error' => 'Date is missing!'], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     // check https://github.com/jessereynolds/sqlgrey/blob/master/sqlgrey#L1166

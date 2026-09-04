@@ -92,6 +92,10 @@ export interface UseListState {
 export function useListState(options: ListStateOptions): UseListState {
     const {key, defaultSort = null, defaultPageSize = PAGE_SIZES[0], filterKeys = []} = options;
     const [searchParams, setSearchParams] = useSearchParams();
+    // Callers pass fresh object/array literals each render; compare by value so
+    // the state object stays referentially stable between renders.
+    const defaultSortKey = serializeSort(defaultSort);
+    const filterKeysKey = filterKeys.join(',');
     const hasParams = ['page', 'size', 'sort', 'q', ...filterKeys].some((name) => searchParams.has(name));
 
     // Nothing in the URL: seed it from what was remembered, replacing the
@@ -126,7 +130,7 @@ export function useListState(options: ListStateOptions): UseListState {
 
     const state = useMemo<ListState>(() => {
         const filters: Record<string, string> = {};
-        for (const name of filterKeys) {
+        for (const name of filterKeysKey ? filterKeysKey.split(',') : []) {
             filters[name] = searchParams.get(name) ?? '';
         }
         const sort = parseSort(searchParams.get('sort'));
@@ -134,12 +138,11 @@ export function useListState(options: ListStateOptions): UseListState {
             // The URL is 1-based for humans; the state is 0-based like the API.
             page: parseInteger(searchParams.get('page'), 1, 1) - 1,
             pageSize: parseInteger(searchParams.get('size'), defaultPageSize, 1),
-            sort: sort === undefined ? defaultSort : sort,
+            sort: sort === undefined ? (parseSort(defaultSortKey) ?? null) : sort,
             query: searchParams.get('q') ?? '',
             filters,
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams, defaultPageSize, defaultSort, filterKeys.join(',')]);
+    }, [searchParams, defaultPageSize, defaultSortKey, filterKeysKey]);
 
     // Remember whatever the URL currently says.
     useEffect(() => {

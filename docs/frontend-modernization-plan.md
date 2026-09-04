@@ -118,7 +118,7 @@ primitive. The dashboard goes last because it is the only piece with backend wor
 - [x] 1 Tooling
 - [x] 2 Shell
 - [x] 3 Shared primitives
-- [ ] 4a Greylist
+- [x] 4a Greylist
 - [ ] 4b Whitelist, blacklist, auto-whitelist
 - [ ] 4c Users, aliases
 - [ ] 5 Dashboard

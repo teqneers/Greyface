@@ -29,7 +29,8 @@
       "createUserAlias": "Alias hinzufügen",
       "addEmail": "Email hinzufügen",
       "addDomain": "Domäne hinzufügen",
-      "clearSearch": "Suche löschen"
+      "clearSearch": "Suche löschen",
+      "undo": "Rückgängig"
     },
     "placeholder": {
       "search": "Suchen",
@@ -46,7 +47,8 @@
       "unique": "Daten müssen eindeutig sein!",
       "min": "Muss mindestens {{ min }} Zeichen lang sein",
       "passNotMatch": "Passwort stimmt nicht überein",
-      "forbidden": "Diese Seite darf nicht geöffnet werden."
+      "forbidden": "Diese Seite darf nicht geöffnet werden.",
+      "loadFailed": "Die Daten konnten nicht geladen werden."
     },
     "paging": {
       "previous": "Vorherige Seite",
@@ -84,11 +86,68 @@
       "firstSeen": "Erstmals Gesichtet",
       "username": "Username",
       "deleteHeader": "Eintrag löschen",
-      "deleteMessage": "Möchten Sie diesen Eintrag wirklich löschen?",
+      "deleteMessage": "Der Eintrag von {{sender}} wird entfernt. Versucht es der Absender erneut, wird er wieder greygelistet.",
       "deleteByDateHeader": "Lösche Einträge nach Zeit",
       "deleteByDateMessage": "Alle Einträge der Vergangenheit bis zum ausgewähltem Datum werden gelöscht!",
       "moveToWhitelistHeader": "In die Auto Whitelist verschieben",
-      "moveToWhitelistMessage": "Wollen Sie das wirklich verschieben?"
+      "moveToWhitelistMessage": "Wollen Sie das wirklich verschieben?",
+      "adminIntro": "E-Mails, die SQLGrey zurückhält, bis der sendende Server es erneut versucht. Ein Absender auf der Whitelist wird sofort durchgelassen.",
+      "moved": "{{sender}} in die Auto-Whitelist verschoben.",
+      "undone": "Eintrag wiederhergestellt.",
+      "deleted": "Eintrag gelöscht.",
+      "deleteEntry": "Eintrag von {{sender}} löschen",
+      "bulkWhitelist": "Auswahl whitelisten",
+      "bulkDelete": "Auswahl löschen",
+      "bulkMoved_one": "{{count}} Eintrag in die Auto-Whitelist verschoben.",
+      "bulkMoved_other": "{{count}} Einträge in die Auto-Whitelist verschoben.",
+      "bulkDeleted_one": "{{count}} Eintrag gelöscht.",
+      "bulkDeleted_other": "{{count}} Einträge gelöscht.",
+      "bulkDeleteTitle": "Ausgewählte Einträge löschen",
+      "bulkDeleteMessage_one": "{{count}} Eintrag wird aus der Greylist entfernt.",
+      "bulkDeleteMessage_other": "{{count}} Einträge werden aus der Greylist entfernt.",
+      "bulkDeleteConfirm_one": "{{count}} Eintrag löschen",
+      "bulkDeleteConfirm_other": "{{count}} Einträge löschen",
+      "empty": {
+        "title": "Nichts wartet",
+        "description": "Derzeit wird keine E-Mail zurückgehalten.",
+        "filtered": "Keine Einträge passen zur aktuellen Suche oder zum Filter."
+      },
+      "stats": {
+        "pending": "Wartet auf erneuten Versuch",
+        "oldest": "Ältester Eintrag"
+      },
+      "deleteByDate": {
+        "title": "Alte Einträge löschen",
+        "description": "Entfernt alle Einträge, die bis einschließlich zum gewählten Tag zum ersten Mal gesehen wurden. Absender, die es später erneut versuchen, werden wieder greygelistet.",
+        "olderThan": "Älter als",
+        "days_one": "{{count}} Tag",
+        "days_other": "{{count}} Tage",
+        "custom": "Eigenes Datum",
+        "upTo": "Bis einschließlich",
+        "counting": "Zähle…",
+        "preview_one": "{{count}} Eintrag bis {{date}} wird gelöscht.",
+        "preview_other": "{{count}} Einträge bis {{date}} werden gelöscht.",
+        "confirm_one": "{{count}} Eintrag löschen",
+        "confirm_other": "{{count}} Einträge löschen",
+        "done_one": "{{count}} Eintrag gelöscht.",
+        "done_other": "{{count}} Einträge gelöscht."
+      },
+      "help": {
+        "open": "Was ist Greylisting?",
+        "dismiss": "Ausblenden",
+        "title": "Was ist diese Liste?",
+        "subtitle": "Wie Greylisting funktioniert und was die Spalten bedeuten.",
+        "what": "Greylisting verzögert E-Mails von noch unbekannten Absendern. Der erste Zustellversuch wird abgewiesen; ein regulärer Mailserver versucht es wenige Minuten später einfach erneut, dann wird die E-Mail angenommen. Die meisten Spam-Versender versuchen es nie ein zweites Mal. Diese Liste zeigt die E-Mails, die gerade für die eigenen Adressen zurückgehalten werden.",
+        "whitelist": "Wird eine hier gelistete E-Mail erwartet, genügt ein Klick auf „Auto Whitelist“: Der Absender wird sofort angenommen und künftig nicht mehr verzögert. Löschen entfernt nur den Eintrag; versucht es der Absender erneut, beginnt er von vorn.",
+        "columnsTitle": "Spalten",
+        "columns": {
+          "sender": "Der Teil der Absenderadresse vor dem @.",
+          "domain": "Der Teil der Absenderadresse nach dem @.",
+          "source": "Die Adresse (Netzpräfix) des sendenden Mailservers.",
+          "recipient": "Die eigene Adresse, an die die E-Mail ging.",
+          "firstSeen": "Wann der erste Zustellversuch eintraf."
+        }
+      }
     },
     "user": {
       "header": "Benutzer",
@@ -205,7 +264,8 @@
       "selection": "Auswahl",
       "selected_one": "{{count}} ausgewählt",
       "selected_other": "{{count}} ausgewählt",
-      "clearSelection": "Aufheben"
+      "clearSelection": "Aufheben",
+      "actions": "Aktionen"
     }
   }
 }
