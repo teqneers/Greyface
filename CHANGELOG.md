@@ -9,20 +9,43 @@ version.
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-05
+
+Upgrade promptly if you have given anyone but administrators an account. Also the tagged-recipient
+support first asked for in 2014.
+
+### Security
+
+- **Any signed-in account could act on mail that was not theirs.** Authorization on the greylist
+  was applied only to the listing, by the query that fills it. Every write endpoint took its
+  identifiers from the request body and never checked who was asking, so an ordinary user could
+  delete an entry addressed to somebody else — one their own listing never showed them — or empty
+  the greylist for the entire server with a single request to `/api/greylist/delete-to-date`. The
+  interface hid that last one from non-administrators; only the API was missing the check.
+
+  Ownership is now enforced per row, on every endpoint, and bulk calls check each entry rather
+  than once per batch. Deleting by date is administrators only.
+
+  Anyone who has only ever created administrator accounts was never exposed.
+
 ### Fixed
 
-- **Ordinary users could not release their own mail, and could delete anybody's.** The greylist
-  voter granted every attribute to every signed-in account, so only the listing was ever filtered.
-  A user could delete an entry addressed to somebody else, or empty the greylist for the whole
-  server, while the one action the product exists for answered 403 because it required an
-  administrator-only permission. Both are enforced per row now.
+- **Ordinary users could not release their own mail**, which is the one thing the product exists
+  for. "Auto Whitelist" required an administrator-only permission, so a user clicking it got a
+  403. The button was never hidden from them, so this was visibly broken rather than merely
+  absent, and both the README and the user guide promised it worked.
 
 ### Added
 
 - Mail sent to a tagged address (`anna+newsletter@example.com`) now belongs to whoever owns the
   address it is delivered to (`anna@example.com`), so they can see and release it without an alias
-  per tag. Set `GREYFACE_RECIPIENT_DELIMITER` to an empty string if your MTA has no
-  `recipient_delimiter`. ([#80](https://github.com/teqneers/Greyface/issues/80))
+  per tag. New setting `GREYFACE_RECIPIENT_DELIMITER`, defaulting to `+`; set it to an empty
+  string if your MTA has no `recipient_delimiter`, because there such an address is a literal
+  mailbox name and need not belong to `anna`.
+  ([#80](https://github.com/teqneers/Greyface/issues/80))
+- Working nginx and Apache configuration in the operating guide. Greyface ships no `.htaccess`, so
+  the previous pointer to Symfony's generic documentation left the rewrite rule as an exercise.
+  ([#83](https://github.com/teqneers/Greyface/issues/83))
 
 ## [3.0.0] - 2026-09-05
 
@@ -103,7 +126,8 @@ Dependency maintenance, including React 19.
 
 First release of the Symfony and React rewrite.
 
-[Unreleased]: https://github.com/teqneers/Greyface/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/teqneers/Greyface/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/teqneers/Greyface/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/teqneers/Greyface/compare/2.0.1...v3.0.0
 [2.0.1]: https://github.com/teqneers/Greyface/compare/releases/2.0.0-1...2.0.1
 [2.0.0]: https://github.com/teqneers/Greyface/releases/tag/releases/2.0.0-0
