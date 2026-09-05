@@ -2,6 +2,7 @@
 
 namespace App\Domain\Connect\Security;
 
+use App\Domain\Connect\RecipientDelimiter;
 use App\Domain\Entity\Connect\Connect;
 use App\Domain\Entity\UserAlias\UserAliasRepository;
 use App\Domain\User\UserInterface;
@@ -29,7 +30,8 @@ class ConnectVoter extends BaseUserVoter
     private array $aliasNames = [];
 
     public function __construct(
-        private readonly UserAliasRepository $userAliasRepository
+        private readonly UserAliasRepository $userAliasRepository,
+        private readonly RecipientDelimiter  $recipientDelimiter = new RecipientDelimiter()
     ) {
     }
 
@@ -101,6 +103,11 @@ class ConnectVoter extends BaseUserVoter
      * Case-insensitively, because the listing compares these same two columns in
      * the database under a _ci collation. Matching case-sensitively here would
      * let a user see a row they were then forbidden to touch.
+     *
+     * Tagged recipients resolve the same way the listing resolves them, so mail
+     * to anna+newsletter@example.com belongs to whoever owns anna@example.com.
+     * If this and ConnectRepository disagreed, a user would be shown rows the
+     * write endpoints then refused.
      */
     private function ownsRecipient(UserInterface $user, Connect $connect): bool
     {
@@ -112,6 +119,9 @@ class ConnectVoter extends BaseUserVoter
             );
         }
 
-        return in_array(mb_strtolower($connect->getRcpt()), $this->aliasNames[$id], true);
+        $rcpt = mb_strtolower($connect->getRcpt());
+
+        return in_array($rcpt, $this->aliasNames[$id], true)
+            || in_array($this->recipientDelimiter->baseAddress($rcpt), $this->aliasNames[$id], true);
     }
 }

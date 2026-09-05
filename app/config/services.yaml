@@ -14,8 +14,16 @@ parameters:
     # so anything that touches the mailer — including a production cache warmup —
     # would die with EnvNotFoundException. Greyface sends no mail today.
     env(MAILER_DSN): 'null://null'
+    # The MTA's recipient_delimiter, which Greyface cannot read from main.cf.
+    # With it set, mail to anna+newsletter@example.com belongs to whoever owns
+    # anna@example.com. Set it empty to match recipients exactly instead.
+    env(GREYFACE_RECIPIENT_DELIMITER): '+'
 
 services:
+    App\Domain\Connect\RecipientDelimiter:
+        arguments:
+            $delimiter: '%env(GREYFACE_RECIPIENT_DELIMITER)%'
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

@@ -45,6 +45,13 @@ services:
             # SERVER_NAME: greyface.example.com
             TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
 
+            # Your MTA's recipient_delimiter. With "+", mail to
+            # anna+newsletter@example.com belongs to whoever owns
+            # anna@example.com, so they can release it themselves. Set it to an
+            # empty string if your MTA has no recipient_delimiter: there that is
+            # a literal mailbox name and need not be anna's.
+            GREYFACE_RECIPIENT_DELIMITER: ${GREYFACE_RECIPIENT_DELIMITER:-+}
+
         ports:
             - '${HTTP_PORT:-8080}:80'
             # - '443:443'   # only when SERVER_NAME is set

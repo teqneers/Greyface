@@ -32,6 +32,10 @@ doctrine:
                 MONTH: DoctrineExtensions\Query\Mysql\Month
                 YEAR: DoctrineExtensions\Query\Mysql\Year
                 DATE: DoctrineExtensions\Query\Mysql\Date
+                # Splits a tagged recipient (anna+tag@example.com) into the
+                # address it is delivered to, so the greylist can match it to an
+                # alias. See App\Domain\Connect\RecipientDelimiter.
+                SUBSTRING_INDEX: DoctrineExtensions\Query\Mysql\SubstringIndex
         mappings:
             App:
                 type: attribute

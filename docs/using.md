@@ -78,6 +78,10 @@ assigned to you.
 **Greyface does not show the message.** It knows a delivery was attempted, who by and to whom. It
 never sees the contents.
 
+**Tagged addresses work too.** If you hand out `you+shopping@example.com`, mail to it shows up here
+under your ordinary address. Your administrator does not need to register a separate alias for every
+tag you invent.
+
 **Missing an address?** If mail to one of your addresses never appears here, ask your administrator
 to add that address to your account.
 
