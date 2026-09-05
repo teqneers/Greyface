@@ -260,13 +260,15 @@ jobs:
             - name: Record the digest
               env:
                   DIGEST: ${{ steps.build.outputs.digest }}
+                  PLATFORM: ${{ matrix.platform }}
               run: |
                   set -eu
                   mkdir -p /tmp/digests
-                  # The filename is the bare hash, with no "sha256:" prefix:
-                  # artifact paths may not contain a colon. The manifest job puts
-                  # the prefix back when it reassembles the references.
-                  touch "/tmp/digests/${DIGEST#sha256:}"
+                  # Named by platform, with the digest as the content. The digest
+                  # cannot be the filename because it contains a colon, which an
+                  # artifact path may not, and a bare hash would lose the one thing
+                  # the smoke job needs to know: which architecture it refers to.
+                  printf '%s' "${DIGEST}" > "/tmp/digests/${PLATFORM//\//-}"
 
             - name: Upload the digest
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -341,10 +343,20 @@ jobs:
               # image must never come up with the placeholder secret from the repo.
               run: |
                   set -eu
-                  # The artifact filenames are bare hashes; a colon is not
-                  # allowed in an artifact path, so the prefix goes back on here.
-                  digest="$(basename "$(ls /tmp/digests | head -1)")"
-                  image="${{ env.IMAGE }}@sha256:${digest}"
+                  # A digest names one architecture's manifest, so this has to be
+                  # the one built for this runner. Taking whatever sorted first
+                  # worked only by luck, and failed as soon as the arm64 hash
+                  # happened to sort ahead of the amd64 one.
+                  case "$(uname -m)" in
+                      x86_64)  platform=linux-amd64 ;;
+                      aarch64) platform=linux-arm64 ;;
+                      *)       echo "No image is built for $(uname -m)." >&2; exit 1 ;;
+                  esac
+                  [ -s "/tmp/digests/${platform}" ] \
+                      || { echo "No digest was recorded for ${platform}." >&2; ls -la /tmp/digests; exit 1; }
+
+                  image="${{ env.IMAGE }}@$(cat "/tmp/digests/${platform}")"
+                  echo "Smoke testing ${platform}: ${image}"
                   echo "image=${image}" >> "$GITHUB_ENV"
 
                   # A bare "it failed" is not enough. An image that cannot run at
@@ -446,9 +458,14 @@ jobs:
                   for tag in $(echo '${{ needs.prepare.outputs.tags }}' | tr ',' ' '); do
                       tags="${tags} --tag ${tag}"
                   done
-                  # shellcheck disable=SC2046
-                  docker buildx imagetools create ${tags} \
-                      $(printf '${{ env.IMAGE }}@sha256:%s ' *)
+                  refs=''
+                  for file in *; do
+                      refs="${refs} ${{ env.IMAGE }}@$(cat "${file}")"
+                  done
+                  echo "Combining:${refs}"
+
+                  # shellcheck disable=SC2086
+                  docker buildx imagetools create ${tags} ${refs}
 
             - name: Show what was published
               run: docker buildx imagetools inspect '${{ env.IMAGE }}:${{ needs.prepare.outputs.version }}'
