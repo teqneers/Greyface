@@ -62,8 +62,12 @@ class OptOutEmailControllerTest extends WebTestCase
         self::assertArrayHasKey('results', $result);
         self::assertEquals(2, $result['count']);
         self::assertCount(1, $result['results']);
+        // "optout2@" sorts before "optout@" because SQLGrey's tables use the
+        // database default collation, where a digit precedes "@". Under
+        // utf8mb4_unicode_ci it would be the other way round, which is what this
+        // test used to expect while the fixtures still invented their own schema.
         self::assertEquals(
-            ['optout@email.de'],
+            ['optout2@email.de'],
             array_map(
                 static fn(array $r): string => $r['email'],
                 $result['results']
