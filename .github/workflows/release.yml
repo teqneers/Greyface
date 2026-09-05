@@ -256,9 +256,15 @@ jobs:
                   outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
             - name: Record the digest
+              env:
+                  DIGEST: ${{ steps.build.outputs.digest }}
               run: |
+                  set -eu
                   mkdir -p /tmp/digests
-                  touch "/tmp/digests/${{ steps.build.outputs.digest }}"
+                  # The filename is the bare hash, with no "sha256:" prefix:
+                  # artifact paths may not contain a colon. The manifest job puts
+                  # the prefix back when it reassembles the references.
+                  touch "/tmp/digests/${DIGEST#sha256:}"
 
             - name: Upload the digest
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
