@@ -34,13 +34,17 @@ function bootstrapDatabase(): void
     $application = new Application($kernel);
     $application->setAutoExit(false);
 
+    // The order mirrors a real installation, which matters more than it looks.
+    // SQLGrey is there first and owns its tables; Greyface then adds its own and
+    // matches their collation to SQLGrey's. Building it the other way round hid a
+    // collation mismatch that broke the greylist against every real database.
     $commands = [
         ['command' => 'doctrine:database:drop', '--if-exists' => '1', '--force' => '1'],
         ['command' => 'doctrine:database:create'],
+        ['command' => 'greyface:fixtures:load', '--schema-only' => '1'],
         ['command' => 'doctrine:migrations:migrate', '--allow-no-migration' => '1', '--no-interaction' => '1'],
-        // The migrations only create Greyface's own tables. SQLGrey's schema, the
-        // five sample greylist entries the controller tests count, and the admin
-        // account they log in as all come from the fixtures.
+        // Sample greylist entries the controller tests count, and the admin
+        // account they log in as.
         ['command' => 'greyface:fixtures:load'],
     ];
 

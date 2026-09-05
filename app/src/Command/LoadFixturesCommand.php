@@ -11,6 +11,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
@@ -31,19 +32,55 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 class LoadFixturesCommand extends Command
 {
     /**
-     * SQLGrey's own schema, copied verbatim from the migration that used to create
-     * it. Every statement is IF NOT EXISTS: against a real SQLGrey database these
-     * tables already exist and must be left exactly as they are.
+     * SQLGrey's own schema, taken from what SQLGrey 1.8.0 actually creates rather
+     * than from the invented copy Greyface's old migration carried. That copy
+     * differed in ways that mattered: it forced utf8mb4_unicode_ci where SQLGrey
+     * takes the database default, which is how the greylist join broke against a
+     * real installation while every test here passed.
+     *
+     * No CHARACTER SET or COLLATE clause, deliberately — SQLGrey does not specify
+     * one either, so both follow the database default and agree by construction.
      */
     private const SQLGREY_TABLES = [
-        'CREATE TABLE IF NOT EXISTS config (parameter VARCHAR(128) NOT NULL, value VARCHAR(128) DEFAULT NULL, PRIMARY KEY(parameter)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS connect (sender_name VARCHAR(64) NOT NULL,sender_domain VARCHAR(255) NOT NULL,src VARCHAR(39) NOT NULL,rcpt VARCHAR(255) NOT NULL,first_seen timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),KEY connect_idx (src,sender_domain,sender_name), KEY connect_fseen (first_seen)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS domain_awl (sender_domain VARCHAR(255) NOT NULL,src VARCHAR(39) NOT NULL,first_seen timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),last_seen timestamp NOT NULL DEFAULT "0000-00-00 00:00:00", PRIMARY KEY (src,sender_domain),KEY domain_awl_lseen (last_seen)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS from_awl ( sender_name VARCHAR(64) NOT NULL, sender_domain VARCHAR(255) NOT NULL, src VARCHAR(39) NOT NULL, first_seen timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),last_seen timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",PRIMARY KEY (src,sender_domain,sender_name),KEY from_awl_lseen (last_seen)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS optin_domain (domain VARCHAR(255) NOT NULL,PRIMARY KEY (domain)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS optin_email (email VARCHAR(255) NOT NULL,PRIMARY KEY (email)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS optout_domain (domain VARCHAR(255) NOT NULL,PRIMARY KEY (domain))  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
-        'CREATE TABLE IF NOT EXISTS optout_email (email VARCHAR(255) NOT NULL, PRIMARY KEY (email))  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB',
+        'CREATE TABLE IF NOT EXISTS config ('
+        . 'parameter varchar(255) NOT NULL,'
+        . 'value varchar(255) DEFAULT NULL,'
+        . 'PRIMARY KEY (parameter)'
+        . ') ENGINE=InnoDB',
+
+        'CREATE TABLE IF NOT EXISTS connect ('
+        . 'sender_name varchar(64) NOT NULL,'
+        . 'sender_domain varchar(255) NOT NULL,'
+        . 'src varchar(39) NOT NULL,'
+        . 'rcpt varchar(255) NOT NULL,'
+        . 'first_seen timestamp NOT NULL,'
+        . 'KEY connect_idx (src, sender_domain, sender_name),'
+        . 'KEY connect_fseen (first_seen)'
+        . ') ENGINE=InnoDB',
+
+        'CREATE TABLE IF NOT EXISTS domain_awl ('
+        . 'sender_domain varchar(255) NOT NULL,'
+        . 'src varchar(39) NOT NULL,'
+        . 'first_seen timestamp NOT NULL,'
+        . 'last_seen timestamp NOT NULL,'
+        . 'PRIMARY KEY (src, sender_domain),'
+        . 'KEY domain_awl_lseen (last_seen)'
+        . ') ENGINE=InnoDB',
+
+        'CREATE TABLE IF NOT EXISTS from_awl ('
+        . 'sender_name varchar(64) NOT NULL,'
+        . 'sender_domain varchar(255) NOT NULL,'
+        . 'src varchar(39) NOT NULL,'
+        . 'first_seen timestamp NOT NULL,'
+        . 'last_seen timestamp NOT NULL,'
+        . 'PRIMARY KEY (src, sender_domain, sender_name),'
+        . 'KEY from_awl_lseen (last_seen)'
+        . ') ENGINE=InnoDB',
+
+        'CREATE TABLE IF NOT EXISTS optin_domain (domain varchar(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB',
+        'CREATE TABLE IF NOT EXISTS optin_email (email varchar(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB',
+        'CREATE TABLE IF NOT EXISTS optout_domain (domain varchar(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB',
+        'CREATE TABLE IF NOT EXISTS optout_email (email varchar(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB',
     ];
 
     /**
@@ -66,6 +103,17 @@ class LoadFixturesCommand extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->addOption(
+            'schema-only',
+            null,
+            InputOption::VALUE_NONE,
+            "Create SQLGrey's tables but insert nothing. Run this before Greyface's "
+            . 'migrations, the way a real installation has SQLGrey in place first.'
+        );
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -85,6 +133,12 @@ class LoadFixturesCommand extends Command
 
         foreach (self::SQLGREY_TABLES as $sql) {
             $this->connection->executeStatement($sql);
+        }
+
+        if ($input->getOption('schema-only')) {
+            $io->success("SQLGrey's tables are ready.");
+
+            return Command::SUCCESS;
         }
 
         $existing = (int)$this->connection->fetchOne('SELECT COUNT(*) FROM connect');

@@ -302,18 +302,22 @@ jobs:
             - name: Stand up a SQLGrey database
               # Greyface reads and writes SQLGrey's tables but never creates them,
               # so the smoke test has to look like a real SQLGrey installation.
-              # These deliberately take the server's default collation, which is
-              # what exposed the collation mismatch the migrations now correct.
+              # This is SQLGrey 1.8.0's own schema, character for character, with
+              # no CHARACTER SET clause — SQLGrey does not specify one either, so
+              # the tables follow the database default exactly as they would in
+              # production. greyface:fixtures:load creates the same thing for
+              # development and test.
               run: |
                   docker run --rm --network host -i mariadb:11.2 \
                       mariadb -h 127.0.0.1 -uroot sqlgrey <<'SQL'
-                  CREATE TABLE connect (sender_name VARCHAR(64) NOT NULL, sender_domain VARCHAR(255) NOT NULL, src VARCHAR(39) NOT NULL, rcpt VARCHAR(255) NOT NULL, first_seen timestamp NOT NULL DEFAULT current_timestamp()) ENGINE=InnoDB;
-                  CREATE TABLE from_awl (sender_name VARCHAR(64) NOT NULL, sender_domain VARCHAR(255) NOT NULL, src VARCHAR(39) NOT NULL, first_seen timestamp NOT NULL DEFAULT current_timestamp(), last_seen timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (src,sender_domain,sender_name)) ENGINE=InnoDB;
-                  CREATE TABLE domain_awl (sender_domain VARCHAR(255) NOT NULL, src VARCHAR(39) NOT NULL, first_seen timestamp NOT NULL DEFAULT current_timestamp(), last_seen timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (src,sender_domain)) ENGINE=InnoDB;
-                  CREATE TABLE optin_domain (domain VARCHAR(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB;
-                  CREATE TABLE optin_email (email VARCHAR(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB;
-                  CREATE TABLE optout_domain (domain VARCHAR(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB;
-                  CREATE TABLE optout_email (email VARCHAR(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB;
+                  CREATE TABLE connect (sender_name varchar(64) NOT NULL, sender_domain varchar(255) NOT NULL, src varchar(39) NOT NULL, rcpt varchar(255) NOT NULL, first_seen timestamp NOT NULL, KEY connect_idx (src,sender_domain,sender_name), KEY connect_fseen (first_seen)) ENGINE=InnoDB;
+                  CREATE TABLE from_awl (sender_name varchar(64) NOT NULL, sender_domain varchar(255) NOT NULL, src varchar(39) NOT NULL, first_seen timestamp NOT NULL, last_seen timestamp NOT NULL, PRIMARY KEY (src,sender_domain,sender_name), KEY from_awl_lseen (last_seen)) ENGINE=InnoDB;
+                  CREATE TABLE domain_awl (sender_domain varchar(255) NOT NULL, src varchar(39) NOT NULL, first_seen timestamp NOT NULL, last_seen timestamp NOT NULL, PRIMARY KEY (src,sender_domain), KEY domain_awl_lseen (last_seen)) ENGINE=InnoDB;
+                  CREATE TABLE config (parameter varchar(255) NOT NULL, value varchar(255) DEFAULT NULL, PRIMARY KEY (parameter)) ENGINE=InnoDB;
+                  CREATE TABLE optin_domain (domain varchar(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB;
+                  CREATE TABLE optin_email (email varchar(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB;
+                  CREATE TABLE optout_domain (domain varchar(255) NOT NULL, PRIMARY KEY (domain)) ENGINE=InnoDB;
+                  CREATE TABLE optout_email (email varchar(255) NOT NULL, PRIMARY KEY (email)) ENGINE=InnoDB;
                   INSERT INTO connect VALUES ('sender','partner.example','203.0.113','postmaster@site.test',NOW());
                   SQL
 

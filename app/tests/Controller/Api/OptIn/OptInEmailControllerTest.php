@@ -63,8 +63,12 @@ class OptInEmailControllerTest extends WebTestCase
         self::assertArrayHasKey('results', $result);
         self::assertEquals(2, $result['count']);
         self::assertCount(1, $result['results']);
+        // "optin2@" sorts before "optin@" because SQLGrey's tables use the
+        // database default collation, where a digit precedes "@". Under
+        // utf8mb4_unicode_ci it would be the other way round, which is what this
+        // test used to expect while the fixtures still invented their own schema.
         self::assertEquals(
-            ['optin@email.de'],
+            ['optin2@email.de'],
             array_map(
                 static fn(array $r): string => $r['email'],
                 $result['results']
