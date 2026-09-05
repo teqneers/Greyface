@@ -136,8 +136,58 @@ Use this when you would rather not run a container.
    ```
 
 7. Point the web server's document root at `app/public` and send everything that is not a real file
-   to `app/public/index.php`. Symfony documents the configuration for
-   [Apache and nginx](https://symfony.com/doc/current/setup/web_server_configuration.html).
+   to `index.php`. Greyface ships no `.htaccess`, so the rule goes in your server configuration.
+
+   **nginx**, with PHP-FPM:
+
+   ```nginx
+   server {
+       listen 80;
+       server_name greyface.example.com;
+       root /var/www/greyface-<version>/app/public;
+
+       location / {
+           try_files $uri /index.php$is_args$args;
+       }
+
+       location ~ ^/index\.php(/|$) {
+           fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+           fastcgi_split_path_info ^(.+\.php)(/.*)$;
+           include fastcgi_params;
+           fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+           fastcgi_param DOCUMENT_ROOT $realpath_root;
+           internal;
+       }
+
+       # Nothing else in the tree is a PHP entry point.
+       location ~ \.php$ {
+           return 404;
+       }
+   }
+   ```
+
+   **Apache**:
+
+   ```apache
+   <VirtualHost *:80>
+       ServerName greyface.example.com
+       DocumentRoot /var/www/greyface-<version>/app/public
+
+       <Directory /var/www/greyface-<version>/app/public>
+           AllowOverride None
+           Require all granted
+           FallbackResource /index.php
+       </Directory>
+
+       # The compiled frontend is static; do not route it through PHP.
+       <Directory /var/www/greyface-<version>/app/public/build>
+           FallbackResource disabled
+       </Directory>
+   </VirtualHost>
+   ```
+
+   Serve it over HTTPS. The remember-me cookie is marked `secure`, so on plain HTTP people are
+   signed out again whenever their session ends.
 
 The archive already contains the compiled frontend and all PHP dependencies. You do not need
 Composer, Node or Yarn on the server.
