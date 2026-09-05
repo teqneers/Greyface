@@ -23,6 +23,27 @@ describe('ConfirmDialog', () => {
         expect(onOpenChange).not.toHaveBeenCalled();
     });
 
+    /**
+     * The `destructive` prop was passed to AlertDialogAction as a className for a
+     * long time, and lost: that component renders a Button with asChild, so its
+     * own variant classes land on the same element and win the merge. Every
+     * destructive confirmation in the application looked like an ordinary one.
+     */
+    it('gives a destructive action the destructive button, and an ordinary one not', () => {
+        const {unmount} = renderWithProviders(
+            <ConfirmDialog open title="Delete entry" destructive onConfirm={vi.fn()} onOpenChange={vi.fn()}/>
+        );
+        // bg-, not just the word: the base button classes mention destructive
+        // for aria-invalid states in either variant.
+        expect(screen.getByRole('button', {name: 'Delete'}).className).toContain('bg-destructive');
+        unmount();
+
+        renderWithProviders(
+            <ConfirmDialog open title="Send it" confirmLabel="Send" onConfirm={vi.fn()} onOpenChange={vi.fn()}/>
+        );
+        expect(screen.getByRole('button', {name: 'Send'}).className).toContain('bg-primary');
+    });
+
     it('cannot be dismissed while the action is pending', async () => {
         const onOpenChange = vi.fn();
         renderWithProviders(

@@ -12,8 +12,6 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {buttonVariants} from '@/components/ui/button';
-import {cn} from '@/lib/utils';
 
 export interface ConfirmDialogProps {
     open: boolean,
@@ -47,7 +45,12 @@ export function ConfirmDialog(
                     <AlertDialogCancel disabled={pending}>{t('button.cancel')}</AlertDialogCancel>
                     <AlertDialogAction
                         disabled={pending}
-                        className={cn(destructive && buttonVariants({variant: 'destructive'}))}
+                        // Through the variant, not className: AlertDialogAction
+                        // renders a Button with asChild, so its own variant classes
+                        // land on the same element and win the merge. Passing
+                        // buttonVariants() here instead left every destructive
+                        // confirm in the application rendering as a primary button.
+                        variant={destructive ? 'destructive' : 'default'}
                         onClick={(event) => {
                             // Keep the dialog open until the caller closes it after the mutation.
                             event.preventDefault();
