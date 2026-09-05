@@ -172,6 +172,13 @@ jobs:
                   # var/ must exist and be writable; only its .gitignore is tracked.
                   mkdir -p "${staging}/var/cache" "${staging}/var/log"
 
+                  # Symfony's Dotenv refuses to boot without a .env next to the
+                  # project directory, so ship the same one the container does:
+                  # the environment name and nothing else. The repository's own
+                  # .env is excluded above because it carries APP_ENV=dev and a
+                  # placeholder secret. Real settings go in .env.local.
+                  cp docker/production/env "${staging}/.env"
+
                   cd "$(dirname "${staging}")"
                   tar -czf "${GITHUB_WORKSPACE}/greyface-${VERSION}.tar.gz" "greyface-${VERSION}"
                   zip -qr "${GITHUB_WORKSPACE}/greyface-${VERSION}.zip"    "greyface-${VERSION}"

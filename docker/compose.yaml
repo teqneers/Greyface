@@ -18,7 +18,7 @@
 # to this one if they still collide.
 #
 # This covers development and testing only. Production still ships through
-# app/files/build_tag.sh; there is deliberately no production stack here.
+# docker/production/, which is a separate, self-contained image.
 #
 # The repository root is mounted at /srv/greyface, not the app/ directory:
 # public/index.php derives APP_PATH as dirname($script, 3), so the application

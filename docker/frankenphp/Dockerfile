@@ -5,7 +5,7 @@
 # a locally-trusted certificate without any manual openssl work.
 #
 # This image is for development and testing only. Production deployment still
-# goes through app/files/build_tag.sh; nothing here changes that.
+# uses docker/production/Dockerfile, which is self-contained.
 #
 # The source is bind-mounted rather than copied in — see compose.yaml.
 

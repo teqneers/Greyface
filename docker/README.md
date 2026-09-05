@@ -1,7 +1,8 @@
 # Docker setup
 
 Development and test environment for Greyface. **There is deliberately no
-production stack here** — releases still go through `app/files/build_tag.sh`.
+production stack here** — the production image is `docker/production/Dockerfile`,
+and releases are built by `.github/workflows/release.yml`.
 
 ```
 docker/
@@ -144,8 +145,13 @@ dev server with Ctrl+C and it restores the production entrypoints (run
 
 ## Not covered here
 
-`app/files/build.sh` and `app/files/build_tag.sh` are the release scripts. They
-reference a `github.com/teqneers/greyface/php:dev` image and a
-`docker/common/_env_loader.sh` that were never committed, so both are still
-broken from a clean checkout. Left untouched on purpose — they may still be
-wired into a build job.
+Production. The self-contained image lives in `docker/production/`: a multi-stage
+build that compiles the frontend, installs production-only PHP dependencies and
+warms the cache, with an entrypoint that validates the configuration, migrates
+Greyface's own tables and creates the first administrator. Build it with
+
+```bash
+docker build -f docker/production/Dockerfile -t greyface:local .
+```
+
+and see [docs/operating.md](../docs/operating.md) for running it.
