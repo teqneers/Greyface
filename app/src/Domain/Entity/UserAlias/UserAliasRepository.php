@@ -38,6 +38,19 @@ class UserAliasRepository extends ServiceEntityRepository
     }
 
     /**
+     * Whoever currently holds this address, if anybody.
+     *
+     * Used by the importer to tell a new alias from one that has to move
+     * between accounts. Takes the first match rather than asserting one: the
+     * entity declares a uniq_alias constraint that no migration ever created,
+     * so a database can legitimately hold duplicates today.
+     */
+    public function findOneByAliasName(string $aliasName): ?UserAlias
+    {
+        return $this->findOneBy(['aliasName' => $aliasName]);
+    }
+
+    /**
      * The addresses a user owns, for deciding whether they may act on a greylist
      * row. Returns the names rather than entities because ConnectVoter asks this
      * once per request and then answers from memory, however many rows a bulk

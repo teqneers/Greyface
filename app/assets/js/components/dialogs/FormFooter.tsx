@@ -11,9 +11,11 @@ export interface FormFooterProps {
     pending?: boolean,
     /** A server-side error that is not tied to a field. */
     error?: string | null,
+    /** For a form whose submit is meaningless until something is filled in. */
+    submitDisabled?: boolean,
 }
 
-export function FormFooter({onCancel, submitLabel, pending = false, error}: FormFooterProps): React.ReactElement {
+export function FormFooter({onCancel, submitLabel, pending = false, error, submitDisabled = false}: FormFooterProps): React.ReactElement {
     const {t} = useTranslation();
     return (
         <>
@@ -26,7 +28,7 @@ export function FormFooter({onCancel, submitLabel, pending = false, error}: Form
                 <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>
                     {t('button.cancel')}
                 </Button>
-                <Button type="submit" disabled={pending}>
+                <Button type="submit" disabled={pending || submitDisabled}>
                     {pending && <Loader2 className="animate-spin" aria-hidden="true"/>}
                     {submitLabel}
                 </Button>

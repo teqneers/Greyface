@@ -261,7 +261,37 @@
       "emptyDescription": "No aliases yet. Users without an alias see an empty greylist.",
       "created": "Alias added.",
       "updated": "Alias saved.",
-      "deleted": "Alias deleted."
+      "deleted": "Alias deleted.",
+      "import": {
+        "action": "Import",
+        "title": "Import addresses",
+        "description": "Assign many mail addresses to accounts at once, instead of one at a time.",
+        "account": "Assign to",
+        "twoColumn": "Accounts named in the list",
+        "twoColumnHint": "One address and one account per line, separated by a comma, tab or spaces. Import never creates accounts.",
+        "oneAccountHint": "One address per line. They all belong to the account chosen above.",
+        "addresses": "Addresses",
+        "chooseFile": "Choose a file…",
+        "prune": "Remove addresses the list no longer names",
+        "pruneHint": "Only for the accounts this list mentions; everyone else is left alone. Use it to keep Greyface in step with your mail system.",
+        "check": "Check",
+        "apply": "Apply",
+        "summary": "{{created}} to add, {{moved}} to reassign, {{unchanged}} already correct, {{removed}} to remove.",
+        "reassigned": "Changing hands",
+        "willRemove": "Will be removed",
+        "skipped_one": "1 line could not be used",
+        "skipped_other": "{{count}} lines could not be used",
+        "line": "Line {{line}}:",
+        "applied_one": "1 change applied.",
+        "applied_other": "{{count}} changes applied.",
+        "reason": {
+          "missingUsername": "no account named",
+          "tooManyFields": "more than two columns",
+          "expectedOneAddress": "expected one address per line",
+          "notAnAddress": "not a mail address",
+          "unknownUser": "no such account"
+        }
+      }
     },
     "whitelist": {
       "header": "Whitelist",

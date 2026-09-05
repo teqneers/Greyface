@@ -261,7 +261,37 @@
       "emptyDescription": "Noch keine Aliase. Benutzer ohne Alias sehen eine leere Greylist.",
       "created": "Alias hinzugefügt.",
       "updated": "Alias gespeichert.",
-      "deleted": "Alias gelöscht."
+      "deleted": "Alias gelöscht.",
+      "import": {
+        "action": "Importieren",
+        "title": "Adressen importieren",
+        "description": "Viele Mail-Adressen auf einmal Konten zuordnen, statt einzeln.",
+        "account": "Zuordnen zu",
+        "twoColumn": "Konten stehen in der Liste",
+        "twoColumnHint": "Eine Adresse und ein Konto pro Zeile, getrennt durch Komma, Tabulator oder Leerzeichen. Der Import legt niemals Konten an.",
+        "oneAccountHint": "Eine Adresse pro Zeile. Alle gehören zum oben gewählten Konto.",
+        "addresses": "Adressen",
+        "chooseFile": "Datei wählen…",
+        "prune": "Adressen entfernen, die nicht mehr in der Liste stehen",
+        "pruneHint": "Nur für die Konten, die in dieser Liste vorkommen; alle anderen bleiben unberührt. Damit hältst du Greyface mit deinem Mailsystem im Gleichstand.",
+        "check": "Prüfen",
+        "apply": "Übernehmen",
+        "summary": "{{created}} hinzuzufügen, {{moved}} umzuhängen, {{unchanged}} bereits korrekt, {{removed}} zu entfernen.",
+        "reassigned": "Wechselt den Besitzer",
+        "willRemove": "Wird entfernt",
+        "skipped_one": "1 Zeile konnte nicht verwendet werden",
+        "skipped_other": "{{count}} Zeilen konnten nicht verwendet werden",
+        "line": "Zeile {{line}}:",
+        "applied_one": "1 Änderung übernommen.",
+        "applied_other": "{{count}} Änderungen übernommen.",
+        "reason": {
+          "missingUsername": "kein Konto angegeben",
+          "tooManyFields": "mehr als zwei Spalten",
+          "expectedOneAddress": "eine Adresse pro Zeile erwartet",
+          "notAnAddress": "keine Mail-Adresse",
+          "unknownUser": "Konto existiert nicht"
+        }
+      }
     },
     "whitelist": {
       "header": "Whitelist",

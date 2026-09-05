@@ -9,6 +9,28 @@ version.
 
 ## [Unreleased]
 
+### Added
+
+- **A greylisted entry can now go to the whitelist or blacklist, not only the auto-whitelist**, for
+  the sender or for its whole domain. A caret beside the existing button carries the five new
+  destinations; the everyday action is unchanged and still one click. Administrators only, because
+  those lists always were. Anything domain-wide, and anything blacklisting, asks first.
+  ([#95](https://github.com/teqneers/Greyface/issues/95))
+- **Bulk import of user aliases**, so addresses no longer have to be assigned one at a time. Paste
+  a list for one account, or a two-column list naming an account per address, from the interface or
+  from a file. Nothing is written until a preview has been shown.
+  ([#76](https://github.com/teqneers/Greyface/issues/76))
+- `greyface:alias:import`, the same import from the command line, with `--dry-run` and a `--prune`
+  that makes it a sync rather than a one-off. Suitable for cron. It never creates accounts, and
+  `--prune` only touches the accounts the file mentions, so a partial list is safe.
+  See [Operating Greyface](docs/operating.md#assigning-addresses-in-bulk).
+
+### Fixed
+
+- Destructive confirmations rendered as ordinary primary buttons. Every "are you sure" in the
+  application — deleting a greylist entry, a bulk delete, deleting a user or an alias — looked the
+  same as a routine one.
+
 ## [3.1.0] - 2026-09-05
 
 Upgrade promptly if you have given anyone but administrators an account. Also the tagged-recipient
