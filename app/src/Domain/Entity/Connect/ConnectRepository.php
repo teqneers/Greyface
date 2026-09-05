@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity\Connect;
 
+use App\Domain\Connect\RecipientDelimiter;
 use App\Domain\Entity\User\User;
 use App\Domain\Entity\UserAlias\UserAlias;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,7 +18,10 @@ use JetBrains\PhpStorm\ArrayShape;
 class ConnectRepository extends ServiceEntityRepository
 {
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(
+        ManagerRegistry                     $managerRegistry,
+        private readonly RecipientDelimiter $recipientDelimiter = new RecipientDelimiter()
+    )
     {
         parent::__construct($managerRegistry, Connect::class);
     }
@@ -108,8 +112,12 @@ class ConnectRepository extends ServiceEntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('c as connect', 'ua.aliasName', 'u.username', 'u.id as userID')
             ->from(Connect::class, 'c')
-            ->leftJoin(UserAlias::class, 'ua', Join::WITH, 'ua.aliasName = c.rcpt')
+            ->leftJoin(UserAlias::class, 'ua', Join::WITH, $this->aliasMatches())
             ->leftJoin(User::class, 'u', Join::WITH, 'u.id = ua.user');
+
+        if ($this->recipientDelimiter->isEnabled()) {
+            $qb->setParameter('recipientDelimiter', $this->recipientDelimiter->delimiter());
+        }
 
         if ($user) {
             if ($user === 'show_unassigned') {
@@ -123,6 +131,28 @@ class ConnectRepository extends ServiceEntityRepository
         return $qb;
     }
 
+
+    /**
+     * The join between an alias and a greylisted recipient.
+     *
+     * Exact first, so an alias registered as a tagged address keeps working, and
+     * then against the address a tagged recipient is delivered to, so the owner
+     * of anna@example.com also sees mail sent to anna+newsletter@example.com.
+     * SUBSTRING_INDEX takes the local part off the address, then the tag off the
+     * local part; with no tag present it returns the local part unchanged, so
+     * the second comparison is merely redundant rather than wrong.
+     */
+    private function aliasMatches(): string
+    {
+        if (!$this->recipientDelimiter->isEnabled()) {
+            return 'ua.aliasName = c.rcpt';
+        }
+
+        return 'ua.aliasName = c.rcpt'
+            . ' OR ua.aliasName = CONCAT('
+            . "SUBSTRING_INDEX(SUBSTRING_INDEX(c.rcpt, '@', 1), :recipientDelimiter, 1),"
+            . " '@', SUBSTRING_INDEX(c.rcpt, '@', -1))";
+    }
 
     public
     function deleteByDate(string $date): int

@@ -6,10 +6,11 @@ For whoever installs and runs Greyface. If you just want to use it, read
 1. [Before you start](#before-you-start)
 2. [Installing with the container](#installing-with-the-container) — the quickest route
 3. [Installing from the archive](#installing-from-the-archive) — no container needed
-4. [First steps after installing](#first-steps-after-installing)
-5. [What Greyface changes in your database](#what-greyface-changes-in-your-database)
-6. [Upgrading](#upgrading) and [backing up](#backing-up)
-7. [When something is wrong](#when-something-is-wrong)
+4. [Tagged recipients](#tagged-recipients) — `anna+newsletter@` and who it belongs to
+5. [First steps after installing](#first-steps-after-installing)
+6. [What Greyface changes in your database](#what-greyface-changes-in-your-database)
+7. [Upgrading](#upgrading) and [backing up](#backing-up)
+8. [When something is wrong](#when-something-is-wrong)
 
 ## Before you start
 
@@ -69,6 +70,7 @@ There is a fuller example, with comments, at
 | `GREYFACE_AUTO_MIGRATE` | no | `true` by default. Set `false` to run Greyface's migrations yourself |
 | `SERVER_NAME` | no | Leave unset for plain HTTP on port 80. Set a hostname for automatic HTTPS |
 | `TRUSTED_PROXIES` | no | Set when behind a reverse proxy, or Greyface will not know the request was HTTPS |
+| `GREYFACE_RECIPIENT_DELIMITER` | no | Your MTA's `recipient_delimiter`, `+` by default. Set it empty to match recipients exactly |
 
 Keep `APP_SECRET` somewhere safe. Changing it signs everyone out. Losing it is not a disaster, but
 you will want the same value across restarts, and the same value on every replica if you run more
@@ -139,6 +141,20 @@ Use this when you would rather not run a container.
 
 The archive already contains the compiled frontend and all PHP dependencies. You do not need
 Composer, Node or Yarn on the server.
+
+## Tagged recipients
+
+Postfix delivers `anna+newsletter@example.com` to `anna@example.com` when its
+`recipient_delimiter` is set, and Greyface follows that: whoever owns `anna@example.com` also sees
+and can release mail addressed to any tagged form of it. They do not need an alias per tag.
+
+Greyface cannot read `main.cf`, so this is a setting of its own, `GREYFACE_RECIPIENT_DELIMITER`,
+defaulting to `+`. **Set it to an empty string if your MTA has no `recipient_delimiter`**, because
+on such a system `anna+newsletter@example.com` is a literal mailbox name that need not have
+anything to do with `anna`, and treating it as hers would show her somebody else's mail.
+
+The widening stops at the delivered address. Owning `info@example.com` does not confer
+`infodesk@example.com`.
 
 ## First steps after installing
 

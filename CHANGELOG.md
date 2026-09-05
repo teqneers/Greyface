@@ -9,6 +9,21 @@ version.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Ordinary users could not release their own mail, and could delete anybody's.** The greylist
+  voter granted every attribute to every signed-in account, so only the listing was ever filtered.
+  A user could delete an entry addressed to somebody else, or empty the greylist for the whole
+  server, while the one action the product exists for answered 403 because it required an
+  administrator-only permission. Both are enforced per row now.
+
+### Added
+
+- Mail sent to a tagged address (`anna+newsletter@example.com`) now belongs to whoever owns the
+  address it is delivered to (`anna@example.com`), so they can see and release it without an alias
+  per tag. Set `GREYFACE_RECIPIENT_DELIMITER` to an empty string if your MTA has no
+  `recipient_delimiter`. ([#80](https://github.com/teqneers/Greyface/issues/80))
+
 ## [3.0.0] - 2026-09-05
 
 A rebuilt interface, a real release process, and a clean separation between Greyface's tables and

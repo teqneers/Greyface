@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Api;
 
 use App\Domain\Entity\Connect\ConnectRepository;
 use App\Test\ApiTestTrait;
+use App\Test\ConnectTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
 use App\Test\UserAliasTrait;
@@ -17,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ConnectControllerTest extends WebTestCase
 {
-    use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait, UserAliasTrait;
+    use ApiTestTrait, DatabaseTestTrait, UserDomainTrait, AutoWhiteListTrait, UserAliasTrait, ConnectTrait;
 
     public function testList(): void
     {
@@ -343,5 +344,117 @@ class ConnectControllerTest extends WebTestCase
 
         self::assertSame(1, $result['count']);
         self::assertSame(self::OWN_ENTRY['rcpt'], $result['results'][0]['connect']['rcpt']);
+    }
+
+    // ------------------------------------------------------- tagged recipients
+    //
+    // Issue #80. Postfix delivers anna+tag@example.com to anna@example.com when
+    // recipient_delimiter is set, but Greyface compared connect.rcpt to the
+    // alias exactly, so tagged mail belonged to nobody: the recipient could
+    // neither see nor release it.
+    //
+    // These go through the HTTP endpoints on purpose. The matching happens in a
+    // DQL join using SUBSTRING_INDEX, and a unit test of the rule would still
+    // pass if that join produced invalid SQL.
+
+    public function testUserSeesMailSentToATaggedFormOfTheirAddress(): void
+    {
+        $user = self::createUser();
+        $alias = self::createUserAlias($user, 'info@greyface.de');
+        $tagged = self::createConnect(
+            senderName: 'shop',
+            senderDomain: 'example.com',
+            source: '198.51.100',
+            rcpt: 'info+newsletter@greyface.de'
+        );
+        $client = self::createApiClient($user);
+
+        self::initializeDatabaseWithEntities($user, $alias, $tagged);
+
+        $client->request('GET', '/api/greylist');
+        $result = self::getSuccessfulJsonResponse($client);
+
+        $recipients = array_column(array_column($result['results'], 'connect'), 'rcpt');
+        self::assertContains('info+newsletter@greyface.de', $recipients);
+        self::assertContains('info@greyface.de', $recipients, 'the untagged address must still match');
+    }
+
+    public function testUserMayWhitelistMailSentToATaggedFormOfTheirAddress(): void
+    {
+        $user = self::createUser();
+        $alias = self::createUserAlias($user, 'info@greyface.de');
+        $tagged = self::createConnect(
+            senderName: 'shop',
+            senderDomain: 'example.com',
+            source: '198.51.100',
+            rcpt: 'info+newsletter@greyface.de'
+        );
+        $client = self::createApiClient($user);
+
+        self::initializeDatabaseWithEntities($user, $alias, $tagged);
+
+        self::sendApiJsonRequest($client, 'POST', '/api/greylist/toWhiteList', [
+            'name' => 'shop',
+            'domain' => 'example.com',
+            'source' => '198.51.100',
+            'rcpt' => 'info+newsletter@greyface.de',
+        ]);
+        self::getSuccessfulJsonResponse($client);
+    }
+
+    /**
+     * The widening has a limit: it maps a tag onto the address it is delivered
+     * to, and nothing else. Owning info@ must not confer somebody else's mailbox.
+     */
+    public function testTagMatchingDoesNotReachAnotherMailbox(): void
+    {
+        $user = self::createUser();
+        $alias = self::createUserAlias($user, 'info@greyface.de');
+        $other = self::createConnect(
+            senderName: 'shop',
+            senderDomain: 'example.com',
+            source: '198.51.100',
+            rcpt: 'infodesk@greyface.de'
+        );
+        $client = self::createApiClient($user);
+
+        self::initializeDatabaseWithEntities($user, $alias, $other);
+
+        self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/delete', [
+            'name' => 'shop',
+            'domain' => 'example.com',
+            'source' => '198.51.100',
+            'rcpt' => 'infodesk@greyface.de',
+        ]);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * An administrator's listing annotates each row with the user it belongs to,
+     * through the same join, so a tagged row must name its owner too.
+     */
+    public function testAdministratorSeesWhoOwnsATaggedRecipient(): void
+    {
+        $admin = self::createAdmin();
+        $user = self::createUser();
+        $alias = self::createUserAlias($user, 'info@greyface.de');
+        $tagged = self::createConnect(
+            senderName: 'shop',
+            senderDomain: 'example.com',
+            source: '198.51.100',
+            rcpt: 'info+newsletter@greyface.de'
+        );
+        $client = self::createApiClient($admin);
+
+        self::initializeDatabaseWithEntities($admin, $user, $alias, $tagged);
+
+        $client->request('GET', '/api/greylist?max=50');
+        $result = self::getSuccessfulJsonResponse($client);
+
+        $owners = [];
+        foreach ($result['results'] as $row) {
+            $owners[$row['connect']['rcpt']] = $row['username'];
+        }
+        self::assertSame($user->getUsername(), $owners['info+newsletter@greyface.de'] ?? null);
     }
 }
