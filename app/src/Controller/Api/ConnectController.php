@@ -5,6 +5,9 @@ namespace App\Controller\Api;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteList;
 use App\Domain\Entity\AutoWhiteList\EmailAutoWhiteList\EmailAutoWhiteListRepository;
 use App\Domain\Entity\Connect\Connect;
+use App\Domain\Connect\ListTarget;
+use App\Domain\Connect\MoveConnectToList;
+use App\Domain\Connect\SenderAddress;
 use App\Domain\Entity\Connect\ConnectRepository;
 use App\Domain\Entity\User\UserRepository;
 use App\Domain\User\UserInterface;
@@ -24,6 +27,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/greylist')]
 class ConnectController
 {
+    public function __construct(
+        private readonly SenderAddress     $senderAddress,
+        private readonly MoveConnectToList $moveToList
+    ) {
+    }
+
 
     #[Route('', methods: ['GET'])]
     #[IsGranted('CONNECT_LIST')]
@@ -160,7 +169,7 @@ class ConnectController
         }
 
         if (!empty($data['removeAwl'])) {
-            [$senderDomain, $senderName] = $this->normalize_sender($restored);
+            [$senderDomain, $senderName] = $this->senderAddress->parts($restored);
             $awl = $emailAutoWhiteListRepository->find([
                 'name' => $senderName,
                 'domain' => $senderDomain,
@@ -197,6 +206,120 @@ class ConnectController
     }
 
     /**
+     * Sends entries to one of the other policy lists: the whitelist or blacklist,
+     * for the sender or for its whole domain, or the domain auto-whitelist.
+     *
+     * One endpoint for one row and for fifty, because the interface offers the
+     * same destinations from a row menu and from the selection bar, and two code
+     * paths would eventually disagree about who is allowed what.
+     *
+     * The auto-whitelist-for-this-sender case is deliberately not here. It is the
+     * one destination an ordinary user may reach, it carries its own undo, and it
+     * is not worth destabilising to save a little duplication.
+     */
+    #[Route('/toList', methods: ['POST'])]
+    public function toList(
+        Security          $security,
+        Request           $request,
+        ConnectRepository $connectRepository
+    ): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $target = ListTarget::tryFrom((string)($data['target'] ?? ''));
+        if ($target === null) {
+            return new JsonResponse(
+                ['error' => 'Unknown target list'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        // Two separate questions, and both have to be asked. The destination
+        // lists are administrators-only, and the greylist row still has to be
+        // one the caller may touch.
+        $this->assertMayReachList($security, $target);
+
+        $moved = [];
+        foreach ($this->entriesFromRequest($request) as $key) {
+            $entry = $connectRepository->find($key);
+            if (!$entry) {
+                continue;
+            }
+            $this->assertMayAct($security, 'CONNECT_WHITELIST', $entry);
+
+            $snapshot = $this->snapshot($entry);
+            $moved[] = [
+                'entry' => $snapshot,
+                'created' => $this->moveToList->move($entry, $target),
+            ];
+        }
+
+        return new JsonResponse([
+            'moved' => count($moved),
+            'target' => $target->value,
+            'entries' => $moved,
+        ]);
+    }
+
+    /**
+     * Reverses toList(). Takes back exactly what that call returned, so an entry
+     * that was already listed before the move is left listed.
+     */
+    #[Route('/undoToList', methods: ['POST'])]
+    public function undoToList(
+        Security $security,
+        Request  $request
+    ): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $target = ListTarget::tryFrom((string)($data['target'] ?? ''));
+        if ($target === null) {
+            return new JsonResponse(
+                ['error' => 'Unknown target list'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $this->assertMayReachList($security, $target);
+
+        foreach ($data['entries'] ?? [] as $item) {
+            $entry = is_array($item) ? ($item['entry'] ?? []) : [];
+            $key = [
+                'name' => (string)($entry['name'] ?? ''),
+                'domain' => (string)($entry['domain'] ?? ''),
+                'source' => (string)($entry['source'] ?? ''),
+                'rcpt' => (string)($entry['rcpt'] ?? ''),
+            ];
+            if (in_array('', $key, true)) {
+                return new JsonResponse(['error' => 'Entry is incomplete'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $restored = Connect::create($key['name'], $key['domain'], $key['source'], $key['rcpt']);
+            if (!empty($entry['firstSeen'])) {
+                $restored->setFirstSeenAt(new DateTimeImmutable($entry['firstSeen']));
+            }
+            $this->assertMayAct($security, 'CONNECT_WHITELIST', $restored);
+
+            $this->moveToList->undo($restored, $target, (bool)($item['created'] ?? false));
+        }
+
+        return new JsonResponse(['message' => 'Entries restored']);
+    }
+
+    /**
+     * Every destination writes to a list only administrators may edit. Checked
+     * once for the request rather than per row: the answer cannot differ between
+     * entries, and a partial batch would be worse than a clean refusal.
+     */
+    private function assertMayReachList(Security $security, ListTarget $target): void
+    {
+        if (!$security->isGranted($target->permission())) {
+            throw new AccessDeniedException(
+                sprintf('Not allowed to add entries to %s.', $target->value)
+            );
+        }
+    }
+
+    /**
      * @return bool whether a new auto-whitelist row was created
      */
     private function moveToWhiteList(
@@ -206,7 +329,7 @@ class ConnectController
         EmailAutoWhiteListRepository $emailAutoWhiteListRepository
     ): bool|Response
     {
-        [$sender_domain, $deverp_sender_name] = $this->normalize_sender($greylist);
+        [$sender_domain, $deverp_sender_name] = $this->senderAddress->parts($greylist);
         $isAlreadyInWhitelist = $emailAutoWhiteListRepository->find([
             'name' => $deverp_sender_name,
             'domain' => $sender_domain,
@@ -331,37 +454,5 @@ class ConnectController
             return new JsonResponse(['deleted' => $deleted]);
         }
         return new JsonResponse(['error' => 'Date is missing!'], Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    // check https://github.com/jessereynolds/sqlgrey/blob/master/sqlgrey#L1166
-    private function normalize_sender(Connect $greylist): array
-    {
-        $user = $greylist->getName();
-        $domain = $greylist->getDomain();
-        $rcpt = $greylist->getRcpt();
-
-        return [
-            substr($domain, 0, 255),
-            substr($this->deverp_user($user, $rcpt), 0, 64)
-        ];
-    }
-
-    // check https://github.com/jessereynolds/sqlgrey/blob/master/sqlgrey#L1166
-    private function deverp_user(string $user, string $rcpt): string
-    {
-        // Try to match single-use addresses
-        // SRS (first and subsequent levels of forwarding)
-        $user = preg_replace('/^srs0=[^=]+=[^=]+=([^=]+)=([^=]+)$/', 'srs0=#=#=$1=$2', $user);
-        $user = preg_replace('/^srs1=[^=]+=([^=]+)(=+)[^=]+=[^=]+=([^=]+)=([^=]+)$/', 'srs1=#=$1$2#=#=$3=$4', $user);
-
-        // Strip extension, used sometimes for mailing-list VERP
-        $user = preg_replace('/\+.*$/', '', $user);
-
-        // Strip frequently used bounce/return masks
-        $user = preg_replace('/((bo|bounce|notice-return|notice-reply)[._-])[0-9a-z-_.]+$/', '$1#', $user);
-
-        // Strip hexadecimal sequences
-        // At the beginning only if user will contain at least 4 consecutive alpha chars
-        return preg_replace('/^[0-9a-f]{2,}(?=[._\/=-].*[a-z]{4,})|(?<=[._\/=-])[0-9a-f]+(?=[._\/=-]|$)/', '#', $user);
     }
 }

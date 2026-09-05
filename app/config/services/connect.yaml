@@ -8,3 +8,9 @@ services:
   App\Domain\Connect\Validator\UniqueEntryValidator:
 
   App\Domain\Connect\Security\ConnectVoter:
+
+  # Shared by the auto-whitelist action and the other list destinations, so a
+  # sender is normalised the same way whichever list it lands on.
+  App\Domain\Connect\SenderAddress:
+
+  App\Domain\Connect\MoveConnectToList:
