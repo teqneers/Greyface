@@ -16,3 +16,5 @@ services:
   App\Command\LoadFixturesCommand:
     arguments:
       $environment: '%kernel.environment%'
+
+  App\Command\ImportAliasesCommand:

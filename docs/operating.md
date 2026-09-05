@@ -8,9 +8,11 @@ For whoever installs and runs Greyface. If you just want to use it, read
 3. [Installing from the archive](#installing-from-the-archive) — no container needed
 4. [Tagged recipients](#tagged-recipients) — `anna+newsletter@` and who it belongs to
 5. [First steps after installing](#first-steps-after-installing)
-6. [What Greyface changes in your database](#what-greyface-changes-in-your-database)
-7. [Upgrading](#upgrading) and [backing up](#backing-up)
-8. [When something is wrong](#when-something-is-wrong)
+6. [Releasing mail from the greylist](#releasing-mail-from-the-greylist) — whitelist, blacklist, sender or domain
+7. [Assigning addresses in bulk](#assigning-addresses-in-bulk) — paste, import, or sync from cron
+8. [What Greyface changes in your database](#what-greyface-changes-in-your-database)
+9. [Upgrading](#upgrading) and [backing up](#backing-up)
+10. [When something is wrong](#when-something-is-wrong)
 
 ## Before you start
 
@@ -216,13 +218,107 @@ To let a colleague release their own mail without coming to you, two things are 
 1. **An account.** Go to **Administration → Users**, create one, and give it the role **User**.
    Administrators see everything; users see only their own mail.
 2. **Their addresses.** Go to **Administration → Alias** and add each full mail address that
-   belongs to them, for example `anna@example.com`. One row per address.
+   belongs to them, for example `anna@example.com`. One row per address. For more than a handful,
+   see [Assigning addresses in bulk](#assigning-addresses-in-bulk) below.
 
 A user with no aliases sees an empty list, because Greyface matches on the recipient address and
 has not been told which addresses are theirs. That is the single most common reason for "it shows
 me nothing".
 
 Point them at [Using Greyface](using.md), which is written for people with no technical background.
+
+## Releasing mail from the greylist
+
+Every row on the greylist has an **Auto Whitelist** button. That is the one action ordinary users
+can take on their own mail, and it does what a successful retry would have done anyway: it tells
+SQLGrey to trust that sender from that sending address, and the mail comes through on the next
+attempt.
+
+Administrators get a caret beside that button with five more destinations, because copying an
+address out of the greylist and into a list screen by hand is tedious:
+
+| | This sender | The whole domain |
+|---|---|---|
+| **Trust from this source** | the button itself | *Trust from 198.51.100* |
+| **Never greylist** | *Never greylist* | *Never greylist* |
+| **Always greylist** | *Always greylist* | *Always greylist* |
+
+The distinction the list names hide is worth knowing, and it is why the menu is labelled by effect:
+
+- The **auto-whitelist** is scoped to the sending address. It is SQLGrey's own learned-trust table,
+  and entries in it age out.
+- **Never greylist** (the whitelist, SQLGrey's `optout` tables) and **always greylist** (the
+  blacklist, its `optin` tables) are permanent policy on an address or a domain, whatever machine
+  the mail arrives from.
+
+Anything covering a whole domain, and anything blacklisting, asks for confirmation first.
+Whitelisting a single sender does not, because a toast offers an undo. The same destinations appear
+in the selection bar when rows are ticked, so they work on fifty rows as well as one.
+
+None of this is available to ordinary users: the lists behind it are administrators-only, so they
+see no caret at all.
+
+## Assigning addresses in bulk
+
+Typing addresses one at a time is the reason most installations never hand Greyface to their users
+at all. Two ways not to.
+
+### From the interface
+
+**Administration → Alias → Import** takes either shape:
+
+- **A plain list of addresses**, all belonging to one account you pick from the dropdown. This is
+  the paste-a-list case.
+- **A two-column list** naming an account per address, which is what an export from your mail
+  system looks like.
+
+Either can be pasted or loaded from a file. Separate the columns with a comma, a tab or spaces;
+blank lines and anything after a `#` are ignored.
+
+```
+anna@example.com,anna
+sales@example.com,anna      # shared, but anna handles it
+bob@example.com,bob
+```
+
+**Nothing is written until you have seen a preview.** *Check* reports what would change — how many
+addresses are new, which are changing hands, which would be removed, and which lines it could not
+read and why, with line numbers. *Apply* then does exactly that.
+
+### From the command line
+
+The same import, so it can run from cron and stay in step with your mail system without anyone
+opening a browser:
+
+```bash
+# archive
+php app/bin/console greyface:alias:import aliases.csv --dry-run   # report only
+php app/bin/console greyface:alias:import aliases.csv             # apply
+
+# container: the file has to be reachable from inside it, so pipe it in
+docker exec -i greyface php bin/console greyface:alias:import - --dry-run < aliases.csv
+```
+
+`--user anna` treats the file as a plain list of addresses for one account. `-` reads standard
+input. Add `--prune` to make it a sync rather than a one-off: addresses the file no longer names
+are removed.
+
+Greyface deliberately does not read Postfix's own lookup tables. Those can be flat files, `hash:`
+or `lmdb:` databases, MySQL or LDAP, and reading them would mean reimplementing `postmap` and still
+failing on half of them. One line of shell turns any of them into what the import wants:
+
+```bash
+postmap -s hash:/etc/postfix/virtual | awk '{print $1 "," $2}' > aliases.csv
+```
+
+### Three things it will not surprise you with
+
+- **It never creates accounts.** A username in the file that Greyface does not recognise is
+  reported for that line and skipped. A typo in a mail map must not become a login.
+- **The file decides who owns the addresses it names.** An address currently assigned to somebody
+  else is moved, not rejected, and both the preview and the command list every such move by name.
+- **`--prune` only touches the accounts the file mentions.** A list covering anna and bob syncs
+  anna and bob and leaves everyone else alone, so a partial list is safe to use.
 
 ## What Greyface changes in your database
 

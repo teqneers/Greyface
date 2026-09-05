@@ -45,7 +45,8 @@ someone is standing over their inbox waiting for, and that is the moment Greyfac
 
 - Everything SQLGrey is currently holding, in one searchable list
 - The senders SQLGrey has learned to trust, and the whitelist and blacklist, all editable
-- Accounts, and which mail addresses belong to whom
+- Accounts, and which mail addresses belong to whom, importable in bulk rather than one at a time
+- One click from a held message to the whitelist or blacklist, for the sender or the whole domain
 - A dashboard showing what is waiting and what has been happening
 
 **If you just receive mail**

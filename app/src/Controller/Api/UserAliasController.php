@@ -10,6 +10,8 @@ use App\Domain\UserAlias\Command\UpdateUserAlias;
 use App\Messenger\Validation;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
+use App\Domain\UserAlias\Import\AliasImporter;
+use App\Domain\UserAlias\Import\AliasImportParser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,6 +92,41 @@ class UserAliasController
             'alias_name' => $alias->getAliasName(),
         ];
         return new JsonResponse($data);
+    }
+
+    /**
+     * Assigns many addresses at once, from a pasted or uploaded list.
+     *
+     * The same parser and importer the console command uses, so a preview shown
+     * here and a run from cron cannot disagree about what a line means. Import
+     * never creates accounts: a username the list names but the database does
+     * not have comes back as a problem for that line.
+     *
+     * With `dryRun` it reports exactly what it would do and writes nothing,
+     * which is what the dialog shows before asking to go ahead.
+     */
+    #[Route('/import', methods: ['POST'])]
+    #[IsGranted('USER_ALIAS_CREATE')]
+    public function import(
+        Request           $request,
+        AliasImportParser $parser,
+        AliasImporter     $importer
+    ): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $content = $data['content'] ?? null;
+        if (!is_string($content) || trim($content) === '') {
+            return new JsonResponse(['error' => 'Nothing to import'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // A single account's list has no username column; the dialog sends the
+        // account it already has selected.
+        $singleUser = $data['username'] ?? null;
+
+        $source = $parser->parse($content, is_string($singleUser) && $singleUser !== '' ? $singleUser : null);
+        $result = $importer->import($source, (bool)($data['prune'] ?? false), (bool)($data['dryRun'] ?? false));
+
+        return new JsonResponse($result->toArray());
     }
 
     #[Route('', methods: ['POST'])]

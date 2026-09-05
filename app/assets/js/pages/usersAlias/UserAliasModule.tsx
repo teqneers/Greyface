@@ -1,6 +1,6 @@
 import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import type {ColumnDef} from '@tanstack/react-table';
-import {AtSign, Pencil, Plus, Trash2} from 'lucide-react';
+import {AtSign, Pencil, Plus, Trash2, Upload} from 'lucide-react';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Route, Routes, useNavigate, useParams} from 'react-router-dom';
@@ -13,6 +13,8 @@ import {ConfirmDialog} from '@/components/dialogs';
 import {EmptyState} from '@/components/EmptyState';
 import {PageHeader} from '@/components/PageHeader';
 import {Button} from '@/components/ui/button';
+
+import {UserAliasImportDialog} from './UserAliasImportDialog';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import {UserSelect} from '@/components/UserSelect';
 import {useListState} from '@/hooks/useListState';
@@ -21,6 +23,21 @@ import type {ListResponse} from '@/lib/api';
 import type {UserAlias} from '@/types/user';
 
 import {UserAliasFormDialog} from './UserAliasFormDialog';
+
+/**
+ * Route-driven, like the create and edit dialogs, so the import can be linked to
+ * and survives a reload.
+ */
+function ImportDialog(): React.ReactElement {
+    const navigate = useNavigate();
+
+    return (
+        <UserAliasImportDialog
+            open
+            onOpenChange={() => navigate('/users-aliases' + window.location.search, {replace: true})}
+        />
+    );
+}
 
 function AliasDialog({editing}: { editing: boolean }): React.ReactElement {
     const {id} = useParams();
@@ -113,12 +130,17 @@ const UserAliasModule: React.FC = () => {
                     query={state.query}
                     onQueryChange={setQuery}
                     filters={<UserSelect value={state.filters.user ?? ''} onChange={(value) => setFilter('user', value)}/>}
-                    actions={
+                    actions={<>
+                        <Button variant="outline"
+                                onClick={() => navigate(`/users-aliases/import${window.location.search}`)}>
+                            <Upload aria-hidden="true"/>
+                            {t('alias.import.action')}
+                        </Button>
                         <Button onClick={() => navigate(`/users-aliases/create${window.location.search}`)}>
                             <Plus aria-hidden="true"/>
                             {t('button.createUserAlias')}
                         </Button>
-                    }
+                    </>}
                 />
 
                 {isError ? (
@@ -144,6 +166,7 @@ const UserAliasModule: React.FC = () => {
             </div>
 
             <Routes>
+                <Route path="import" element={<ImportDialog/>}/>
                 <Route path="create" element={<AliasDialog editing={false}/>}/>
                 <Route path=":id/edit" element={<AliasDialog editing/>}/>
             </Routes>

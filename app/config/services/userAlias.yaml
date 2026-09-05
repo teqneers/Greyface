@@ -19,5 +19,10 @@ services:
 
   App\Domain\UserAlias\Request\UserAliasValueResolver:
 
+  # Shared by the console import, the API endpoint and the dialog's paste box,
+  # so all three agree on what a line means and what applying it does.
+  App\Domain\UserAlias\Import\AliasImportParser:
+  App\Domain\UserAlias\Import\AliasImporter:
+
   App\Domain\UserAlias\Security\UserAliasVoter:
   App\Domain\UserAlias\Validator\UniqueEntryValidator:
