@@ -63,6 +63,21 @@ final class Version20260905000000 extends AbstractMigration
     }
 
     /**
+     * ALTER TABLE is DDL, and MariaDB commits the open transaction before running
+     * it. Doctrine would then try to commit a transaction that is already gone and
+     * emit a deprecation on every start of the container. There is nothing to give
+     * up: MariaDB has no transactional DDL to begin with.
+     *
+     * `transactional: false` in doctrine_migrations.yaml does not cover this. It
+     * only tells the generator to write this override into new migrations; the
+     * executor reads the migration's own method.
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
+    /**
      * @return array<string, string>
      */
     private function collations(): array
