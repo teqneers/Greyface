@@ -3,6 +3,14 @@
 For whoever installs and runs Greyface. If you just want to use it, read
 [Using Greyface](using.md) instead.
 
+1. [Before you start](#before-you-start)
+2. [Installing with the container](#installing-with-the-container) — the quickest route
+3. [Installing from the archive](#installing-from-the-archive) — no container needed
+4. [First steps after installing](#first-steps-after-installing)
+5. [What Greyface changes in your database](#what-greyface-changes-in-your-database)
+6. [Upgrading](#upgrading) and [backing up](#backing-up)
+7. [When something is wrong](#when-something-is-wrong)
+
 ## Before you start
 
 Greyface is a window onto SQLGrey's database. It needs SQLGrey to be installed and working first.
@@ -22,8 +30,20 @@ Greyface does not have to run on the mail server. It only needs to reach the dat
 
 ## Installing with the container
 
-The image is `ghcr.io/teqneers/greyface`. Pick a tag: `3` follows every 3.x release, `3.1` follows
-patches of that minor, `3.1.0` never moves, and `latest` follows everything.
+The image is `ghcr.io/teqneers/greyface`, built for both amd64 and arm64. It listens on port 80,
+so publish it wherever you like with `-p`.
+
+Which tag to pick depends on how much you want an upgrade to happen on its own:
+
+| Tag | Moves to | Use it when |
+|---|---|---|
+| `3.1.0` | never | you want to decide every upgrade yourself |
+| `3.1` | patches of 3.1 | you want fixes but no new features |
+| `3` | every 3.x release | you want features too, but no major version jump |
+| `latest` | everything, including major versions | you are trying it out |
+
+Pre-releases such as `3.0.0-rc1` are published under their exact version only. They never move
+`3`, `3.0` or `latest`, so pinning loosely will not drag you onto a release candidate.
 
 ```bash
 docker run -d --name greyface --restart unless-stopped -p 8080:80 \
@@ -70,11 +90,27 @@ survives a restart.
 
 Use this when you would rather not run a container.
 
-1. Download `greyface-<version>.tar.gz` from the
-   [releases page](https://github.com/teqneers/Greyface/releases) and check it against the published
-   `.sha256` file.
-2. Unpack it somewhere the web server can read, for example `/var/www/greyface`.
-3. Create `.env.local` next to the shipped `.env`, in the top directory:
+1. Download `greyface-<version>.tar.gz` and `greyface-<version>.sha256` from the
+   [releases page](https://github.com/teqneers/Greyface/releases), and check the one against the
+   other:
+
+   ```bash
+   sha256sum -c --ignore-missing greyface-<version>.sha256
+   # macOS: shasum -a 256 -c --ignore-missing greyface-<version>.sha256
+   ```
+
+   The checksum file covers both the `.tar.gz` and the `.zip`, so `--ignore-missing` keeps it from
+   complaining about the one you did not download. You want to see `OK`.
+
+2. Unpack it somewhere the web server can read. It expands into a single
+   `greyface-<version>/` directory containing `app/` and `var/`:
+
+   ```bash
+   tar -xzf greyface-<version>.tar.gz -C /var/www/
+   ```
+
+3. Create `.env.local` inside that directory, next to the shipped `.env`. Do not edit `.env`
+   itself; an upgrade replaces it.
 
    ```dotenv
    DATABASE_URL="mysql://greyface:password@localhost:3306/sqlgrey"
@@ -104,6 +140,24 @@ Use this when you would rather not run a container.
 The archive already contains the compiled frontend and all PHP dependencies. You do not need
 Composer, Node or Yarn on the server.
 
+## First steps after installing
+
+Sign in with the administrator account you created. You will see the greylist straight away, which
+is everything SQLGrey is currently holding back across the whole server.
+
+To let a colleague release their own mail without coming to you, two things are needed:
+
+1. **An account.** Go to **Administration → Users**, create one, and give it the role **User**.
+   Administrators see everything; users see only their own mail.
+2. **Their addresses.** Go to **Administration → Alias** and add each full mail address that
+   belongs to them, for example `anna@example.com`. One row per address.
+
+A user with no aliases sees an empty list, because Greyface matches on the recipient address and
+has not been told which addresses are theirs. That is the single most common reason for "it shows
+me nothing".
+
+Point them at [Using Greyface](using.md), which is written for people with no technical background.
+
 ## What Greyface changes in your database
 
 It creates and owns these, and nothing else:
@@ -132,12 +186,18 @@ docker pull ghcr.io/teqneers/greyface:3
 docker compose up -d
 ```
 
-**Archive.** Unpack the new version alongside the old one, copy your `.env.local` across, run the
-migrations, then switch the web server over.
+**Archive.** Unpack the new version alongside the old one rather than over it, so you can switch
+back by pointing the web server at the old directory again.
 
 ```bash
+tar -xzf greyface-<new-version>.tar.gz -C /var/www/
+cp /var/www/greyface-<old-version>/.env.local /var/www/greyface-<new-version>/
+cd /var/www/greyface-<new-version>
+chown -R www-data var/                       # whichever user your web server runs as
 php app/bin/console doctrine:migrations:migrate
 ```
+
+Then point the document root at the new `app/public` and reload the web server.
 
 Read the [changelog](../CHANGELOG.md) before a major version. Migrations only ever touch Greyface's
 own tables, so an upgrade cannot damage your greylisting data.
@@ -148,7 +208,7 @@ Back up the database. That is everything: Greyface keeps no state on disk beyond
 rebuild.
 
 ```bash
-mariadb-dump --single-transaction sqlgrey > sqlgrey-backup.sql
+mariadb-dump -u root -p --single-transaction sqlgrey > sqlgrey-backup.sql
 ```
 
 That dump contains SQLGrey's data as well as Greyface's, which is what you want, since they share
@@ -173,14 +233,19 @@ database, or SQLGrey has not run against this one yet. Greyface will not create 
 `openssl rand -hex 32` and set it. The placeholder is published in the source, so anyone could forge
 a login against an installation still using it.
 
-**"Collation mismatch."** You will not normally see this, because the migrations fix it. If you have
-disabled automatic migration, run `doctrine:migrations:migrate`.
+**The greylist page fails with "Illegal mix of collations".** Greyface's alias table and SQLGrey's
+`connect` table are being compared with different collations. Running the migrations fixes it, so
+you only see this if you set `GREYFACE_AUTO_MIGRATE=false` and have not run them yet:
+
+```bash
+php app/bin/console doctrine:migrations:migrate
+```
 
 **The greylist is empty but mail is being delayed.** Greyface shows what is in SQLGrey's `connect`
 table. If that is empty, SQLGrey is either writing to a different database or not running.
 
 **A user sees nothing.** Users only see mail addressed to an alias assigned to them. Add their
-addresses under Administration, Aliases.
+addresses under **Administration → Alias**.
 
 Container logs go to standard output as JSON:
 
