@@ -2,6 +2,13 @@
 
 For anyone who logs in to check their mail. No technical background needed.
 
+**The short version.** If a mail you are expecting has not arrived, sign in, find the sender in the
+list and click **Auto Whitelist**. It comes through on the sender's next attempt, and that sender
+is never delayed again.
+
+The rest of this page explains why the delay happens at all, and what everything on the screen
+means.
+
 ## Why a mail can be late
 
 Your mail server delays mail from senders it has not seen before. The first delivery attempt is
@@ -17,7 +24,9 @@ while. Greyface is where you look, and where you let it through.
 Your administrator gives you the address and your account. Once you are in, you see the mail
 currently being held for **your** addresses. Nobody else's.
 
-If your list is empty, nothing is being held for you.
+If your list is empty, nothing is being held for you right now. If it is *always* empty, even when
+you know a mail is late, your administrator may not have registered your addresses yet: see
+[Missing an address?](#things-worth-knowing) below.
 
 ## Reading the list
 
@@ -27,9 +36,17 @@ Each row is one delayed delivery attempt.
 |---|---|
 | Sender | The part of the sender's address before the @ |
 | Domain | The part after the @ |
-| Source | The address of the machine that sent it |
+| Source | The network address of the machine that sent it |
 | Recipient | Which of your addresses it was sent to |
-| First seen | When the first attempt arrived |
+| First Seen | When the first attempt arrived |
+
+Sender and Domain together make up the sender's mail address: `anna` and `example.com` mean the
+mail came from `anna@example.com`.
+
+**Source** usually looks like an incomplete IP address, for example `203.0.113`. That is deliberate,
+not a fault. Large senders deliver from whole banks of machines, so your server remembers the
+neighbourhood rather than the single machine, and the sender is not delayed again just because
+their mail went out through a different server the second time.
 
 An entry disappears on its own once the sender tries again and the mail is accepted, or after a
 while if they never do.
