@@ -13,6 +13,7 @@ use App\Domain\Entity\OptIn\OptInEmail\OptInEmail;
 use App\Domain\Entity\OptOut\OptOutDomain\OptOutDomain;
 use App\Domain\Entity\OptOut\OptOutEmail\OptOutEmail;
 use App\Domain\Entity\UserAlias\UserAlias;
+use App\Domain\Entity\UserAlias\UserAliasRepository;
 use App\Domain\OptIn\OptInDomain\Security\OptInDomainVoter;
 use App\Domain\OptIn\OptInEmail\Security\OptInEmailVoter;
 use App\Domain\OptOut\OptOutDomain\Security\OptOutDomainVoter;
@@ -164,47 +165,133 @@ class ResourceVoterTest extends TestCase
         );
     }
 
-    public static function connectAttributes(): iterable
+    /**
+     * The greylist is the one resource ordinary users may reach, so its voter is
+     * the only one with a row-level rule: a user may act on mail addressed to an
+     * address they own, and on nothing else.
+     */
+    private static function connectVoter(string ...$ownedAddresses): ConnectVoter
     {
-        yield 'list' => ['CONNECT_LIST'];
-        yield 'create' => ['CONNECT_CREATE'];
+        $aliases = self::createStub(UserAliasRepository::class);
+        $aliases->method('findAliasNamesForUserId')->willReturn($ownedAddresses);
+
+        return new ConnectVoter($aliases);
+    }
+
+    public static function connectRowAttributes(): iterable
+    {
         yield 'show' => ['CONNECT_SHOW'];
-        yield 'edit' => ['CONNECT_EDIT'];
         yield 'delete' => ['CONNECT_DELETE'];
+        yield 'whitelist' => ['CONNECT_WHITELIST'];
+    }
+
+    #[DataProvider('connectRowAttributes')]
+    public function testAdministratorsMayActOnAnyRow(string $attribute): void
+    {
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            self::connectVoter()->vote(
+                self::createTokenForUser(self::createAdmin()),
+                self::createConnect(rcpt: 'somebody-else@greyface.test'),
+                [$attribute]
+            )
+        );
+    }
+
+    #[DataProvider('connectRowAttributes')]
+    public function testUsersMayActOnMailAddressedToThemselves(string $attribute): void
+    {
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            self::connectVoter('mine@greyface.test')->vote(
+                self::createTokenForUser(self::createUser()),
+                self::createConnect(rcpt: 'mine@greyface.test'),
+                [$attribute]
+            )
+        );
     }
 
     /**
-     * The greylist is the one resource ordinary users may reach — the row-level
-     * restriction to their own addresses lives in ConnectRepository, not here.
+     * The defect this voter was rewritten for. Every write endpoint takes its
+     * identifiers from the request body, so a user who could name a row could
+     * delete or whitelist it, including one the listing never showed them.
      */
-    #[DataProvider('connectAttributes')]
-    public function testConnectIsGrantedToAnyAuthenticatedUser(string $attribute): void
+    #[DataProvider('connectRowAttributes')]
+    public function testUsersMayNotActOnSomebodyElsesMail(string $attribute): void
     {
-        $voter = new ConnectVoter();
-        $subject = self::createConnect();
-
         self::assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $voter->vote(self::createTokenForUser(self::createUser()), $subject, [$attribute])
-        );
-        self::assertSame(
-            VoterInterface::ACCESS_GRANTED,
-            $voter->vote(self::createTokenForUser(self::createAdmin()), $subject, [$attribute])
+            VoterInterface::ACCESS_DENIED,
+            self::connectVoter('mine@greyface.test')->vote(
+                self::createTokenForUser(self::createUser()),
+                self::createConnect(rcpt: 'somebody-else@greyface.test'),
+                [$attribute]
+            )
         );
     }
 
-    #[DataProvider('connectAttributes')]
+    /**
+     * The listing joins these two columns in the database under a _ci collation,
+     * so matching case-sensitively here would show a user a row and then forbid
+     * them from touching it.
+     */
+    public function testRecipientMatchingIgnoresCase(): void
+    {
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            self::connectVoter('Mine@Greyface.test')->vote(
+                self::createTokenForUser(self::createUser()),
+                self::createConnect(rcpt: 'mine@greyface.TEST'),
+                ['CONNECT_DELETE']
+            )
+        );
+    }
+
+    public function testAnyAuthenticatedUserMayOpenTheListing(): void
+    {
+        foreach ([self::createUser(), self::createAdmin()] as $user) {
+            self::assertSame(
+                VoterInterface::ACCESS_GRANTED,
+                self::connectVoter()->vote(self::createTokenForUser($user), null, ['CONNECT_LIST'])
+            );
+        }
+    }
+
+    /**
+     * One request empties the greylist for every recipient on the server, so it
+     * is not a row-level decision and never belongs to an ordinary user.
+     */
+    public function testDeletingByDateIsAdministratorsOnly(): void
+    {
+        self::assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            self::connectVoter()->vote(
+                self::createTokenForUser(self::createAdmin()),
+                null,
+                ['CONNECT_DELETE_BY_DATE']
+            )
+        );
+        self::assertSame(
+            VoterInterface::ACCESS_DENIED,
+            self::connectVoter('mine@greyface.test')->vote(
+                self::createTokenForUser(self::createUser()),
+                null,
+                ['CONNECT_DELETE_BY_DATE']
+            )
+        );
+    }
+
+    #[DataProvider('connectRowAttributes')]
     public function testConnectIsDeniedToAnonymousTokens(string $attribute): void
     {
         self::assertSame(
             VoterInterface::ACCESS_DENIED,
-            (new ConnectVoter())->vote(new NullToken(), self::createConnect(), [$attribute])
+            self::connectVoter()->vote(new NullToken(), self::createConnect(), [$attribute])
         );
     }
 
     public function testConnectAbstainsOnForeignAttributes(): void
     {
-        $voter = new ConnectVoter();
+        $voter = self::connectVoter();
         $token = self::createTokenForUser(self::createUser());
 
         self::assertSame(

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api;
 
+use App\Domain\Entity\Connect\ConnectRepository;
 use App\Test\ApiTestTrait;
 use App\Test\AutoWhiteListTrait;
 use App\Test\DatabaseTestTrait;
@@ -218,5 +219,129 @@ class ConnectControllerTest extends WebTestCase
 
         self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/delete-to-date', []);
         self::assertResponseStatusCodeSame(422);
+    }
+
+    // ---------------------------------------------------------------- non-admins
+    //
+    // Every other test in this class signs in as an administrator, which is how
+    // the greylist shipped with an open API: the listing was filtered per user,
+    // but the write endpoints took their identifiers from the request body and
+    // never checked who was asking. These sign in as an ordinary user instead.
+    //
+    // The five seeded rows are addressed to jobs@, dummy@, info@, helpdesk@ and
+    // contact@greyface.de; the user below owns exactly one of them.
+
+    private const OWN_ENTRY = [
+        'name' => 'info',
+        'domain' => 'greyface.com',
+        'source' => '125.253.92',
+        'rcpt' => 'info@greyface.de',
+    ];
+
+    private const SOMEBODY_ELSES_ENTRY = [
+        'name' => 'helpdesk',
+        'domain' => 'greyface.ca',
+        'source' => '111.127.0',
+        'rcpt' => 'helpdesk@greyface.de',
+    ];
+
+    /**
+     * @return array{0: \Symfony\Bundle\FrameworkBundle\KernelBrowser}
+     */
+    private function signedInAsPlainUser(): array
+    {
+        $user = self::createUser();
+        $alias = self::createUserAlias($user, self::OWN_ENTRY['rcpt']);
+        $client = self::createApiClient($user);
+
+        self::initializeDatabaseWithEntities($user, $alias);
+
+        return [$client];
+    }
+
+    /**
+     * The whole point of the product: a recipient releases their own held mail
+     * without asking an administrator. It used to answer 403, because the
+     * endpoint required the administrator-only EMAIL_AUTOWHITE_CREATE.
+     */
+    public function testUserMayWhitelistMailAddressedToThemselves(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'POST', '/api/greylist/toWhiteList', self::OWN_ENTRY);
+        self::getSuccessfulJsonResponse($client);
+
+        $client->request('GET', '/api/greylist');
+        $result = self::getSuccessfulJsonResponse($client);
+        self::assertSame(0, $result['count'], 'the released entry should have left the greylist');
+    }
+
+    public function testUserMayNotWhitelistSomebodyElsesMail(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'POST', '/api/greylist/toWhiteList', self::SOMEBODY_ELSES_ENTRY);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testUserMayDeleteMailAddressedToThemselves(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/delete', self::OWN_ENTRY);
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testUserMayNotDeleteSomebodyElsesMail(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/delete', self::SOMEBODY_ELSES_ENTRY);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * A bulk call must not become a way to smuggle a foreign row past the check
+     * by pairing it with one of your own.
+     */
+    public function testBulkDeleteRefusesABatchContainingSomebodyElsesMail(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/bulk/delete', [
+            'entries' => [self::OWN_ENTRY, self::SOMEBODY_ELSES_ENTRY],
+        ]);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * One request empties the greylist for every recipient on the server. The
+     * interface has always hidden it from users; the API used to allow it.
+     */
+    public function testUserMayNotDeleteTheWholeGreylistByDate(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        self::sendApiJsonRequest($client, 'DELETE', '/api/greylist/delete-to-date', ['date' => '2099-12-31']);
+        self::assertResponseStatusCodeSame(403);
+
+        // Straight from the repository rather than a second client: the kernel is
+        // already booted, and the user's own listing would only ever show one row.
+        self::assertCount(
+            5,
+            self::getContainer()->get(ConnectRepository::class)->findAll(),
+            'the greylist must be untouched'
+        );
+    }
+
+    public function testUserOnlySeesMailAddressedToThemselves(): void
+    {
+        [$client] = $this->signedInAsPlainUser();
+
+        $client->request('GET', '/api/greylist');
+        $result = self::getSuccessfulJsonResponse($client);
+
+        self::assertSame(1, $result['count']);
+        self::assertSame(self::OWN_ENTRY['rcpt'], $result['results'][0]['connect']['rcpt']);
     }
 }
