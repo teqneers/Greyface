@@ -154,12 +154,14 @@ jobs:
 
                   # Mirrors what the old deploy tag shipped: the application, its
                   # vendor tree and the compiled frontend, without the things only
-                  # a developer needs. The committed .env is deliberately excluded
+                  # a developer needs. docs/ does ship — whoever unpacks this is
+                  # exactly the reader docs/operating.md is written for, and the
+                  # README links to it. The committed .env is deliberately excluded
                   # — it carries a placeholder secret and APP_ENV=dev.
                   rsync -a --exclude '.git' \
                            --exclude '.github' \
                            --exclude 'docker' \
-                           --exclude 'docs' \
+                           --exclude 'docs/frontend-modernization-plan.md' \
                            --exclude '.env' \
                            --exclude '.env.test' \
                            --exclude 'app/tests' \
