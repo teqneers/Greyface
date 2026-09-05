@@ -61,6 +61,19 @@ updates:
             -   dependency-name: '@eslint/js'
                 update-types:
                     - version-update:semver-major
+            # @types/node majors track Node majors, so this one is pinned to the
+            # Node the project actually runs: CI builds on 24 (LTS Krypton) and
+            # package.json floors at 22.19 (LTS Jod). @types/node 26 describes
+            # Node 26, which is Current and not LTS, so accepting it would have
+            # tsc type-check the build tooling against a runtime nobody here
+            # uses. The exposure is small — only vite.config.ts and
+            # vitest.config.mts see Node's types at all, via tsconfig.node.json,
+            # and they use nothing but node:url and process.env — but there is
+            # no upside to the drift either. Raise this to match whenever the
+            # CI node-version in ci.yml moves to the next LTS.
+            -   dependency-name: '@types/node'
+                update-types:
+                    - version-update:semver-major
 
         groups:
             react:
