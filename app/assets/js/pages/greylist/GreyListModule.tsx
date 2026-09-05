@@ -1,6 +1,6 @@
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import type {ColumnDef, RowSelectionState} from '@tanstack/react-table';
-import {Clock, Inbox, ShieldCheck, Trash2} from 'lucide-react';
+import {ChevronDown, Clock, Inbox, ShieldCheck, Trash2} from 'lucide-react';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
@@ -13,6 +13,14 @@ import {EmptyState} from '@/components/EmptyState';
 import {FormattedDate} from '@/components/FormattedDate';
 import {PageHeader} from '@/components/PageHeader';
 import {Button} from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {UserSelect} from '@/components/UserSelect';
 import {useListState} from '@/hooks/useListState';
 import {apiFetch, listUrl} from '@/lib/api';
@@ -22,6 +30,8 @@ import type {Greylist} from '@/types/greylist';
 import {rowId} from './api';
 import {DeleteByDateDialog} from './DeleteByDateDialog';
 import {GreylistHelpButton, GreylistHelpCallout} from './GreylistHelp';
+import {needsConfirmation} from './api';
+import type {ListTarget} from './api';
 import {GreylistRowActions, useGreylistMutations} from './GreylistActions';
 import {GreylistStats} from './GreylistStats';
 
@@ -38,6 +48,7 @@ const GreyListModule: React.FC = () => {
     });
     const [selection, setSelection] = useState<RowSelectionState>({});
     const [bulkDelete, setBulkDelete] = useState(false);
+    const [bulkTarget, setBulkTarget] = useState<ListTarget | null>(null);
 
     const {data, isLoading, isFetching, isError, error} = useQuery({
         queryKey: ['greylist', 'list', state],
@@ -59,9 +70,17 @@ const GreyListModule: React.FC = () => {
         setSelection({});
     }
 
-    const {bulkMove, bulkRemove} = useGreylistMutations();
+    const {bulkMove, bulkRemove, moveToList} = useGreylistMutations();
+
     const rows = useMemo(() => data?.results ?? [], [data]);
     const selectedRows = useMemo(() => rows.filter((row) => selection[rowId(row)]), [rows, selection]);
+    const sendSelectionTo = (target: ListTarget): void => {
+        if (needsConfirmation(target)) {
+            setBulkTarget(target);
+            return;
+        }
+        moveToList.mutate({rows: selectedRows, target}, {onSuccess: () => setSelection({})});
+    };
 
     const columns = useMemo<ColumnDef<Greylist>[]>(() => {
         const base: ColumnDef<Greylist>[] = [
@@ -135,6 +154,45 @@ const GreyListModule: React.FC = () => {
                         <ShieldCheck aria-hidden="true"/>
                         {t('greylist.bulkWhitelist')}
                     </Button>
+                    {/* The same destinations the row menu offers, so a selection
+                        can do anything a single row can. Administrators only,
+                        like the lists they write to. */}
+                    {admin && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button size="sm" variant="outline" disabled={moveToList.isPending}>
+                                    {t('greylist.bulkSendTo')}
+                                    <ChevronDown aria-hidden="true"/>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-72">
+                                <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+                                    {t('greylist.scope.selectedSenders', {count: selectedRows.length})}
+                                </DropdownMenuLabel>
+                                <DropdownMenuItem onSelect={() => sendSelectionTo('whitelist-email')}>
+                                    {t('greylist.target.neverGreylist')}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem variant="destructive"
+                                                  onSelect={() => sendSelectionTo('blacklist-email')}>
+                                    {t('greylist.target.alwaysGreylist')}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator/>
+                                <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+                                    {t('greylist.scope.selectedDomains')}
+                                </DropdownMenuLabel>
+                                <DropdownMenuItem onSelect={() => sendSelectionTo('auto-whitelist-domain')}>
+                                    {t('greylist.target.trustFromSourceBulk')}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => sendSelectionTo('whitelist-domain')}>
+                                    {t('greylist.target.neverGreylist')}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem variant="destructive"
+                                                  onSelect={() => sendSelectionTo('blacklist-domain')}>
+                                    {t('greylist.target.alwaysGreylist')}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                     <Button size="sm" variant="outline" className="text-destructive" onClick={() => setBulkDelete(true)}>
                         <Trash2 aria-hidden="true"/>
                         {t('greylist.bulkDelete')}
@@ -173,6 +231,21 @@ const GreyListModule: React.FC = () => {
                 />
             </div>
 
+            <ConfirmDialog
+                open={bulkTarget !== null}
+                onOpenChange={(open) => !open && setBulkTarget(null)}
+                title={bulkTarget ? t(`greylist.confirm.${bulkTarget}.title`) : ''}
+                description={bulkTarget
+                    ? t(`greylist.confirmBulk.${bulkTarget}`, {count: selectedRows.length})
+                    : ''}
+                confirmLabel={bulkTarget ? t(`greylist.confirm.${bulkTarget}.action`) : undefined}
+                destructive={bulkTarget?.startsWith('blacklist')}
+                pending={moveToList.isPending}
+                onConfirm={() => bulkTarget && moveToList.mutate(
+                    {rows: selectedRows, target: bulkTarget},
+                    {onSuccess: () => { setBulkTarget(null); setSelection({}); }}
+                )}
+            />
             <ConfirmDialog
                 open={bulkDelete}
                 onOpenChange={setBulkDelete}

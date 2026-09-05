@@ -151,6 +151,65 @@
           "recipient": "The address of yours the mail was sent to.",
           "firstSeen": "When the first delivery attempt arrived."
         }
+      },
+      "otherDestinations": "Other destinations for mail from {{sender}}",
+      "scope": {
+        "sender": "This sender · {{sender}}",
+        "domain": "Whole domain · {{domain}}",
+        "selectedSenders": "Selected senders",
+        "selectedDomains": "Their domains"
+      },
+      "target": {
+        "neverGreylist": "Never greylist",
+        "alwaysGreylist": "Always greylist",
+        "trustFromSource": "Trust from {{source}}",
+        "trustFromSourceBulk": "Trust from their sources",
+        "neverGreylistSender": "Never greylist {{sender}}",
+        "alwaysGreylistSender": "Always greylist {{sender}}",
+        "trustDomainFromSource": "Trust {{domain}} from {{source}}",
+        "neverGreylistDomain": "Never greylist the domain {{domain}}",
+        "alwaysGreylistDomain": "Always greylist the domain {{domain}}"
+      },
+      "sentTo": {
+        "auto-whitelist-domain_one": "Domain trusted from that source.",
+        "auto-whitelist-domain_other": "{{count}} entries: domain trusted from that source.",
+        "whitelist-email_one": "Sender added to the whitelist.",
+        "whitelist-email_other": "{{count}} senders added to the whitelist.",
+        "whitelist-domain_one": "Domain added to the whitelist.",
+        "whitelist-domain_other": "{{count}} domains added to the whitelist.",
+        "blacklist-email_one": "Sender added to the blacklist.",
+        "blacklist-email_other": "{{count}} senders added to the blacklist.",
+        "blacklist-domain_one": "Domain added to the blacklist.",
+        "blacklist-domain_other": "{{count}} domains added to the blacklist."
+      },
+      "confirm": {
+        "auto-whitelist-domain": {
+          "title": "Trust the whole domain?",
+          "message": "Every sender at {{domain}} delivering from this address will be accepted without delay.",
+          "action": "Trust the domain"
+        },
+        "whitelist-domain": {
+          "title": "Never greylist this domain?",
+          "message": "Mail from {{domain}} will skip greylisting entirely, from any server. This is permanent policy, not the learned trust the auto-whitelist records.",
+          "action": "Whitelist the domain"
+        },
+        "blacklist-email": {
+          "title": "Always greylist this sender?",
+          "message": "{{sender}} will be delayed on every delivery from now on, including mail that is arriving fine today.",
+          "action": "Blacklist the sender"
+        },
+        "blacklist-domain": {
+          "title": "Always greylist this domain?",
+          "message": "Every sender at {{domain}} will be delayed on every delivery from now on, including mail that is arriving fine today.",
+          "action": "Blacklist the domain"
+        }
+      },
+      "bulkSendTo": "Send to…",
+      "confirmBulk": {
+        "auto-whitelist-domain": "The domains of {{count}} selected entries will be trusted from the source each arrived from.",
+        "whitelist-domain": "The domains of {{count}} selected entries will skip greylisting entirely, from any server.",
+        "blacklist-email": "{{count}} selected senders will be delayed on every delivery from now on.",
+        "blacklist-domain": "The domains of {{count}} selected entries will be delayed on every delivery from now on."
       }
     },
     "user": {
