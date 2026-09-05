@@ -339,16 +339,24 @@ jobs:
               # image must never come up with the placeholder secret from the repo.
               run: |
                   set -eu
+                  # The artifact filenames are bare hashes; a colon is not
+                  # allowed in an artifact path, so the prefix goes back on here.
                   digest="$(basename "$(ls /tmp/digests | head -1)")"
-                  image="${{ env.IMAGE }}@${digest}"
+                  image="${{ env.IMAGE }}@sha256:${digest}"
                   echo "image=${image}" >> "$GITHUB_ENV"
 
-                  if docker run --rm --network host \
+                  # A bare "it failed" is not enough. An image that cannot run at
+                  # all fails here too, which is how a broken image reference once
+                  # passed this step; the refusal has to name the thing it refused.
+                  if output="$(docker run --rm --network host \
                        -e DATABASE_URL='mysql://root@127.0.0.1:3306/sqlgrey' \
-                       "${image}"; then
+                       "${image}" 2>&1)"; then
                       echo 'The container started without APP_SECRET; it must not.' >&2
                       exit 1
                   fi
+                  echo "${output}"
+                  echo "${output}" | grep -q 'APP_SECRET' \
+                      || { echo 'It failed, but not because of APP_SECRET.' >&2; exit 1; }
                   echo 'Refused to start without APP_SECRET, as expected.'
 
             - name: Start it properly
@@ -361,13 +369,19 @@ jobs:
                       -e GREYFACE_ADMIN_PASSWORD="$(openssl rand -hex 16)" \
                       "${image}"
 
+                  health=starting
                   for _ in $(seq 1 30); do
-                      status="$(docker inspect --format '{{.State.Health.Status}}' greyface 2>/dev/null || echo starting)"
-                      [ "${status}" = 'healthy' ] && break
+                      health="$(docker inspect --format '{{.State.Health.Status}}' greyface 2>/dev/null || echo starting)"
+                      [ "${health}" = 'healthy' ] && break
                       [ "$(docker inspect --format '{{.State.Running}}' greyface)" = 'false' ] && break
                       sleep 2
                   done
+
                   docker logs greyface
+                  # Without this the container can die and the failure only shows up
+                  # a step later, as a confusing curl error.
+                  [ "${health}" = 'healthy' ] \
+                      || { echo "The container never became healthy (${health})." >&2; exit 1; }
 
             - name: Check what it actually serves
               run: |
