@@ -37,6 +37,24 @@ class UserAliasRepository extends ServiceEntityRepository
         return null;
     }
 
+    /**
+     * The addresses a user owns, for deciding whether they may act on a greylist
+     * row. Returns the names rather than entities because ConnectVoter asks this
+     * once per request and then answers from memory, however many rows a bulk
+     * action carries.
+     *
+     * @return string[]
+     */
+    public function findAliasNamesForUserId(string $userId): array
+    {
+        return $this->createQueryBuilder('ua')
+            ->select('ua.aliasName')
+            ->where('ua.user = :user')
+            ->setParameter('user', $userId)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
     public function findFiltered(?User $user = null, ?string $query = null, ?string $start = null, string|int $max = 20, ?string $sortBy = null, bool $desc = false): iterable|Paginator
     {
         $qb = $this->createDefaultQueryBuilder($user);

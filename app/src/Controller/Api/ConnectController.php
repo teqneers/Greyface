@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -59,8 +60,8 @@ class ConnectController
     }
 
     #[Route('/toWhiteList', methods: ['POST'])]
-    #[IsGranted('EMAIL_AUTOWHITE_CREATE')]
     public function toWhiteList(
+        Security                     $security,
         Request                      $request,
         ValidatorInterface           $validator,
         ConnectRepository            $connectRepository,
@@ -69,6 +70,7 @@ class ConnectController
     {
         $data = json_decode($request->getContent(), true) ?? [];
         $greylist = $this->findEntry($connectRepository, $data);
+        $this->assertMayAct($security, 'CONNECT_WHITELIST', $greylist);
         $snapshot = $this->snapshot($greylist);
 
         $result = $this->moveToWhiteList($greylist, $validator, $connectRepository, $emailAutoWhiteListRepository);
@@ -89,8 +91,8 @@ class ConnectController
      * Entries that no longer exist are skipped rather than failing the batch.
      */
     #[Route('/bulk/toWhiteList', methods: ['POST'])]
-    #[IsGranted('EMAIL_AUTOWHITE_CREATE')]
     public function bulkToWhiteList(
+        Security                     $security,
         Request                      $request,
         ValidatorInterface           $validator,
         ConnectRepository            $connectRepository,
@@ -103,6 +105,9 @@ class ConnectController
             if (!$greylist) {
                 continue;
             }
+            // Per entry, not once for the batch: a caller must not be able to
+            // smuggle somebody else's row in behind one of their own.
+            $this->assertMayAct($security, 'CONNECT_WHITELIST', $greylist);
             $result = $this->moveToWhiteList($greylist, $validator, $connectRepository, $emailAutoWhiteListRepository);
             if ($result instanceof Response) {
                 return $result;
@@ -117,8 +122,8 @@ class ConnectController
      * and removes the auto-whitelist row if that call created it.
      */
     #[Route('/undoToWhiteList', methods: ['POST'])]
-    #[IsGranted('CONNECT_CREATE')]
     public function undoToWhiteList(
+        Security                     $security,
         Request                      $request,
         ConnectRepository            $connectRepository,
         EmailAutoWhiteListRepository $emailAutoWhiteListRepository
@@ -135,6 +140,14 @@ class ConnectController
         if (in_array('', $key, true)) {
             return new JsonResponse(['error' => 'Entry is incomplete'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        // The row may no longer exist, so the check runs against what the caller
+        // is asking to restore rather than against something already stored.
+        $this->assertMayAct(
+            $security,
+            'CONNECT_WHITELIST',
+            Connect::create($key['name'], $key['domain'], $key['source'], $key['rcpt'])
+        );
 
         if (!$connectRepository->find($key)) {
             $restored = Connect::create($key['name'], $key['domain'], $key['source'], $key['rcpt']);
@@ -165,8 +178,8 @@ class ConnectController
      * Deletes several entries at once; the body is {"entries": [{name, domain, source, rcpt}, ...]}.
      */
     #[Route('/bulk/delete', methods: ['DELETE'])]
-    #[IsGranted('CONNECT_DELETE')]
     public function bulkDelete(
+        Security          $security,
         Request           $request,
         ConnectRepository $connectRepository
     ): Response
@@ -175,6 +188,7 @@ class ConnectController
         foreach ($this->entriesFromRequest($request) as $data) {
             $greylist = $connectRepository->find($data);
             if ($greylist) {
+                $this->assertMayAct($security, 'CONNECT_DELETE', $greylist);
                 $connectRepository->delete($greylist);
                 $deleted++;
             }
@@ -217,6 +231,24 @@ class ConnectController
         }
         $connectRepository->delete($greylist);
         return $created;
+    }
+
+    /**
+     * ConnectController is not an AbstractController, so there is no
+     * denyAccessUnlessGranted() to lean on and the row-level check is explicit.
+     *
+     * It is deliberately per row. The listing is filtered per user by
+     * ConnectRepository, but the write endpoints take their identifiers straight
+     * from the request body, so without this a caller could name any row in the
+     * table, including one they cannot see.
+     */
+    private function assertMayAct(Security $security, string $attribute, Connect $entry): void
+    {
+        if (!$security->isGranted($attribute, $entry)) {
+            throw new AccessDeniedException(
+                sprintf('Not allowed to act on mail addressed to %s.', $entry->getRcpt())
+            );
+        }
     }
 
     private function findEntry(ConnectRepository $connectRepository, array $data): Connect
@@ -269,20 +301,21 @@ class ConnectController
     }
 
     #[Route('/delete', methods: ['DELETE'])]
-    #[IsGranted('CONNECT_DELETE')]
     public function delete(
+        Security          $security,
         Request           $request,
         ConnectRepository $connectRepository
     ): Response
     {
         $data = json_decode($request->getContent(), true) ?? [];
         $greylist = $this->findEntry($connectRepository, $data);
+        $this->assertMayAct($security, 'CONNECT_DELETE', $greylist);
         $connectRepository->delete($greylist);
         return new JsonResponse('Domain deleted successfully!');
     }
 
     #[Route('/delete-to-date', methods: ['DELETE'])]
-    #[IsGranted('CONNECT_DELETE')]
+    #[IsGranted('CONNECT_DELETE_BY_DATE')]
     public function deleteByTime(
         Request           $request,
         ConnectRepository $connectRepository
