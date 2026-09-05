@@ -9,6 +9,30 @@ version.
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-05
+
+A rebuilt interface, a real release process, and a clean separation between Greyface's tables and
+SQLGrey's. Greyface itself still runs on PHP 8.3, Symfony 7.4 and Doctrine ORM 3, so the server
+requirements are unchanged from 2.0.1.
+
+### If you are upgrading from 2.x, read this first
+
+- **Set your own `APP_SECRET`.** Version 2 shipped `.env` with a fixed value,
+  `ff7cb5c00e05226de5813f3fe4efc70a`, published in this repository. If your installation never
+  overrode it, anyone could forge a login against it. Generate one with `openssl rand -hex 32` and
+  set it. Everyone will be signed out once, which is the point. Greyface now refuses to start on
+  that value.
+- **Change the `admin` password if you never did.** Version 2 created `admin` / `admin` from a
+  password hash that is also public in this repository.
+- **Take a database backup before migrating**, as with any upgrade. The migrations only touch
+  Greyface's own tables, so greylisting data is not at risk, but the backup costs nothing.
+- **No new `deploy/*` git tags are produced.** Version 2 was shipped by committing a built tree,
+  `vendor/` included, into a tag. The existing `deploy/2.0.0-*` tags stay where they are, but 3.0.0
+  and everything after it ships as a container image or a release archive instead. See
+  [Operating Greyface](docs/operating.md).
+- Bookmarks to `/opt-out`, `/opt-in` and `/awl` still work; they redirect to `/whitelist`,
+  `/blacklist` and `/auto-whitelist`.
+
 ### Added
 
 - Container images on `ghcr.io/teqneers/greyface`, for amd64 and arm64. The image is
@@ -23,6 +47,7 @@ version.
   `GREYFACE_ADMIN_PASSWORD`.
 - `greyface:fixtures:load`, which creates SQLGrey's tables and sample data for development and
   test. It refuses to run anywhere else.
+- A dashboard, dark mode, bulk actions, and in-app help on the greylist screen.
 - The running version is shown in the account menu.
 - Operator and user guides under `docs/`.
 
@@ -33,10 +58,9 @@ version.
   refuses to start against a database with no SQLGrey tables rather than inventing them.
 - **No default account ships any more.** Previously a migration created `admin` / `admin` from a
   password hash published in this repository. A fresh installation creates its first administrator
-  from the environment instead.
-- The frontend was rebuilt on Tailwind and shadcn/ui, with a dashboard, dark mode, bulk actions and
-  a rewritten navigation. The whitelist, blacklist and auto-whitelist screens each merged from two
-  screens into one with tabs; the old `/opt-out`, `/opt-in` and `/awl` URLs redirect.
+  from the environment instead. Existing accounts are untouched.
+- The frontend was rebuilt on Tailwind and shadcn/ui, with a rewritten navigation. The whitelist,
+  blacklist and auto-whitelist screens each merged from two screens into one with tabs.
 - The build moved from Webpack Encore to Vite.
 - `composer.json` declared `proprietary` while the LICENSE file said MIT. It now says MIT.
 
@@ -64,6 +88,7 @@ Dependency maintenance, including React 19.
 
 First release of the Symfony and React rewrite.
 
-[Unreleased]: https://github.com/teqneers/Greyface/compare/2.0.1...HEAD
+[Unreleased]: https://github.com/teqneers/Greyface/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/teqneers/Greyface/compare/2.0.1...v3.0.0
 [2.0.1]: https://github.com/teqneers/Greyface/compare/releases/2.0.0-1...2.0.1
 [2.0.0]: https://github.com/teqneers/Greyface/releases/tag/releases/2.0.0-0
